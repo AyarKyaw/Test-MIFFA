@@ -175,12 +175,7 @@
                                                 <h6 class="title">Course Layout</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="course-style-1.html">Course Style One</a></li>
-                                                        <li><a href="course-style-2.html">Course Style Two</a></li>
-                                                        <li><a href="course-style-3.html">Course Style Three</a></li>
-                                                        <li><a href="course-style-4.html">Course Style Four</a></li>
-                                                        <li><a href="course-style-5.html">Course Style Five</a></li>
-                                                        <li><a href="course-style-6.html">Course Style Six</a></li>
+                                                        <li><a href="/course">Course</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -247,7 +242,7 @@
                                                 <div class="content">
                                                     <ul class="menu-col">
                                                         <li><a href="contact-us.html">Contact Us</a></li>
-                                                        <li><a href="login.html">Login</a></li>
+                                                        <li><a href="/login">Login</a></li>
                                                         <li><a href="/register">Register</a></li>
                                                         <li><a href="megamenu.html">Megamenu</a></li>
                                                         <li><a href="404.html">Error page</a></li>
@@ -404,7 +399,7 @@
                             <h4 class="widget-title">About</h4>
                             <ul>
                                 <li><a href="#">About Us</a></li>
-                                <li><a href="#">Courses</a></li>
+                                <li><a href="/">Courses</a></li>
                                 <li><a href="#">News & Blogs</a></li>
                                 <li><a href="#">Become a Teacher</a></li>
                                 <li><a href="#">Events</a></li>

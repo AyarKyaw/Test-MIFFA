@@ -9,7 +9,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <h1>About Us</h1>
+                    <h1>Login</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li><a href="#"><i class="fas fa-home"></i> Home</a></li>

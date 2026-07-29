@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
-<!-- Mirrored from validthemes.net/site-template/learna/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 23 Jul 2026 08:21:49 GMT -->
 <head>
     <!-- ========== Meta Tags ========== -->
     <meta charset="utf-8">
@@ -14,122 +12,216 @@
     <title>Register - MIFFA</title>
 
     <!-- ========== Favicon Icon ========== -->
-    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}" type="image/x-icon">
+
+    <!-- ========== Google Identity Services (Required for Google Sign-In) ========== -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <!-- ========== Start Stylesheet ========== -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/magnific-popup.css" rel="stylesheet">
-    <link href="assets/css/swiper-bundle.min.css" rel="stylesheet">
-    <link href="assets/css/animate.min.css" rel="stylesheet">
-    <link href="assets/css/validnavs.css" rel="stylesheet">
-    <link href="assets/css/helper.css" rel="stylesheet">
-    <link href="assets/css/unit-test.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/magnific-popup.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/validnavs.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/helper.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/unit-test.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('style.css') }}" rel="stylesheet">
     <!-- ========== End Stylesheet ========== -->
-
 </head>
 
 <body>
 
-    <!--[if lte IE 9]>
-        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-    <![endif]-->
-     
-    <!-- Start Login 
-    ============================================= -->
+    <!-- Start Register Area -->
     <div class="login-register-area register bg-gray-gradient-secondary">
         <div class="login-style-one-items">
             <div class="shape">
-                <img src="https://validthemes.net/site-template/learna/assets/img/shape/banner-5.jpg" alt="Imge Not Found">
+                <img src="https://validthemes.net/site-template/learna/assets/img/shape/banner-5.jpg" alt="Image Not Found">
             </div>
             <div class="thumb">
-                <img src="https://validthemes.net/site-template/learna/assets/img/illustration/14.png" alt="Imge Not Found">
+                <img src="https://validthemes.net/site-template/learna/assets/img/illustration/14.png" alt="Image Not Found">
             </div>
             <div class="container">
                 <div class="row align-center">
                     <div class="col-xl-5 col-lg-6">
-                        <div class="login-register-items text-light">
-                            <h2>Create an Account</h2>
-                            <p>
-                                Already have an account? <a href="register.html">Sign in</a>
-                            </p>
-                            <form action="#">
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="form-group">
-                                            <input id="name" class="form-control" placeholder="Full Name" type="text">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="form-group">
-                                            <input id="email" class="form-control" placeholder="Email or phone number*" type="text">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-6">
-                                        <div class="form-group">
-                                            <input id="password" class="form-control" placeholder="Password*" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6">
-                                        <div class="form-group">
-                                            <input id="password-confirm" class="form-control" placeholder="Confirm Password*" type="text">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="remember-pass">
-                                            <div class="check-box">
-                                                <input type="checkbox" id="remember" name="remember" value="Remember Me">
-                                                <label for="remember"> Save account</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <button class="btn btn-sm circle btn-theme animation" type="submit">Register</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                        <div class="login-register-items text-light py-3">
+    <h2 class="mb-1" style="font-size: 24px;">Create an Account</h2>
+    <p class="mb-3" style="font-size: 14px;">
+        Already have an account? <a href="{{ route('login') }}">Sign in</a>
+    </p>
+
+    <!-- Registration Form -->
+    <form action="{{ route('register.perform') }}" method="POST">
+        @csrf
+
+        @if ($errors->any())
+            <div class="alert alert-danger py-1 px-2 mb-2" style="font-size: 12px;">
+                <ul class="mb-0 ps-3">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="row">
+            <div class="col-xl-12 mb-2">
+                <div class="form-group mb-0">
+                    <input id="name" name="name" value="{{ old('name') }}" class="form-control py-2" placeholder="Full Name*" type="text" required style="height: 42px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12 mb-2">
+                <div class="form-group mb-0">
+                    <input id="email" name="email" value="{{ old('email') }}" class="form-control py-2" placeholder="Email*" type="email" required style="height: 42px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12 mb-2">
+                <div class="form-group mb-0">
+                    <input id="phone" name="phone" value="{{ old('phone') }}" class="form-control py-2" placeholder="Phone number*" type="text" style="height: 42px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-6">
+                <div class="form-group mb-0">
+                    <input id="password" name="password" class="form-control py-2" placeholder="Password*" type="password" required style="height: 42px; font-size: 13px;">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group mb-0">
+                    <input id="password-confirm" name="password_confirmation" class="form-control py-2" placeholder="Confirm Password*" type="password" required style="height: 42px; font-size: 13px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Button -->
+        <div class="row">
+            <div class="col-xl-12">
+                <button class="btn btn-sm circle btn-theme animation w-100 py-2" type="submit" style="height: 42px; line-height: 1;">Register</button>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <!-- <div class="text-center my-2 text-muted">
+            <span style="opacity: 0.7; font-size: 12px;">OR</span>
+        </div> -->
+
+        <!-- Google Sign-In Button -->
+        <div class="row">
+            <div class="col-lg-12">
+                <button type="button" onclick="triggerGoogleSignIn()" class="btn btn-sm circle btn-theme animation d-flex align-items-center justify-content-center gap-2 w-100" style="background-color: #ffffff; color: #333333 !important; text-transform: none; border: none; height: 42px; font-size: 13px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48">
+                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Login -->
+    <!-- End Register -->
 
-    
-    <!-- jQuery Frameworks
-    ============================================= -->
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/jquery.appear.js"></script>
-    <script src="assets/js/jquery.easing.min.js"></script>
-    <script src="assets/js/swiper-bundle.min.js"></script>
-    <script src="assets/js/progress-bar.min.js"></script>
-    <script src="assets/js/isotope.pkgd.min.js"></script>
-    <script src="assets/js/imagesloaded.pkgd.min.js"></script>
-    <script src="assets/js/magnific-popup.min.js"></script>
-    <script src="assets/js/count-to.js"></script>
-    <script src="assets/js/jquery.nice-select.min.js"></script>
-    <script src="assets/js/wow.min.js"></script>
-    <script src="assets/js/YTPlayer.min.js"></script>
-    <script src="assets/js/loopcounter.js"></script>
-    <script src="assets/js/validnavs.js"></script>
-    <script src="assets/js/gsap.js"></script>
-    <script src="assets/js/ScrollTrigger.min.js"></script>
-    <script src="assets/js/SplitText.min.js"></script>
-    <script src="assets/js/main.js"></script>
+    <!-- ========== Google Sign-In Client Script ========== -->
+<script>
+    let tokenClient;
+
+    window.onload = function () {
+        // Initialize the token client for interactive popup flow
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: '681316627623-lb6qo0j0qd42esdp26v492rsen7rth02.apps.googleusercontent.com',
+            scope: 'email profile openid',
+            callback: handleGoogleUserResponse,
+        });
+    };
+
+    function triggerGoogleSignIn() {
+        if (tokenClient) {
+            // Force account selection popup on button click
+            tokenClient.requestAccessToken({ prompt: 'select_account' });
+        } else {
+            console.error("Google Client SDK not loaded yet.");
+        }
+    }
+
+    function handleGoogleUserResponse(tokenResponse) {
+        if (tokenResponse.error) {
+            console.error("Google Auth Error:", tokenResponse.error);
+            return;
+        }
+
+        // Fetch user profile from Google using the access token
+        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: {
+                'Authorization': `Bearer ${tokenResponse.access_token}`
+            }
+        })
+        .then(res => res.json())
+        .then(googleUser => {
+            // Send user data to Laravel backend
+            return fetch("{{ route('auth.google.onetap') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    google_id: googleUser.sub,
+                    email: googleUser.email,
+                    name: googleUser.name
+                })
+            });
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert("Google Sign-In failed: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error during Google Authentication:", error);
+            alert("Authentication failed. Please try again.");
+        });
+    }
+</script>
+
+    <!-- jQuery Frameworks -->
+    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.appear.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('assets/js/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/progress-bar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('assets/js/imagesloaded.pkgd.min.js') }}"></script>
+    <script src="{{ asset('assets/js/magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('assets/js/count-to.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ asset('assets/js/wow.min.js') }}"></script>
+    <script src="{{ asset('assets/js/YTPlayer.min.js') }}"></script>
+    <script src="{{ asset('assets/js/loopcounter.js') }}"></script>
+    <script src="{{ asset('assets/js/validnavs.js') }}"></script>
+    <script src="{{ asset('assets/js/gsap.js') }}"></script>
+    <script src="{{ asset('assets/js/ScrollTrigger.min.js') }}"></script>
+    <script src="{{ asset('assets/js/SplitText.min.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
 </body>
-
-<!-- Mirrored from validthemes.net/site-template/learna/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 23 Jul 2026 08:21:49 GMT -->
 </html>
