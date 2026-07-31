@@ -55,21 +55,20 @@
     </div>
     <!-- End Preloader -->
 
-    <!-- Start Header Top 
-    ============================================= -->
+    <!-- Start Header Top -->
     <div class="top-bar-area top-bar-style-one bg-dark text-light">
         <div class="container">
             <div class="row align-center">
                 <div class="col-lg-7">
                     <ul class="item-flex">
                         <li>
-                             <a href="tel:+4733378901"> 
-                                <img src="assets/img/icon/2.png" alt="Icon"> Phone: +4733378901
+                            <a href="tel:+4733378901"> 
+                                <img src="{{ asset('assets/img/icon/2.png') }}" alt="Icon"> Phone: +4733378901
                             </a>
                         </li>
                         <li>
                             <a href="mailto:name@email.com">
-                                <img src="assets/img/icon/3.png" alt="Icon"> Email: edufik@info.com
+                                <img src="{{ asset('assets/img/icon/3.png') }}" alt="Icon"> Email: edufik@info.com
                             </a>
                         </li>
                     </ul>
@@ -78,7 +77,7 @@
                     <div class="item-flex">
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="assets/img/icon/flag.png" alt="Image Not Found">
+                                <img src="{{ asset('assets/img/icon/flag.png') }}" alt="Image Not Found">
                                 English <i class="fas fa-angle-down"></i>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -87,8 +86,25 @@
                             </ul>
                         </div>
                         <div>
-                            <a href="#"><img src="assets/img/icon/1.png" alt="Icon"> Admin</a>
-                        </div>
+    @auth
+        <div class="d-inline-flex align-items-center gap-2">
+            <a href="" class="text-light text-decoration-none d-inline-flex align-items-center gap-1">
+                <img src="{{ asset('assets/img/icon/1.png') }}" alt="Icon"> {{ auth()->user()->name }}
+            </a>
+            <span class="text-light opacity-50">|</span>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline m-0 p-0">
+                @csrf
+                <button type="submit" class="bg-transparent border-0 text-light p-0 m-0 align-baseline" style="box-shadow: none; font-size: inherit;">
+                    <i class="fas fa-sign-out-alt ms-1"></i> Logout
+                </button>
+            </form>
+        </div>
+    @else
+        <a href="{{ url('/login') }}" class="text-light text-decoration-none">
+            <img src="{{ asset('assets/img/icon/1.png') }}" alt="Icon"> Login
+        </a>
+    @endauth
+</div>
                     </div>
                 </div>
             </div>
@@ -96,23 +112,19 @@
     </div>
     <!-- End Header Top -->
 
-    <!-- Header 
-    ============================================= -->
+    <!-- Header -->
     <header>
         <!-- Start Navigation -->
         <nav class="navbar mobile-sidenav navbar-sticky navbar-default validnavs dark navbar-fixed no-background inc-topbar">
-
-
             <div class="container d-flex justify-content-between align-items-center">            
-
                 <!-- Start Header Navigation -->
                 <div class="item-flex">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                             <i class="fas fa-bars" aria-hidden="true"></i>
                         </button>
-                        <a class="navbar-brand" href="/">
-                            <img src="assets/img/logo.png" class="logo" alt="Logo">
+                        <a class="navbar-brand" href="{{ url('/') }}">
+                            <img src="{{ asset('assets/img/logo.png') }}" class="logo" alt="Logo">
                         </a>
                     </div>
                     <form class="search-form" action="#">
@@ -128,7 +140,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="navbar-menu">
 
-                        <img src="assets/img/logo.png" alt="Logo">
+                        <img src="{{ asset('assets/img/logo.png') }}" alt="Logo">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                             <i class="fa fa-times"></i>
                         </button>
@@ -143,24 +155,24 @@
                                                 <div class="col-menu">
                                                     <h4>Homepage Layout</h4>
                                                     <ul class="menu-col">
-                                                        <li><a href="/">Main Home</a></li>
-                                                        <li><a href="index-3.html">Digital Course Hub</a></li>
-                                                        <li><a href="index-4.html">Distance learning</a></li>
-                                                        <li><a href="index-5.html">Remote Training</a></li>
+                                                        <li><a href="{{ url('/') }}">Main Home</a></li>
+                                                        <li><a href="#">Digital Course Hub</a></li>
+                                                        <li><a href="#">Distance learning</a></li>
+                                                        <li><a href="#">Remote Training</a></li>
                                                     </ul>
                                                 </div>
                                                 <div class="col-menu">
                                                     <h4>Homepage Layout</h4>
                                                     <ul class="menu-col">
-                                                        <li><a href="index-6.html">Digital Education</a></li>
-                                                        <li><a href="index-7.html">Online Academy</a></li>
-                                                        <li><a href="index-8.html">University Classic</a></li>
-                                                        <li><a href="index-9.html">Kindergarten</a></li>
+                                                        <li><a href="#">Digital Education</a></li>
+                                                        <li><a href="#">Online Academy</a></li>
+                                                        <li><a href="#">University Classic</a></li>
+                                                        <li><a href="#">Kindergarten</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
                                             <div class="megamenu-banner">
-                                                <img src="assets/img/thumb/20.jpg" alt="Image Not Found">
+                                                <img src="{{ asset('assets/img/thumb/20.jpg') }}" alt="Image Not Found">
                                             </div>
                                         </div>
                                     </li>
@@ -175,7 +187,7 @@
                                                 <h6 class="title">Course Layout</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="/course">Course</a></li>
+                                                        <li><a href="{{ url('/course/categories') }}">Course</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -183,16 +195,12 @@
                                                 <h6 class="title">Course Layout</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="course-filter.html">Course Filter</a></li>
-                                                        <li><a href="course-filter-sidebar.html">Course Filter Sidebar</a></li>
-                                                        <li><a href="course-filter-list.html">Course Filter List</a></li>
-                                                        <li><a href="course-filter-list-sidebar.html">Course Filter List Sidebar</a></li>
-                                                        <li><a href="course-single.html">Course Details</a></li>
-                                                        <li><a href="course-single-2.html">Course Details Two</a></li>
+                                                        <li><a href="#">Course Filter</a></li>
+                                                        <li><a href="#">Course Details</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
-                                        </div><!-- end row -->
+                                        </div>
                                     </li>
                                 </ul>
                             </li>
@@ -205,11 +213,9 @@
                                                 <h6 class="title">Get Started</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="/about">About Us</a></li>
-                                                        <li><a href="about-us-2.html">About Us Two</a></li>
-                                                        <li><a href="instructor.html">Instructor</a></li>
-                                                        <li><a href="profile.html">Instructor Profile</a></li>
-                                                        <li><a href="gallery.html">Gallery</a></li>
+                                                        <li><a href="{{ url('/about') }}">About Us</a></li>
+                                                        <li><a href="#">Instructor</a></li>
+                                                        <li><a href="#">Gallery</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -217,11 +223,7 @@
                                                 <h6 class="title">Events</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="event.html">Event Style One</a></li>
-                                                        <li><a href="event-2.html">Event Style Two</a></li>
-                                                        <li><a href="event-3.html">Event Style Three</a></li>
-                                                        <li><a href="event-4.html">Event Style Four</a></li>
-                                                        <li><a href="event-single.html">Event Details</a></li>
+                                                        <li><a href="#">Events</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -229,11 +231,8 @@
                                                 <h6 class="title">Important Pages</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="membership-plan.html">Membership Plan</a></li>
-                                                        <li><a href="zoom-meeting.html">Zoom Meeting</a></li>
-                                                        <li><a href="zoom-meeting-details.html">Zoom Meeting Details</a></li>
-                                                        <li><a href="faq.html">Faqs</a></li>
-                                                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                                                        <li><a href="#">Faqs</a></li>
+                                                        <li><a href="#">Privacy Policy</a></li>
                                                     </ul>
                                                 </div>
                                             </div>    
@@ -241,35 +240,29 @@
                                                 <h6 class="title">Other Pages</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="contact-us.html">Contact Us</a></li>
-                                                        <li><a href="/login">Login</a></li>
-                                                        <li><a href="/register">Register</a></li>
-                                                        <li><a href="megamenu.html">Megamenu</a></li>
-                                                        <li><a href="404.html">Error page</a></li>
+                                                        <li><a href="#">Contact Us</a></li>
+                                                        <li><a href="{{ url('/login') }}">Login</a></li>
+                                                        <li><a href="{{ url('/register') }}">Register</a></li>
                                                     </ul>
                                                 </div>
-                                            </div><!-- end col-3 -->
-                                        </div><!-- end row -->
+                                            </div>
+                                        </div>
                                     </li>
                                 </ul>
                             </li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" >Blog</a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Blog</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="blog-standard.html">Blog Standard</a></li>
-                                    <li><a href="blog-with-sidebar.html">Blog With Sidebar</a></li>
-                                    <li><a href="blog-2-colum.html">Blog Grid Two Colum</a></li>
-                                    <li><a href="blog-3-colum.html">Blog Grid Three Colum</a></li>
-                                    <li><a href="blog-single.html">Blog Single</a></li>
-                                    <li><a href="blog-single-with-sidebar.html">Blog Single With Sidebar</a></li>
+                                    <li><a href="#">Blog Standard</a></li>
+                                    <li><a href="#">Blog Single</a></li>
                                 </ul>
                             </li>
-                            <li><a href="contact-us.html">Contact</a></li>
+                            <li><a href="#">Contact</a></li>
                         </ul>
-                    </div><!-- /.navbar-collapse -->
+                    </div>
 
                     <div class="attr-right">
-                        <!-- Start Atribute Navigation -->
+                        <!-- Start Attribute Navigation -->
                         <div class="attr-nav">
                             <ul>
                                 <li class="side-menu">
@@ -282,9 +275,8 @@
                                     </a>
                                 </li>
                             </ul>
-                            
                         </div>
-                        <!-- End Atribute Navigation -->
+                        <!-- End Attribute Navigation -->
                     </div>
                 </div>
 
@@ -293,10 +285,10 @@
                     <a href="#" class="close-side"><i class="fas fa-times"></i></a>
                     <div class="widget">
                         <div class="logo">
-                            <img src="assets/img/logo-light.png" alt="Logo">
+                            <img src="{{ asset('assets/img/logo-light.png') }}" alt="Logo">
                         </div>
                         <p>
-                            Arrived compass prepare an on as. Reasonable particular on my it in sympathize. Size now easy eat hand how. Unwilling he departure elsewhere dejection at. Heart large seems may purse means few blind.
+                            Arrived compass prepare an on as. Reasonable particular on my it in sympathize.
                         </p>
                     </div>
                     <div class="widget address">
@@ -344,14 +336,12 @@
                             <li><a href="#"><i class="fab fa-behance"></i></a></li>
                         </ul>
                     </div>
-
                 </div>
                 <!-- End Side Menu -->
 
             </div>   
             <!-- Overlay screen for menu -->
             <div class="overlay-screen"></div>
-            <!-- End Overlay screen for menu -->
         </nav>
         <!-- End Navigation -->
     </header>
@@ -376,21 +366,13 @@
                                 <img src="{{ asset('assets/img/logo-light.png') }}" alt="Image Not Found">
                             </div>
                             <p>
-                                Bndulgence diminution so discovered mr apartments. Are off under folly death wrote cause her way spite plan upon.
+                                Indulgence diminution so discovered mr apartments. Are off under folly death wrote cause her way spite plan upon.
                             </p>
                             <ul class="footer-social">
-                                <li>
-                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="{{ asset('assets/img/icon/x.png') }}" alt="Icon"></a>
-                                </li>
-                                <li>
-                                    <a href="#"><i class="fab fa-youtube"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                </li>
+                                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="#"><img src="{{ asset('assets/img/icon/x.png') }}" alt="Icon"></a></li>
+                                <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                                <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -398,8 +380,8 @@
                         <div class="f-item link">
                             <h4 class="widget-title">About</h4>
                             <ul>
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="/">Courses</a></li>
+                                <li><a href="{{ url('/about') }}">About Us</a></li>
+                                <li><a href="{{ url('/course') }}">Courses</a></li>
                                 <li><a href="#">News & Blogs</a></li>
                                 <li><a href="#">Become a Teacher</a></li>
                                 <li><a href="#">Events</a></li>
@@ -450,13 +432,12 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6">
-                        <p>&copy; Copyright 2026. All Rights Reserved by <a href="#">validthemes</a></p>
+                        <p>&copy; {{ date('Y') }} MIFFA. All Rights Reserved.</p>
                     </div>
                     <div class="col-lg-6 text-end">
-                        <ul class="link-list">
-                            <li><a href="#">Terms</a></li>
-                            <li><a href="#">Privacy</a></li>
-                            <li><a href="#">Support</a></li>
+                        <ul>
+                            <li><a href="#">Terms of Use</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
                         </ul>
                     </div>
                 </div>

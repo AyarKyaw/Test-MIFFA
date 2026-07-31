@@ -14,29 +14,29 @@ class AuthController extends Controller
     // Handle user registration
     public function register(Request $request)
     {
-        // 1. Validate form fields matching the Blade view
+        // 1. Validate form fields
         $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone'    => ['nullable', 'string', 'max:20'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name'      => ['required', 'string', 'max:255'],
+            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password'  => ['required', 'string', 'min:8', 'confirmed'],
+            'google_id' => ['nullable', 'string'],
         ]);
 
         // 2. Create the user record in the database
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'phone'    => $request->phone,
-            'password' => Hash::make($request->password),
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'google_id' => $request->google_id,
         ]);
 
-        // 3. Automatically log the user in after successful registration
-        Auth::login($user, $request->has('remember'));
+        // 3. Automatically log the user in
+        Auth::login($user, true);
 
-        // 4. Regenerate session and redirect
+        // 4. Regenerate session and redirect to dashboard
         $request->session()->regenerate();
 
-        return redirect()->intended('/')->with('success', 'Account created successfully! Welcome to MIFFA.');
+        return redirect()->intended('/')->with('success', 'Account created successfully!');
     }
 
     // Handle standard login attempt

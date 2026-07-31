@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Home - MIFFA')
+@section('title', 'Courses - MIFFA')
 
 @section('content')
     <!-- Start Breadcrumb 
@@ -12,7 +12,7 @@
                     <h1>Course</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
                             <li class="active">Course</li>
                         </ol>
                     </nav>
@@ -37,12 +37,12 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="tabs_2" data-bs-toggle="tab" data-bs-target="#tab_2" type="button" role="tab" aria-controls="tab_2" aria-selected="false">
-                                    <img src="https://validthemes.net/site-template/learna/assets/img/icon/47.png" alt="Image Not Fond"> <strong>Business Finance</strong>
+                                    <img src="assets/img/icon/47.png" alt="Image Not Fond"> <strong>Business Finance</strong>
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="tabs_3" data-bs-toggle="tab" data-bs-target="#tab_3" type="button" role="tab" aria-controls="tab_3" aria-selected="false">
-                                    <img src="https://validthemes.net/site-template/learna/assets/img/icon/48.png" alt="Image Not Fond"> <strong>Teaching Online</strong>
+                                    <img src="assets/img/icon/48.png" alt="Image Not Fond"> <strong>Teaching Online</strong>
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
@@ -71,7 +71,7 @@
                                             <img src="assets/img/team/m2.jpg" alt="Image Not Found">
                                             <a href="#">Aleesha Brown</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">WordPress website complete development.</a></h4>
+                                        <h4><a href="/course-single">WordPress website complete development.</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -90,7 +90,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$46.00</del> $35.00</h2>
                                         </div>
                                     </div>
@@ -107,7 +107,7 @@
                                             <img src="assets/img/team/m4.jpg" alt="Image Not Found">
                                             <a href="#">Amaul Joey</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Complete React Front-end developer course</a></h4>
+                                        <h4><a href="/course-single">Complete React Front-end developer course</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -126,7 +126,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$42.00</del> $29.00</h2>
                                         </div>
                                     </div>
@@ -143,7 +143,7 @@
                                             <img src="assets/img/team/m3.jpg" alt="Image Not Found">
                                             <a href="#">Sarah Albert</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Dynamic website development to make money from online</a></h4>
+                                        <h4><a href="/course-single">Dynamic website development to make money from online</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -162,7 +162,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$35.00</del> $27.00</h2>
                                         </div>
                                     </div>
@@ -181,7 +181,7 @@
                                             <img src="assets/img/team/m3.jpg" alt="Image Not Found">
                                             <a href="#">Sarah Albert</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Dynamic website development to make money from online</a></h4>
+                                        <h4><a href="/course-single">Dynamic website development to make money from online</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -200,7 +200,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$36.00</del> $27.00</h2>
                                         </div>
                                     </div>
@@ -216,7 +216,7 @@
                                             <img src="assets/img/team/m2.jpg" alt="Image Not Found">
                                             By <a href="#">Aleesha Brown</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Complete React Front-end developer course</a></h4>
+                                        <h4><a href="/course-single">Complete React Front-end developer course</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -235,7 +235,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$47.00</del> $35.00</h2>
                                         </div>
                                     </div>
@@ -252,7 +252,7 @@
                                             <img src="assets/img/team/m4.jpg" alt="Image Not Found">
                                             <a href="#">Amaul Joey</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">How to create a dyanmic app by using Flutter development</a></h4>
+                                        <h4><a href="/course-single">How to create a dyanmic app by using Flutter development</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -271,7 +271,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$28.00</del> $15.00</h2>
                                         </div>
                                     </div>
@@ -290,7 +290,7 @@
                                             <img src="assets/img/team/m2.jpg" alt="Image Not Found">
                                             By <a href="#">Aleesha Brown</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">WordPress website complete development.</a></h4>
+                                        <h4><a href="/course-single">WordPress website complete development.</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -309,7 +309,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$36.00</del> $22.00</h2>
                                         </div>
                                     </div>
@@ -326,7 +326,7 @@
                                             <img src="assets/img/team/m4.jpg" alt="Image Not Found">
                                             <a href="#">Amaul Joey</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Complete React Front-end developer course</a></h4>
+                                        <h4><a href="/course-single">Complete React Front-end developer course</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -345,7 +345,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$53.00</del> $45.00</h2>
                                         </div>
                                     </div>
@@ -362,7 +362,7 @@
                                             <img src="assets/img/team/m3.jpg" alt="Image Not Found">
                                             <a href="#">Sarah Albert</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Dynamic website development to make money from online</a></h4>
+                                        <h4><a href="/course-single">Dynamic website development to make money from online</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -381,7 +381,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$26.00</del> $18.00</h2>
                                         </div>
                                     </div>
@@ -399,7 +399,7 @@
                                             <img src="assets/img/team/m2.jpg" alt="Image Not Found">
                                             By <a href="#">Aleesha Brown</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Best live Figma Courses online with expertise certificates</a></h4>
+                                        <h4><a href="/course-single">Best live Figma Courses online with expertise certificates</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -418,7 +418,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$68.00</del> $52.00</h2>
                                         </div>
                                     </div>
@@ -435,7 +435,7 @@
                                             <img src="assets/img/team/m4.jpg" alt="Image Not Found">
                                             <a href="#">Amaul Joey</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Basic to Advance UX & UI Design and live Training Course</a></h4>
+                                        <h4><a href="/course-single">Basic to Advance UX & UI Design and live Training Course</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -454,7 +454,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$34.00</del> $25.00</h2>
                                         </div>
                                     </div>
@@ -471,7 +471,7 @@
                                             <img src="assets/img/team/m3.jpg" alt="Image Not Found">
                                             <a href="#">Sarah Albert</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Dynamic website development to make money from online</a></h4>
+                                        <h4><a href="/course-single">Dynamic website development to make money from online</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -490,7 +490,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$26.00</del> $14.00</h2>
                                         </div>
                                     </div>
@@ -508,7 +508,7 @@
                                             <img src="assets/img/team/m2.jpg" alt="Image Not Found">
                                             By <a href="#">Aleesha Brown</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">English grammar courses online with real certificates</a></h4>
+                                        <h4><a href="/course-single">English grammar courses online with real certificates</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -527,7 +527,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$49.00</del> $36.00</h2>
                                         </div>
                                     </div>
@@ -544,7 +544,7 @@
                                             <img src="assets/img/team/m4.jpg" alt="Image Not Found">
                                             <a href="#">Amaul Joey</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Dynamic website development to make money from online</a></h4>
+                                        <h4><a href="/course-single">Dynamic website development to make money from online</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -563,7 +563,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$35.00</del> $27.00</h2>
                                         </div>
                                     </div>
@@ -580,7 +580,7 @@
                                             <img src="assets/img/team/m3.jpg" alt="Image Not Found">
                                             <a href="#">Sarah Albert</a>
                                         </div>
-                                        <h4><a href="course-single-2.html">Online learning management system & learn dash course</a></h4>
+                                        <h4><a href="/course-single">Online learning management system & learn dash course</a></h4>
                                         <div class="course-meta">
                                             <ul>
                                                 <li>
@@ -599,7 +599,7 @@
                                             </ul>
                                         </div>
                                         <div class="bottom-meta">
-                                            <a href="course-single-2.html">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
+                                            <a href="/course-single">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
                                             <h2 class="price"><del>$25.00</del> $14.00</h2>
                                         </div>
                                     </div>
