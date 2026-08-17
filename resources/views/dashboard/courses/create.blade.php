@@ -1,0 +1,182 @@
+@extends('dashboard.layouts.master')
+
+@section('title', 'Add New Course - MIFFA')
+
+@section('content')
+<main class="main-content" id="main-content">
+    <div class="section__content section__content--p30">
+        <div class="row row-tight" style="margin-top: 16px;">
+            <div class="col-md-12">
+                <section class="m-card" aria-labelledby="add-course-title">
+                    <header class="m-card__header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="m-card__title" id="add-course-title">Add New Course</h2>
+                            <p class="m-card__subtitle">Fill in the details below to create a new course listing</p>
+                        </div>
+                        <div>
+                            <a href="{{ route('admin.course.index') }}" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
+                                <i class="fa-solid fa-arrow-left"></i> Back to Courses
+                            </a>
+                        </div>
+                    </header>
+
+                    <div class="m-card__body p-4">
+                        {{-- 1. Added enctype for file upload --}}
+                        <form action="{{ route('admin.course.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="row g-3">
+                                <!-- Course Title -->
+                                <div class="col-md-8">
+                                    <label for="title" class="form-label fw-semibold">Course Title <span class="text-danger">*</span></label>
+                                    <input type="text" 
+                                           class="form-control @error('title') is-invalid @enderror" 
+                                           id="title" 
+                                           name="title" 
+                                           value="{{ old('title') }}" 
+                                           placeholder="e.g. Advanced Freight Forwarding Management" 
+                                           required>
+                                    @error('title')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Course Code -->
+                                <div class="col-md-4">
+                                    <label for="code" class="form-label fw-semibold">Course Code <span class="text-danger">*</span></label>
+                                    <input type="text" 
+                                           class="form-control @error('code') is-invalid @enderror" 
+                                           id="code" 
+                                           name="code" 
+                                           value="{{ old('code') }}" 
+                                           placeholder="e.g. FFM-101"
+                                           required>
+                                    @error('code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Category Selection -->
+                                <div class="col-md-6">
+                                    <label for="course_category_id" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('course_category_id') is-invalid @enderror" 
+                                            id="course_category_id" 
+                                            name="course_category_id" 
+                                            required>
+                                        <option value="" disabled {{ old('course_category_id') ? '' : 'selected' }}>Select Category</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}" {{ old('course_category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('course_category_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Course Fee/Price -->
+                                <div class="col-md-3">
+                                    <label for="price" class="form-label fw-semibold">Course Fee ($)</label>
+                                    <div class="input-group">
+                                        <input type="number" 
+                                               step="0.01" 
+                                               min="0" 
+                                               class="form-control @error('price') is-invalid @enderror" 
+                                               id="price" 
+                                               name="price" 
+                                               value="{{ old('price', '0.00') }}" 
+                                               placeholder="0.00">
+                                    </div>
+                                    @error('price')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Total Hours -->
+                                <div class="col-md-3">
+                                    <label for="hour" class="form-label fw-semibold">Total Hours <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" 
+                                               min="1" 
+                                               class="form-control @error('hour') is-invalid @enderror" 
+                                               id="hour" 
+                                               name="hour" 
+                                               value="{{ old('hour') }}" 
+                                               placeholder="e.g. 40"
+                                               required>
+                                    </div>
+                                    @error('hour')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                {{-- 2. Added Image File Input with Live Preview --}}
+                                <div class="col-md-12">
+                                    <label for="image" class="form-label fw-semibold">Course Thumbnail Image</label>
+                                    <input type="file" 
+                                           class="form-control @error('image') is-invalid @enderror" 
+                                           id="image" 
+                                           name="image" 
+                                           accept="image/*"
+                                           onchange="previewCourseImage(event)">
+                                    <div class="form-text">Supported formats: JPG, PNG, WEBP (Max: 2MB)</div>
+                                    @error('image')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+
+                                    <!-- Image Preview Container -->
+                                    <div class="mt-2" id="image-preview-wrapper" style="display: none;">
+                                        <img id="image-preview" src="#" alt="Course Image Preview" class="img-thumbnail rounded" style="max-height: 150px; object-fit: cover;">
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="col-md-12">
+                                    <label for="desc" class="form-label fw-semibold">Description</label>
+                                    <textarea class="form-control @error('desc') is-invalid @enderror" 
+                                              id="desc" 
+                                              name="desc" 
+                                              rows="5" 
+                                              placeholder="Provide a detailed overview of the course curriculum, target audience, and objectives...">{{ old('desc') }}</textarea>
+                                    @error('desc')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="mt-4 d-flex justify-content-end gap-2">
+                                <a href="{{ route('admin.course.index') }}" class="btn btn-light border">Cancel</a>
+                                <button type="submit" class="au-btn au-btn--green au-btn--small d-inline-flex align-items-center gap-1 border-0">
+                                    <i class="fa-solid fa-save"></i> Save Course
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{-- Image Preview Script --}}
+<script>
+function previewCourseImage(event) {
+    const input = event.target;
+    const previewWrapper = document.getElementById('image-preview-wrapper');
+    const previewImage = document.getElementById('image-preview');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewWrapper.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        previewWrapper.style.display = 'none';
+    }
+}
+</script>
+@endsection

@@ -149,7 +149,7 @@
                 <div class="row align-center">
                     <div class="col-lg-6">
                         <div class="about-style-three-thumb">
-                            <img src="assets/img/thumb/14.jpg" alt="Image Not Found">
+                            <img src="assets/img/team/student-1.jpg" alt="Image Not Found">
                             <img src="assets/img/shape/45.png" alt="Image Not Found">
                         </div>
                     </div>
@@ -199,7 +199,7 @@
             </div>
         </div>
         <div class="container">
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-12">
                     <div class="course-style-one-bullet swiper">
                         <div class="swiper-wrapper">
@@ -261,7 +261,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="course-style-one-carousel swiper">
                 <div class="swiper-wrapper">
@@ -275,7 +275,7 @@
                                     <div class="swiper-slide">
                                         <div class="course-style-one-item hover-less style-two">
                                             <div class="thumb">
-                                                <img src="assets/img/courses/4.jpg" alt="Image Not Found">
+                                                <img src="assets/img/courses/course-1.jpg" alt="Image Not Found">
                                             </div>
                                             <div class="top-meta">
                                                 <ul>
@@ -322,7 +322,7 @@
                                     <div class="swiper-slide">
                                         <div class="course-style-one-item hover-less style-two">
                                             <div class="thumb">
-                                                <img src="assets/img/courses/7.jpg" alt="Image Not Found">
+                                                <img src="assets/img/courses/course-2.jpg" alt="Image Not Found">
                                             </div>
                                             <div class="top-meta">
                                                 <ul>
@@ -369,7 +369,7 @@
                                     <div class="swiper-slide">
                                         <div class="course-style-one-item hover-less style-two">
                                             <div class="thumb">
-                                                <img src="assets/img/courses/8.jpg" alt="Image Not Found">
+                                                <img src="assets/img/courses/course-3.png" alt="Image Not Found">
                                             </div>
                                             <div class="top-meta">
                                                 <ul>
@@ -417,615 +417,6 @@
                         </div>
                     </div>
                     <!-- End Single Item -->
-
-                    <!-- Single Item -->
-                    <div class="swiper-slide">
-                        <div class="row">
-                            <div class="course-inner-carousel swiper">
-                                <div class="swiper-wrapper">
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/9.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star-half-alt"></i>  
-                                                            <span>(4.8)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m3.jpg" alt="Image Not Found">
-                                                    <a href="#">Aleesha Brown <span>WordPress Developer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">How to create a dyanmic app by using Flutter development</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 78 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 458 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$36.00</del> $20.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                        <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/5.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star-half-alt"></i>  
-                                                            <span>(4.7)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m1.jpg" alt="Image Not Found">
-                                                    <a href="#">Kevin Martin <span>Graphics Designer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Online learning management system & learn dash course</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 108 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 457 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$42.00</del> $28.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/10.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star-half-alt"></i>  
-                                                            <span>(4.7)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m3.jpg" alt="Image Not Found">
-                                                    <a href="#">Sarah Albert <span>Marketing Expert</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Complete Mobile app development final course basic to Advance</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 45 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 875 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$46.00</del> $34.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Single Item -->
-
-                    <!-- Single Item -->
-                    <div class="swiper-slide">
-                        <div class="row">
-                            <div class="course-inner-carousel swiper">
-                                <div class="swiper-wrapper">
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/2.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m1.jpg" alt="Image Not Found">
-                                                    <a href="#">Aleesha Brown <span>WordPress Developer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">English grammar courses online with real certificates</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 78 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 465 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$28.00</del> $16.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                        <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/6.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m2.jpg" alt="Image Not Found">
-                                                    <a href="#">Kevin Martin <span>Graphics Designer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Dynamic website development to make money from online</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 108 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 457 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$28.00</del> $25.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/3.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m3.jpg" alt="Image Not Found">
-                                                    <a href="#">Sarah Albert <span>Marketing Expert</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Complete React Front-end developer course</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 45 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 260 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$43.00</del> $35.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Single Item -->
-
-                    <!-- Single Item -->
-                    <div class="swiper-slide">
-                        <div class="row">
-                            <div class="course-inner-carousel swiper">
-                                <div class="swiper-wrapper">
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/1.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m2.jpg" alt="Image Not Found">
-                                                    <a href="#">Aleesha Brown <span>WordPress Developer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">WordPress and WooCommerce complete development.</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 78 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 246 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$36.00</del> $20.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                        <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/6.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m1.jpg" alt="Image Not Found">
-                                                    <a href="#">Sarah Albert <span>Marketing Expert</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Dynamic website development to make money from online</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 108 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 457 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$45.00</del> $36.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/3.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star-half-alt"></i>  
-                                                            <span>(4.9)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m3.jpg" alt="Image Not Found">
-                                                    <a href="#">Kevin Martin <span>Graphics Designer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Complete React Front-end developer course</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 45 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 650 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$56.00</del> $42.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Single Item -->
-
-                    <!-- Single Item -->
-                    <div class="swiper-slide">
-                        <div class="row">
-                            <div class="course-inner-carousel swiper">
-                                <div class="swiper-wrapper">
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/11.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m1.jpg" alt="Image Not Found">
-                                                    <a href="#">Kevin Martin <span>Graphics Designer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">WordPress and WooCommerce complete development.</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 78 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 245 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$54.00</del> $46.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                        <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/6.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m2.jpg" alt="Image Not Found">
-                                                    <a href="#">Aleesha Brown <span>WordPress Developer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Dynamic website development to make money from online</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 108 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 457 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$36.00</del> $28.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/3.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m4.jpg" alt="Image Not Found">
-                                                    <a href="#">Sarah Albert <span>Marketing Expert</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Complete React Front-end developer course</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 45 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 306 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$48.00</del> $32.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Single Item -->
-
                 </div>
             </div>
         </div>
@@ -1125,9 +516,9 @@
                 </div>
                 <div class="col-lg-12">
                     <div class="live-course-items">
-                        <img class="wow fadeInUp" src="assets/img/thumb/16.jpg" alt="Image Not Found">
+                        <img class="wow fadeInUp" src="assets/img/thumb/banner-1.jpg" alt="Image Not Found">
                         <div class="live-instructor wow fadeInRight" data-wow-delay="300ms">
-                            <img src="assets/img/advisor/6.jpg" alt="Image Not Found">
+                            <img src="assets/img/advisor/teacher-1.png" alt="Image Not Found">
                             <div class="info">
                                 <h4><strong>Instructor: </strong> Amaul Joey</h4>
                                 <ul>
@@ -1373,69 +764,77 @@
             </div>
         </div>
         <div class="container">
-            <div class="row">
+            <div class="row d-flex align-items-stretch">
                 <!-- Single Item -->
-                <div class="col-xl-4 col-md-6 col-lg-6 mb-30">
-                    <div class="home-blog-style-two-item wow fadeInUp">
+                <div class="col-xl-4 col-md-6 col-lg-6 mb-30 d-flex">
+                    <div class="home-blog-style-two-item wow fadeInUp d-flex flex-column w-100">
                         <div class="thumb">
-                            <img src="assets/img/blog/5.jpg" alt="Image not Found">
+                            <img src="{{ asset('assets/img/blog/blog-1.jpg') }}" alt="Blog Image">
                             <ul class="blog-meta">
                                 <li><a href="#">Courses</a></li>
                                 <li><i class="fas fa-calendar-alt"></i> October 18, 2025</li>
                             </ul>
                         </div>
-                        <div class="info">
-                            <h3 class="blog-title">
-                                <a href="blog-single-with-sidebar.html">Drefabrice passive are house most memorable</a>
-                            </h3>
-                            <p>
-                                Plan upon yet way get cold spot its week almost do am or limits hearts resolve parties.
-                            </p>
-                            <a href="blog-single-with-sidebar.html" class="btn-read-more">Read More <i class="fas fa-long-arrow-right"></i></a>
+                        <div class="info d-flex flex-column flex-grow-1 justify-content-between">
+                            <div>
+                                <h3 class="blog-title">
+                                    <a href="#">Drefabrice passive are house most memorable</a>
+                                </h3>
+                                <p>
+                                    Plan upon yet way get cold spot its week almost do am or limits hearts resolve parties.
+                                </p>
+                            </div>
+                            <a href="#" class="btn-read-more mt-auto">Read More <i class="fas fa-long-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
                 <!-- End Single Item -->
+
                 <!-- Single Item -->
-                <div class="col-xl-4 col-md-6 col-lg-6 mb-30">
-                    <div class="home-blog-style-two-item wow fadeInUp" data-wow-delay="200ms">
+                <div class="col-xl-4 col-md-6 col-lg-6 mb-30 d-flex">
+                    <div class="home-blog-style-two-item wow fadeInUp d-flex flex-column w-100" data-wow-delay="200ms">
                         <div class="thumb">
-                            <img src="assets/img/blog/3.jpg" alt="Image not Found">
+                            <img src="{{ asset('assets/img/blog/blog-2.jpg') }}" alt="Blog Image">
                             <ul class="blog-meta">
                                 <li><a href="#">Laravel</a></li>
                                 <li><i class="fas fa-calendar-alt"></i> November 15, 2025</li>
                             </ul>
                         </div>
-                        <div class="info">
-                            <h3 class="blog-title">
-                                <a href="blog-single-with-sidebar.html">Announcing attachment resolution perform</a>
-                            </h3>
-                            <p>
-                                Taking upon yet way get cold spot its week almost do am or limits hearts resolve parties.
-                            </p>
-                            <a href="blog-single-with-sidebar.html" class="btn-read-more">Read More <i class="fas fa-long-arrow-right"></i></a>
+                        <div class="info d-flex flex-column flex-grow-1 justify-content-between">
+                            <div>
+                                <h3 class="blog-title">
+                                    <a href="#">Announcing attachment resolution perform</a>
+                                </h3>
+                                <p>
+                                    Taking upon yet way get cold spot its week almost do am or limits hearts resolve parties.
+                                </p>
+                            </div>
+                            <a href="#" class="btn-read-more mt-auto">Read More <i class="fas fa-long-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
                 <!-- End Single Item -->
+
                 <!-- Single Item -->
-                <div class="col-xl-4 col-md-6 col-lg-6 mb-30">
-                    <div class="home-blog-style-two-item wow fadeInUp" data-wow-delay="400ms">
+                <div class="col-xl-4 col-md-6 col-lg-6 mb-30 d-flex">
+                    <div class="home-blog-style-two-item wow fadeInUp d-flex flex-column w-100" data-wow-delay="400ms">
                         <div class="thumb">
-                            <img src="assets/img/blog/4.jpg" alt="Image not Found">
+                            <img src="{{ asset('assets/img/blog/blog-3.jpg') }}" alt="Blog Image">
                             <ul class="blog-meta">
                                 <li><a href="#">WordPress</a></li>
                                 <li><i class="fas fa-calendar-alt"></i> December 13, 2025</li>
                             </ul>
                         </div>
-                        <div class="info">
-                            <h3 class="blog-title">
-                                <a href="blog-single-with-sidebar.html">Resolution performing the regular sentim.</a>
-                            </h3>
-                            <p>
-                                Media upon yet way get cold spot its week almost do am or limits hearts resolve parties.
-                            </p>
-                            <a href="blog-single-with-sidebar.html" class="btn-read-more">Read More <i class="fas fa-long-arrow-right"></i></a>
+                        <div class="info d-flex flex-column flex-grow-1 justify-content-between">
+                            <div>
+                                <h3 class="blog-title">
+                                    <a href="#">Resolution performing the regular sentim.</a>
+                                </h3>
+                                <p>
+                                    Media upon yet way get cold spot its week almost do am or limits hearts resolve parties.
+                                </p>
+                            </div>
+                            <a href="#" class="btn-read-more mt-auto">Read More <i class="fas fa-long-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>

@@ -1,19 +1,22 @@
 @extends('layouts.master')
 
-@section('title', 'Course Single - MIFFA')
+@section('title', ($course->title ?? 'Course Details') . ' - MIFFA')
 
 @section('content')
-     <!-- Start Breadcrumb 
+    <!-- Start Breadcrumb 
     ============================================= -->
     <div class="breadcrumb-area text-center bg-gray-gradient-secondary">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <h1>Complete React Front-end developer course</h1>
+                    <h1>{{ $course->title }}</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-                            <li class="active">Course Single</li>
+                            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                            @if(isset($course->category))
+                                <li><a href="#">{{ $course->category->name }}</a></li>
+                            @endif
+                            <li class="active">{{ $course->code ?? 'Course Single' }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -28,8 +31,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="coruse-details-thumb">
-                        <img src="https://validthemes.net/site-template/learna/assets/img/courses/13.jpg" alt="Image Not Found">
+                    <div class="course-details-thumb">
+                        <img src="{{ $course->image ? asset('storage/' . $course->image) : asset('assets/img/courses/13.jpg') }}" alt="{{ $course->title }}">
                     </div>
                 </div>
             </div>
@@ -39,27 +42,30 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="course-single-meta">
+                            <!-- Instructor / Author -->
                             <div class="item author">
                                 <div class="thumb">
-                                    <a href="#"><img alt="Thumb" src="assets/img/team/m3.jpg"></a>
+                                    <a href="#">
+                                        <img alt="{{ $course->instructor->name ?? 'Instructor' }}" 
+                                            src="{{ isset($course->instructor->avatar) ? asset($course->instructor->avatar) : asset('assets/img/team/m3.jpg') }}">
+                                    </a>
                                 </div>
                                 <div class="desc">
                                     <h4>Author</h4>
-                                    <a href="#">Munil Druva</a>
+                                    <a href="#">{{ $course->instructor->name ?? 'MIFFA Instructor' }}</a>
                                 </div>
                             </div>
+
+                            <!-- Category -->
                             <div class="item category">
                                 <h4>Category</h4>
-                                <a href="#">Science</a>
+                                <a href="#">{{ $course->category->name ?? 'General' }}</a>
                             </div>
+
+                            <!-- Rating / Code -->
                             <div class="item rating">
-                                <h4>Rating</h4>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                                <span>4.5 (16)</span>
+                                <h4>Course Code</h4>
+                                <span class="fw-bold text-dark">{{ $course->code ?? 'N/A' }}</span>
                             </div>
                         </div>
                     </div>
@@ -621,39 +627,43 @@
                             <div class="course-cat-single">
                                 <div class="course-preview-info style-two">
                                     <div class="thumb">
-                                        <img src="https://validthemes.net/site-template/learna/assets/img/courses/12.jpg" alt="Thumb">
-                                        <a href="https://www.youtube.com/watch?v=owhuBrGIOsE" class="popup-youtube light video-play-button item-center">
-                                            <i class="fa fa-play"></i>
-                                        </a>
+                                        <img src="{{ $course->image ? asset('storage/' . $course->image) : asset('assets/img/courses/13.jpg') }}" alt="{{ $course->title }}" alt="{{ $course->title }}">
+                                        @if(!empty($course->video_url))
+                                            <a href="{{ $course->video_url }}" class="popup-youtube light video-play-button item-center">
+                                                <i class="fa fa-play"></i>
+                                            </a>
+                                        @endif
                                     </div>
                                     <div class="content">
                                         <div class="top">
                                             <div class="pricce">
-                                                <h2><del>$50.00</del> $32.00</h2>
+                                                <h2>
+                                                    @if(isset($course->price) && $course->price > 0)
+                                                        ${{ number_format($course->price, 2) }}
+                                                    @else
+                                                        Free
+                                                    @endif
+                                                </h2>
                                             </div>
-                                            <a class="btn btn-border dark animation btn-sm" href="#">Add to Cart</a>
-                                            <a class="btn btn-gradient animation btn-sm" href="#">Buy Now</a>
+                                            <a class="btn btn-gradient animation btn-sm" href="{{ route('enroll.index', $course->id) }}">Buy Now</a>
                                         </div>
                                         <div class="course-includes">
                                             <div class="info">
-                                                <p>
-                                                    <i class="fas fa-undo"></i> 30-Day Money-Back Guarantee
-                                                </p>
                                                 <ul>
                                                     <li>
-                                                        <i class="fas fa-copy"></i> Lectures <span>8</span>
+                                                        <i class="fas fa-code"></i> Course Code <span>{{ $course->code ?? 'N/A' }}</span>
                                                     </li>
                                                     <li>
-                                                        <i class="fas fa-clock"></i> Duration <span>5.7 Hours</span>
+                                                        <i class="fas fa-clock"></i> Duration <span>{{ $course->hour ?? '0' }} Hours</span>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fas fa-tag"></i> Category <span>{{ $course->category?->name ?? 'General' }}</span>
                                                     </li>
                                                     <li>
                                                         <i class="fas fa-sliders-h"></i> Skill level <span>All Levels</span>
                                                     </li>
                                                     <li>
                                                         <i class="fas fa-language"></i> Language <span>English</span>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-users"></i> Students <span>12K</span>
                                                     </li>
                                                 </ul>
                                             </div>

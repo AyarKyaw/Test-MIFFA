@@ -11,7 +11,7 @@
     <title>@yield('title', 'MIFFA')</title>
 
     <!-- ========== Favicon Icon ========== -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/img/new/logo-light.png') }}" type="image/x-icon">
 
     <!-- ========== Font Awesome CDN ========== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -62,13 +62,13 @@
                 <div class="col-lg-7">
                     <ul class="item-flex">
                         <li>
-                            <a href="tel:+4733378901"> 
-                                <img src="{{ asset('assets/img/icon/2.png') }}" alt="Icon"> Phone: +4733378901
+                            <a href="tel:+959400013099"> 
+                                <img src="{{ asset('assets/img/icon/2.png') }}" alt="Icon"> Phone: +959400013099
                             </a>
                         </li>
                         <li>
-                            <a href="mailto:name@email.com">
-                                <img src="{{ asset('assets/img/icon/3.png') }}" alt="Icon"> Email: edufik@info.com
+                            <a href="mailto:miffa@org.com">
+                                <img src="{{ asset('assets/img/icon/3.png') }}" alt="Icon"> Email: miffa@org.com
                             </a>
                         </li>
                     </ul>
@@ -86,25 +86,25 @@
                             </ul>
                         </div>
                         <div>
-    @auth
-        <div class="d-inline-flex align-items-center gap-2">
-            <a href="" class="text-light text-decoration-none d-inline-flex align-items-center gap-1">
-                <img src="{{ asset('assets/img/icon/1.png') }}" alt="Icon"> {{ auth()->user()->name }}
-            </a>
-            <span class="text-light opacity-50">|</span>
-            <form method="POST" action="{{ route('logout') }}" class="d-inline m-0 p-0">
-                @csrf
-                <button type="submit" class="bg-transparent border-0 text-light p-0 m-0 align-baseline" style="box-shadow: none; font-size: inherit;">
-                    <i class="fas fa-sign-out-alt ms-1"></i> Logout
-                </button>
-            </form>
-        </div>
-    @else
-        <a href="{{ url('/login') }}" class="text-light text-decoration-none">
-            <img src="{{ asset('assets/img/icon/1.png') }}" alt="Icon"> Login
-        </a>
-    @endauth
-</div>
+                            @auth
+                                <div class="d-inline-flex align-items-center gap-2">
+                                    <a href="#" class="text-light text-decoration-none d-inline-flex align-items-center gap-1">
+                                        <img src="{{ asset('assets/img/icon/1.png') }}" alt="Icon"> {{ auth()->user()->name }}
+                                    </a>
+                                    <span class="text-light opacity-50">|</span>
+                                    <form method="POST" action="{{ route('logout') }}" class="d-inline m-0 p-0">
+                                        @csrf
+                                        <button type="submit" class="bg-transparent border-0 text-light p-0 m-0 align-baseline" style="box-shadow: none; font-size: inherit;">
+                                            <i class="fas fa-sign-out-alt ms-1"></i> Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                <a href="{{ url('/login') }}" class="text-light text-decoration-none">
+                                    <img src="{{ asset('assets/img/icon/1.png') }}" alt="Icon"> Login
+                                </a>
+                            @endauth
+                        </div>
                     </div>
                 </div>
             </div>
@@ -124,7 +124,7 @@
                             <i class="fas fa-bars" aria-hidden="true"></i>
                         </button>
                         <a class="navbar-brand" href="{{ url('/') }}">
-                            <img src="{{ asset('assets/img/logo.png') }}" class="logo" alt="Logo">
+                            <img src="{{ asset('assets/img/new/logo-light.png') }}" class="logo" alt="Logo">
                         </a>
                     </div>
                     <form class="search-form" action="#">
@@ -140,7 +140,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="navbar-menu">
 
-                        <img src="{{ asset('assets/img/logo.png') }}" alt="Logo">
+                        <img src="{{ asset('assets/img/new/logo-light.png') }}" alt="Logo">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                             <i class="fa fa-times"></i>
                         </button>
@@ -285,7 +285,7 @@
                     <a href="#" class="close-side"><i class="fas fa-times"></i></a>
                     <div class="widget">
                         <div class="logo">
-                            <img src="{{ asset('assets/img/logo-light.png') }}" alt="Logo">
+                            <img src="{{ asset('assets/img/new/logo-light.png') }}" alt="Logo">
                         </div>
                         <p>
                             Arrived compass prepare an on as. Reasonable particular on my it in sympathize.
@@ -328,14 +328,6 @@
                             </div>
                         </form>
                     </div>
-                    <div class="widget social">
-                        <ul class="link">
-                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                            <li><a href="#"><i class="fab fa-behance"></i></a></li>
-                        </ul>
-                    </div>
                 </div>
                 <!-- End Side Menu -->
 
@@ -363,17 +355,11 @@
                     <div class="col-lg-4 col-md-6 footer-item pr-30 pr-md-15 pr-xs-15">
                         <div class="f-item about">
                             <div class="footer-logo">
-                                <img src="{{ asset('assets/img/logo-light.png') }}" alt="Image Not Found">
+                                <img src="{{ asset('assets/img/new/logo-light.png') }}" alt="Image Not Found">
                             </div>
                             <p>
                                 Indulgence diminution so discovered mr apartments. Are off under folly death wrote cause her way spite plan upon.
                             </p>
-                            <ul class="footer-social">
-                                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                <li><a href="#"><img src="{{ asset('assets/img/icon/x.png') }}" alt="Icon"></a></li>
-                                <li><a href="#"><i class="fab fa-youtube"></i></a></li>
-                                <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                            </ul>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-6 footer-item">
@@ -408,18 +394,12 @@
                             <ul class="contact-list-two">
                                 <li>
                                     <div class="icon"><i class="fas fa-phone-alt"></i></div>
-                                    <div class="info"><h5><a href="tel:+4733378901">+(964)-2856-3364</a></h5></div>
+                                    <div class="info"><h5><a href="tel:+959400013099">+959400013099</a></h5></div>
                                 </li>
                                 <li>
                                     <div class="icon"><i class="fas fa-envelope"></i></div>
-                                    <div class="info"><h5><a href="mailto:info@crysta.com">Info@validtheme.com</a></h5></div>
+                                    <div class="info"><h5><a href="mailto:miffa@org.com">miffa@org.com</a></h5></div>
                                 </li>
-                            </ul>
-                            <h4>Download Edufix App</h4>
-                            <ul class="app-store">
-                                <li><a href="#"><img src="{{ asset('assets/img/icon/4.png') }}" alt="Image Not Found"></a></li>
-                                <li><a href="#"><img src="{{ asset('assets/img/icon/5.png') }}" alt="Image Not Found"></a></li>
-                                <li><a href="#"><img src="{{ asset('assets/img/icon/6.png') }}" alt="Image Not Found"></a></li>
                             </ul>
                         </div>
                     </div>

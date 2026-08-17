@@ -6,13 +6,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Learna - Education HTML Template">
 
     <!-- ========== Page Title ========== -->
     <title>Register - MIFFA</title>
 
     <!-- ========== Favicon Icon ========== -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/img/new/logo-light.png') }}" type="image/x-icon">
 
     <!-- ========== Google Identity Services ========== -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -37,10 +36,10 @@
     <div class="login-register-area register bg-gray-gradient-secondary">
         <div class="login-style-one-items">
             <div class="shape">
-                <img src="https://validthemes.net/site-template/learna/assets/img/shape/banner-5.jpg" alt="Image Not Found">
+                <img src="{{ asset('assets/img/shape/banner-5.jpg') }}" alt="Image Not Found">
             </div>
             <div class="thumb">
-                <img src="https://validthemes.net/site-template/learna/assets/img/illustration/14.png" alt="Image Not Found">
+                <img src="{{ asset('assets/img/illustration/14.png') }}" alt="Image Not Found">
             </div>
             <div class="container">
                 <div class="row align-center">
@@ -146,81 +145,90 @@
     <!-- End Register -->
 
     <!-- ========== Google Sign-In Client Script ========== -->
-    <script>
-        let tokenClient;
+    <!-- ========== Google Sign-In Client Script ========== -->
+<script>
+    let tokenClient;
 
-window.onload = function () {
-    tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: '681316627623-lb6qo0j0qd42esdp26v492rsen7rth02.apps.googleusercontent.com',
-        scope: 'email profile openid',
-        callback: handleGoogleUserResponse,
-    });
+    window.onload = function () {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: '681316627623-lb6qo0j0qd42esdp26v492rsen7rth02.apps.googleusercontent.com',
+            scope: 'email profile openid',
+            callback: handleGoogleUserResponse,
+        });
 
-    // Restore form state if returning from validation errors
-    restoreStateOnValidationError();
-};
+        // Restore form state if returning from validation errors
+        restoreStateOnValidationError();
+    };
 
-function enableFormFields() {
-    document.getElementById('name').disabled = false;
-    document.getElementById('email').disabled = false;
-    document.getElementById('phone').disabled = false;
-    document.getElementById('password').disabled = false;
-    document.getElementById('password-confirm').disabled = false;
+    function enableFormFields() {
+        // Optional chaining (?.) prevents crashes if an element doesn't exist on the page
+        document.getElementById('name')?.removeAttribute('disabled');
+        document.getElementById('email')?.removeAttribute('disabled');
+        document.getElementById('password')?.removeAttribute('disabled');
+        document.getElementById('password-confirm')?.removeAttribute('disabled');
 
-    // Show register button, hide Google sign-in button
-    document.getElementById('googleBtnRow').classList.add('d-none');
-    document.getElementById('registerBtnRow').classList.remove('d-none');
-
-    // Update banner
-    const notice = document.getElementById('stepNotice');
-    notice.className = 'alert alert-success py-2 px-3 mb-3';
-    notice.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
-    notice.innerHTML = '✔ Google account verified! Please fix any errors and complete registration.';
-}
-
-function restoreStateOnValidationError() {
-    // Check if Laravel has returned validation errors or old input
-    const hasErrors = @json($errors->any());
-    const hasOldEmail = @json(old('email') !== null);
-
-    if (hasErrors || hasOldEmail) {
-        enableFormFields();
-    }
-}
-
-function triggerGoogleSignIn() {
-    if (tokenClient) {
-        tokenClient.requestAccessToken({ prompt: 'select_account' });
-    } else {
-        console.error("Google Client SDK not loaded yet.");
-    }
-}
-
-function handleGoogleUserResponse(tokenResponse) {
-    if (tokenResponse.error) {
-        console.error("Google Auth Error:", tokenResponse.error);
-        return;
-    }
-
-    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: {
-            'Authorization': `Bearer ${tokenResponse.access_token}`
+        // Optional: enable phone field if re-added later
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) {
+            phoneInput.disabled = false;
         }
-    })
-    .then(res => res.json())
-    .then(googleUser => {
-        document.getElementById('email').value = googleUser.email;
-        document.getElementById('name').value = googleUser.name || '';
-        document.getElementById('google_id').value = googleUser.sub;
 
-        enableFormFields();
-    })
-    .catch(error => {
-        console.error("Error during Google Authentication:", error);
-        alert("Authentication failed. Please try again.");
-    });
-}
-    </script>
+        // Show register button, hide Google sign-in button
+        document.getElementById('googleBtnRow')?.classList.add('d-none');
+        document.getElementById('registerBtnRow')?.classList.remove('d-none');
+
+        // Update banner
+        const notice = document.getElementById('stepNotice');
+        if (notice) {
+            notice.className = 'alert alert-success py-2 px-3 mb-3';
+            notice.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
+            notice.innerHTML = '✔ Google account verified! Please fix any errors and complete registration.';
+        }
+    }
+
+    function restoreStateOnValidationError() {
+        // Check if Laravel has returned validation errors or old input
+        const hasErrors = @json($errors->any());
+        const hasOldEmail = @json(old('email') !== null);
+
+        if (hasErrors || hasOldEmail) {
+            enableFormFields();
+        }
+    }
+
+    function triggerGoogleSignIn() {
+        if (tokenClient) {
+            tokenClient.requestAccessToken({ prompt: 'select_account' });
+        } else {
+            console.error("Google Client SDK not loaded yet.");
+        }
+    }
+
+    function handleGoogleUserResponse(tokenResponse) {
+        if (tokenResponse.error) {
+            console.error("Google Auth Error:", tokenResponse.error);
+            return;
+        }
+
+        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: {
+                'Authorization': `Bearer ${tokenResponse.access_token}`
+            }
+        })
+        .then(res => res.json())
+        .then(googleUser => {
+            if (document.getElementById('email')) document.getElementById('email').value = googleUser.email;
+            if (document.getElementById('name')) document.getElementById('name').value = googleUser.name || '';
+            if (document.getElementById('google_id')) document.getElementById('google_id').value = googleUser.sub;
+
+            enableFormFields();
+        })
+        .catch(error => {
+            console.error("Error during Google Authentication:", error);
+            alert("Authentication failed. Please try again.");
+        });
+    }
+</script>
 
     <!-- jQuery Frameworks -->
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>

@@ -30,6 +30,8 @@ class CourseCategoryController extends Controller
                             ->paginate(9)
                             ->withQueryString();
 
-        return view('course-categories', compact('categories', 'allCategories'));
+                            
+
+        return view('course.categories', compact('categories', 'allCategories'));
     }
 }

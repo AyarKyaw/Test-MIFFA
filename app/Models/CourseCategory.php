@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
 
 class CourseCategory extends Model
@@ -19,6 +20,7 @@ class CourseCategory extends Model
     protected $fillable = [
         'name',
         'slug',
+        'image',
         'description',
     ];
 
@@ -43,10 +45,25 @@ class CourseCategory extends Model
     }
 
     /**
-     * Relationship: A Category has many Courses.
+     * Relationship: A CourseCategory has many Categories.
      */
-    public function courses(): HasMany
+    public function categories(): HasMany
     {
-        return $this->hasMany(Course::class);
+        return $this->hasMany(Category::class, 'course_category_id');
+    }
+
+    /**
+     * Relationship: A CourseCategory has many Courses THROUGH Category.
+     */
+    public function courses(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Course::class,
+            Category::class,
+            'course_category_id', // Foreign key on categories table
+            'category_id',        // Foreign key on courses table
+            'id',                 // Local key on course_categories table
+            'id'                  // Local key on categories table
+        );
     }
 }
