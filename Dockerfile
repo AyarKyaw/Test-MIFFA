@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y \
 
 # Configure Apache Document Root to Laravel public folder
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 'replace|/var/www/html|${APACHE_DOCUMENT_ROOT}|g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 'replace|/var/www/html|${APACHE_DOCUMENT_ROOT}|g' /etc/apache2/conf-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/conf-available/*.conf
 
-# Enable Apache mod_rewrite module
+# Enable Apache mod_rewrite module for Laravel routing
 RUN a2enmod rewrite
 
 # Get latest Composer
@@ -31,13 +31,13 @@ COPY . .
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions for Laravel storage and cache
+# Set proper permissions for storage and cache directories
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
 
-# Run configuration caches and start Apache
+# Run artisan setup and start Apache
 CMD php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
