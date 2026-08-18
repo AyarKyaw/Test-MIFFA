@@ -141,50 +141,7 @@
     </div>
     <!-- End Category -->
 
-    <!-- Start About 
-    ============================================= -->
-    <div class="about-style-three-area overflow-hidden default-padding">
-        <div class="container">
-            <div class="about-style-three-items wow fadeInUp" data-wow-delay="200ms">
-                <div class="row align-center">
-                    <div class="col-lg-6">
-                        <div class="about-style-three-thumb">
-                            <img src="assets/img/team/student-1.jpg" alt="Image Not Found">
-                            <img src="assets/img/shape/45.png" alt="Image Not Found">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 pl-60 pl-md-15 pl-xs-15">
-                        <div class="about-style-three-info">
-                            <h2 class="title split-text">Our commitment to diversity leadership.</h2>
-                            
-                            <p>
-                                Education has come a long way from its traditional roots and will continue to evolve. Learn but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly. njected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle.
-                            </p>
-                            <div class="fact-style-two">
-                                <div class="fun-fact">
-                                    <div class="counter">
-                                        <div class="timer" data-to="28" data-speed="2000">28</div>
-                                        <div class="operator">K</div>
-                                    </div>
-                                    <h4>Graduate Students</h4>
-                                </div>
-                                <div class="fun-fact">
-                                    <div class="counter">
-                                        <div class="timer" data-to="98" data-speed="2000">98</div>
-                                        <div class="operator">%</div>
-                                    </div>
-                                    <h4>Happy Students</h4>
-                                </div>
-                            </div>
-                            <a class="btn btn-md btn-gradient animation" href="contact-us.html">Get Started</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End About -->
-
+    
     <!-- Start Course 
     ============================================= -->
     <div class="course-style-two-area default-padding bottom-less bg-gray-gradient-secondary overflow-hidden">
@@ -262,10 +219,10 @@
                     </div>
                 </div>
             </div> -->
-
+            
             <div class="course-style-one-carousel swiper">
                 <div class="swiper-wrapper">
-
+                    
                     <!-- Single Item -->
                     <div class="swiper-slide">
                         <div class="row">
@@ -422,7 +379,50 @@
         </div>
     </div>
     <!-- End Course -->
-
+    <!-- Start About 
+    ============================================= -->
+    <div class="about-style-three-area overflow-hidden default-padding">
+        <div class="container">
+            <div class="about-style-three-items wow fadeInUp" data-wow-delay="200ms">
+                <div class="row align-center">
+                    <div class="col-lg-6">
+                        <div class="about-style-three-thumb">
+                            <img src="assets/img/team/student-1.jpg" alt="Image Not Found">
+                            <img src="assets/img/shape/45.png" alt="Image Not Found">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 pl-60 pl-md-15 pl-xs-15">
+                        <div class="about-style-three-info">
+                            <h2 class="title split-text">Our commitment to diversity leadership.</h2>
+                            
+                            <p>
+                                Education has come a long way from its traditional roots and will continue to evolve. Learn but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly. njected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle.
+                            </p>
+                            <div class="fact-style-two">
+                                <div class="fun-fact">
+                                    <div class="counter">
+                                        <div class="timer" data-to="28" data-speed="2000">28</div>
+                                        <div class="operator">K</div>
+                                    </div>
+                                    <h4>Graduate Students</h4>
+                                </div>
+                                <div class="fun-fact">
+                                    <div class="counter">
+                                        <div class="timer" data-to="98" data-speed="2000">98</div>
+                                        <div class="operator">%</div>
+                                    </div>
+                                    <h4>Happy Students</h4>
+                                </div>
+                            </div>
+                            <a class="btn btn-md btn-gradient animation" href="contact-us.html">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End About -->
+    
     <!-- Start Certificate
     ============================================= -->
     <div class="certificate-area">

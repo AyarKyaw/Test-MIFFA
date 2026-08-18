@@ -188,6 +188,7 @@
                                                 <div class="content">
                                                     <ul class="menu-col">
                                                         <li><a href="{{ url('/course/categories') }}">Course</a></li>
+                                                        <li><a href="{{ url('/my-courses') }}">My Courses</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -426,7 +427,7 @@
         <!-- End Footer Bottom -->
     </footer>
     <!-- End Footer -->
-
+    
     <!-- ========== Scripts ========== -->
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
@@ -447,7 +448,6 @@
     <script src="{{ asset('assets/js/ScrollTrigger.min.js') }}"></script>
     <script src="{{ asset('assets/js/SplitText.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
-
     @stack('scripts')
 </body>
 </html>

@@ -24,4 +24,14 @@ class Course extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class)->orderBy('order', 'asc');
+    }
 }

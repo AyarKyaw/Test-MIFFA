@@ -13,8 +13,9 @@ use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\CourseController as FrontendCourseController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 
-
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\PaymentController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -61,5 +62,14 @@ Route::resource('/dashboard/categories', AdminCategoryController::class)
 Route::resource('/dashboard/courses', AdminCourseController::class)
     ->names('admin.course');
 
+// Enrollment Routes
 Route::get('/enroll/{course}', [EnrollmentController::class, 'index'])->name('enroll.index');
 Route::post('/enroll/{id}', [EnrollmentController::class, 'store'])->name('enroll.store');
+
+// Payment Routes
+Route::get('/payment/qr/{course}', [PaymentController::class, 'showQr'])->name('payment.qr');
+Route::post('/payment/confirm/{course}', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
+
+Route::get('/my-courses', [FrontendCourseController::class, 'myCourses'])->name('courses.my');
+Route::get('/courses/{course}/learn/{lesson?}', [FrontendCourseController::class, 'classroom'])->name('courses.learn');
+Route::post('/courses/{course}/lessons/{lesson}/submit', [FrontendCourseController::class, 'submitQuiz'])->name('courses.lessons.submit');
