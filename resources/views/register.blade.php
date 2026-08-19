@@ -54,7 +54,7 @@
                             <form action="{{ route('register.perform') }}" method="POST" id="registrationForm">
                                 @csrf
 
-                                <!-- Hidden input to hold google_id across reloads -->
+                                <!-- Hidden input to hold google_id -->
                                 <input type="hidden" name="google_id" id="google_id" value="{{ old('google_id') }}">
 
                                 @if ($errors->any())
@@ -67,53 +67,53 @@
                                     </div>
                                 @endif
 
-                                <!-- Instructions Step Alert -->
-                                <div id="stepNotice" class="alert alert-info py-2 px-3 mb-3" style="font-size: 12px; background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: #fff;">
-                                    Please click <strong>"Sign in with Google"</strong> below to start your registration.
+                                <!-- Status Banner -->
+                                <div id="stepNotice" class="alert alert-info py-2 px-3 mb-3 d-none" style="font-size: 12px; background-color: rgba(40, 167, 69, 0.2); border-color: rgba(40, 167, 69, 0.3); color: #fff;">
+                                    ✔ Google details imported! Please verify your details and choose a password.
                                 </div>
 
                                 <!-- Full Name -->
                                 <div class="row">
                                     <div class="col-xl-12 mb-2">
                                         <div class="form-group mb-0">
-                                            <input id="name" name="name" value="{{ old('name') }}" class="form-control py-2" placeholder="Full Name*" type="text" required disabled style="height: 42px;">
+                                            <input id="name" name="name" value="{{ old('name') }}" class="form-control py-2" placeholder="Full Name*" type="text" required style="height: 42px;">
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Email -->
-                                <div class="row">
-                                    <div class="col-xl-12 mb-2">
+                                <div class="row mb-2">
+                                    <div class="col-xl-12">
                                         <div class="form-group mb-0">
-                                            <input id="email" name="email" value="{{ old('email') }}" class="form-control py-2" placeholder="Email*" type="email" required disabled readonly style="height: 42px;">
+                                            <input id="email" name="email" value="{{ old('email') }}" class="form-control py-2" placeholder="Email Address*" type="email" required style="height: 42px; font-size: 13px;">
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Phone Number -->
-                                <!-- <div class="row">
-                                    <div class="col-xl-12 mb-2">
-                                        <div class="form-group mb-0">
-                                            <input id="phone" name="phone" value="{{ old('phone') }}" class="form-control py-2" placeholder="Phone number" type="text" disabled style="height: 42px;">
-                                        </div>
-                                    </div>
-                                </div> -->
 
                                 <!-- Password & Confirm Password -->
-                                <div class="row g-2 mb-2">
+                                <div class="row g-2 mb-3">
                                     <div class="col-6">
                                         <div class="form-group mb-0">
-                                            <input id="password" name="password" class="form-control py-2" placeholder="Password*" type="password" required disabled style="height: 42px; font-size: 13px;">
+                                            <input id="password" name="password" class="form-control py-2" placeholder="Password*" type="password" required style="height: 42px; font-size: 13px;">
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group mb-0">
-                                            <input id="password-confirm" name="password_confirmation" class="form-control py-2" placeholder="Confirm Password*" type="password" required disabled style="height: 42px; font-size: 13px;">
+                                            <input id="password-confirm" name="password_confirmation" class="form-control py-2" placeholder="Confirm Password*" type="password" required style="height: 42px; font-size: 13px;">
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Google Sign-In Button (Visible initially) -->
+                                <!-- Register Submit Button -->
+                                <div class="row mb-3" id="registerBtnRow">
+                                    <div class="col-xl-12">
+                                        <button class="btn btn-sm circle btn-theme animation w-100 py-2" type="submit" style="height: 42px; line-height: 1;">Register Account</button>
+                                    </div>
+                                </div>
+
+                                <div class="text-center my-2 text-muted" style="font-size: 12px;">- OR -</div>
+
+                                <!-- Optional Google Sign-In Quick Fill -->
                                 <div class="row" id="googleBtnRow">
                                     <div class="col-lg-12">
                                         <button type="button" onclick="triggerGoogleSignIn()" class="btn btn-sm circle btn-theme animation d-flex align-items-center justify-content-center gap-2 w-100" style="background-color: #ffffff; color: #333333 !important; text-transform: none; border: none; height: 42px; font-size: 13px;">
@@ -123,15 +123,8 @@
                                                 <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
                                                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
                                             </svg>
-                                            Sign in with Google
+                                            Autofill with Google
                                         </button>
-                                    </div>
-                                </div>
-
-                                <!-- Register Submit Button (Hidden initially) -->
-                                <div class="row d-none" id="registerBtnRow">
-                                    <div class="col-xl-12">
-                                        <button class="btn btn-sm circle btn-theme animation w-100 py-2" type="submit" style="height: 42px; line-height: 1;">Complete Registration</button>
                                     </div>
                                 </div>
 
@@ -145,90 +138,53 @@
     <!-- End Register -->
 
     <!-- ========== Google Sign-In Client Script ========== -->
-    <!-- ========== Google Sign-In Client Script ========== -->
-<script>
-    let tokenClient;
+    <script>
+        let tokenClient;
 
-    window.onload = function () {
-        tokenClient = google.accounts.oauth2.initTokenClient({
-            client_id: '681316627623-lb6qo0j0qd42esdp26v492rsen7rth02.apps.googleusercontent.com',
-            scope: 'email profile openid',
-            callback: handleGoogleUserResponse,
-        });
+        window.onload = function () {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: '681316627623-lb6qo0j0qd42esdp26v492rsen7rth02.apps.googleusercontent.com',
+                scope: 'email profile openid',
+                callback: handleGoogleUserResponse,
+            });
+        };
 
-        // Restore form state if returning from validation errors
-        restoreStateOnValidationError();
-    };
-
-    function enableFormFields() {
-        // Optional chaining (?.) prevents crashes if an element doesn't exist on the page
-        document.getElementById('name')?.removeAttribute('disabled');
-        document.getElementById('email')?.removeAttribute('disabled');
-        document.getElementById('password')?.removeAttribute('disabled');
-        document.getElementById('password-confirm')?.removeAttribute('disabled');
-
-        // Optional: enable phone field if re-added later
-        const phoneInput = document.getElementById('phone');
-        if (phoneInput) {
-            phoneInput.disabled = false;
-        }
-
-        // Show register button, hide Google sign-in button
-        document.getElementById('googleBtnRow')?.classList.add('d-none');
-        document.getElementById('registerBtnRow')?.classList.remove('d-none');
-
-        // Update banner
-        const notice = document.getElementById('stepNotice');
-        if (notice) {
-            notice.className = 'alert alert-success py-2 px-3 mb-3';
-            notice.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
-            notice.innerHTML = '✔ Google account verified! Please fix any errors and complete registration.';
-        }
-    }
-
-    function restoreStateOnValidationError() {
-        // Check if Laravel has returned validation errors or old input
-        const hasErrors = @json($errors->any());
-        const hasOldEmail = @json(old('email') !== null);
-
-        if (hasErrors || hasOldEmail) {
-            enableFormFields();
-        }
-    }
-
-    function triggerGoogleSignIn() {
-        if (tokenClient) {
-            tokenClient.requestAccessToken({ prompt: 'select_account' });
-        } else {
-            console.error("Google Client SDK not loaded yet.");
-        }
-    }
-
-    function handleGoogleUserResponse(tokenResponse) {
-        if (tokenResponse.error) {
-            console.error("Google Auth Error:", tokenResponse.error);
-            return;
-        }
-
-        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-            headers: {
-                'Authorization': `Bearer ${tokenResponse.access_token}`
+        function triggerGoogleSignIn() {
+            if (tokenClient) {
+                tokenClient.requestAccessToken({ prompt: 'select_account' });
+            } else {
+                console.error("Google Client SDK not loaded yet.");
             }
-        })
-        .then(res => res.json())
-        .then(googleUser => {
-            if (document.getElementById('email')) document.getElementById('email').value = googleUser.email;
-            if (document.getElementById('name')) document.getElementById('name').value = googleUser.name || '';
-            if (document.getElementById('google_id')) document.getElementById('google_id').value = googleUser.sub;
+        }
 
-            enableFormFields();
-        })
-        .catch(error => {
-            console.error("Error during Google Authentication:", error);
-            alert("Authentication failed. Please try again.");
-        });
-    }
-</script>
+        function handleGoogleUserResponse(tokenResponse) {
+            if (tokenResponse.error) {
+                console.error("Google Auth Error:", tokenResponse.error);
+                return;
+            }
+
+            fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: {
+                    'Authorization': `Bearer ${tokenResponse.access_token}`
+                }
+            })
+            .then(res => res.json())
+            .then(googleUser => {
+                if (document.getElementById('email')) document.getElementById('email').value = googleUser.email;
+                if (document.getElementById('name')) document.getElementById('name').value = googleUser.name || '';
+                if (document.getElementById('google_id')) document.getElementById('google_id').value = googleUser.sub;
+
+                const notice = document.getElementById('stepNotice');
+                if (notice) {
+                    notice.classList.remove('d-none');
+                }
+            })
+            .catch(error => {
+                console.error("Error during Google Authentication:", error);
+                alert("Authentication failed. Please try again or fill in the form manually.");
+            });
+        }
+    </script>
 
     <!-- jQuery Frameworks -->
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
