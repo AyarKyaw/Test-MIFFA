@@ -73,3 +73,8 @@ Route::post('/payment/confirm/{course}', [PaymentController::class, 'confirmPaym
 Route::get('/my-courses', [FrontendCourseController::class, 'myCourses'])->name('courses.my');
 Route::get('/courses/{course}/learn/{lesson?}', [FrontendCourseController::class, 'classroom'])->name('courses.learn');
 Route::post('/courses/{course}/lessons/{lesson}/submit', [FrontendCourseController::class, 'submitQuiz'])->name('courses.lessons.submit');
+
+// Lesson Progress / Completion Route
+Route::post('/lessons/{lesson}/complete', [FrontendCourseController::class, 'markComplete'])
+    ->middleware('auth')
+    ->name('lessons.complete');

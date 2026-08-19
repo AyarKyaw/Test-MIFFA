@@ -2,45 +2,29 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Lesson;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-        protected $fillable = [
-            'name',
-            'email',
-            'phone',
-            'password',
-            'google_id',
-        ];
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+        'google_id',
+    ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -57,5 +41,26 @@ class User extends Authenticatable
     public function courses()
     {
         return $this->belongsToMany(Course::class)->withTimestamps();
+    }
+
+    /**
+     * Base relationship for attaching/updating pivot records
+     */
+    public function lessons()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')
+                    ->withPivot('course_id', 'is_completed', 'progress_percent', 'quiz_score', 'completed_at')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Filtered relationship for reading completed lessons
+     */
+    public function completedLessons()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')
+                    ->wherePivot('is_completed', true)
+                    ->withPivot('course_id', 'progress_percent', 'quiz_score', 'completed_at')
+                    ->withTimestamps();
     }
 }

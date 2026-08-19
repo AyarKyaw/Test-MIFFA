@@ -14,7 +14,15 @@ class Question extends Model
         'question_text',
         'type', // 'multiple_choice' or 'boolean'
         'order',
+        'is_correct',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_correct' => 'boolean',
+        ];
+    }
 
     /**
      * Get the lesson that owns the question.
