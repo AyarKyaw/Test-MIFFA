@@ -155,7 +155,7 @@
 
                             <!-- Action Buttons -->
                             <div class="mt-4 d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.course.index') }}" class="btn btn-light border">Cancel</a>
+                                <a href="{{ route('admin.courses.index') }}" class="btn btn-light border">Cancel</a>
                                 <button type="submit" class="au-btn au-btn--green au-btn--small d-inline-flex align-items-center gap-1 border-0">
                                     <i class="fa-solid fa-save"></i> Update Course
                                 </button>
