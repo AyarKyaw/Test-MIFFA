@@ -15,6 +15,8 @@ class Question extends Model
         'type', // 'multiple_choice' or 'boolean'
         'order',
         'is_correct',
+        'hint',
+        'explanation',
     ];
 
     protected function casts(): array

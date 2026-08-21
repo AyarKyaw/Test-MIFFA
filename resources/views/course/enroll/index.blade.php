@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Enroll - ' . $course->title . ' - MIFFA')
+@section('title', 'Enroll & Register - ' . $course->title . ' - MIFFA')
 
 @section('content')
 <!-- Start Breadcrumb -->
@@ -12,7 +12,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a href="{{ route('admin.course.index') }}">Courses</a></li>
+                        <li><a href="{{ route('courses.index') }}">Courses</a></li>
                         <li><a href="{{ route('courses.show', $course->id) }}">{{ $course->title }}</a></li>
                         <li class="active">Enrollment</li>
                     </ol>
@@ -37,7 +37,7 @@
                             </div>
                             <div>
                                 <h3 class="mb-0 fw-bold">Student Registration</h3>
-                                <p class="text-muted small mb-0">Fill in your details to complete your course enrollment</p>
+                                <p class="text-muted small mb-0">Fill in your details to create your account and complete enrollment</p>
                             </div>
                         </div>
 
@@ -52,31 +52,56 @@
                         <form action="{{ route('enroll.store', $course->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            <!-- Full Name (Readonly) -->
+                            <!-- Full Name (Editable) -->
                             <div class="mb-3">
-                                <label for="name" class="form-label fw-semibold">Full Name <span class="text-muted">(Locked)</span></label>
+                                <label for="name" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-user"></i></span>
                                     <input type="text" 
-                                           class="form-control border-start-0 ps-0 bg-light text-muted" 
+                                           class="form-control border-start-0 ps-0 @error('name') is-invalid @enderror" 
                                            id="name" 
                                            name="name" 
-                                           value="{{ old('name', auth()->user()->name ?? '') }}" 
-                                           readonly>
+                                           value="{{ old('name') }}" 
+                                           placeholder="Enter your full name"
+                                           required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
 
-                            <!-- Email Address (Readonly) -->
+                            <!-- Email Address (Editable) -->
                             <div class="mb-3">
-                                <label for="email" class="form-label fw-semibold">Email Address <span class="text-muted">(Locked)</span></label>
+                                <label for="email" class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
                                     <input type="email" 
-                                           class="form-control border-start-0 ps-0 bg-light text-muted" 
+                                           class="form-control border-start-0 ps-0 @error('email') is-invalid @enderror" 
                                            id="email" 
                                            name="email" 
-                                           value="{{ old('email', auth()->user()->email ?? '') }}" 
-                                           readonly>
+                                           value="{{ old('email') }}" 
+                                           placeholder="name@example.com"
+                                           required>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-semibold">Account Password <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-key"></i></span>
+                                    <input type="password" 
+                                           class="form-control border-start-0 ps-0 @error('password') is-invalid @enderror" 
+                                           id="password" 
+                                           name="password" 
+                                           placeholder="Create a password (min. 8 characters)"
+                                           required>
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -105,7 +130,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-venus-mars"></i></span>
                                         <select class="form-select border-start-0 ps-0 @error('gender') is-invalid @enderror" id="gender" name="gender" required>
-                                            <option value="" disabled selected>Select Gender</option>
+                                            <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Select Gender</option>
                                             <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
                                             <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
                                             <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
@@ -121,7 +146,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-id-card"></i></span>
                                         <select class="form-select border-start-0 ps-0 @error('membership_status') is-invalid @enderror" id="membership_status" name="membership_status" required>
-                                            <option value="" disabled selected>Select Status</option>
+                                            <option value="" disabled {{ old('membership_status') ? '' : 'selected' }}>Select Status</option>
                                             <option value="member" {{ old('membership_status') == 'member' ? 'selected' : '' }}>Member</option>
                                             <option value="non-member" {{ old('membership_status') == 'non-member' ? 'selected' : '' }}>Non-Member</option>
                                         </select>
@@ -207,7 +232,7 @@
 
                             <!-- Submit Button -->
                             <button type="submit" class="btn btn-gradient w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2">
-                                <i class="fas fa-check-circle"></i> Complete Enrollment
+                                <i class="fas fa-check-circle"></i> Complete Registration & Enrollment
                             </button>
                         </form>
                     </div>
@@ -239,15 +264,15 @@
                             <div class="d-flex justify-content-between align-items-center pt-1">
                                 <span class="fw-bold text-dark">Total Fee</span>
                                 <span class="fs-4 fw-bold text-success">
-                                    {{ isset($course->price) && $course->price > 0 ? '$' . number_format($course->price, 2) : 'Free' }}
+                                    {{ isset($course->price) && $course->price > 0 ? number_format($course->price) . ' MMK' : 'Free' }}
                                 </span>
                             </div>
                         </div>
 
                         <ul class="list-unstyled text-muted small mb-0">
-                            <li class="mb-2"><i class="fas fa-shield-alt text-success me-2"></i> Secure registration process</li>
+                            <li class="mb-2"><i class="fas fa-shield-alt text-success me-2"></i> Instant account activation</li>
                             <li class="mb-2"><i class="fas fa-certificate text-success me-2"></i> MIFFA certification upon completion</li>
-                            <li><i class="fas fa-headset text-success me-2"></i> Instant enrollment confirmation</li>
+                            <li><i class="fas fa-headset text-success me-2"></i> Direct course access</li>
                         </ul>
                     </div>
                 </div>

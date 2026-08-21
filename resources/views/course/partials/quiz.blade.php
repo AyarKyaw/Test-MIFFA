@@ -40,6 +40,7 @@
     </div>
     @php
         $quizQuestions = $questions ?? $lesson->questions;
+        $totalQuestions = $quizQuestions->count();
     @endphp
     <!-- Active Quiz Form -->
     <form id="quizForm" action="{{ route('courses.lessons.submit', [$course->id, $lesson->id]) }}" method="POST">
@@ -48,7 +49,7 @@
             <div class="quiz-step" data-step="{{ $qIndex }}" data-question-id="{{ $question->id }}" style="{{ $qIndex !== 0 ? 'display: none;' : '' }}">
                 
                 <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-3">
-                    Question {{ $qIndex + 1 }} of {{ $lesson->questions->count() }}
+                    Question {{ $qIndex + 1 }} of {{ $totalQuestions }}
                 </span>
 
                 <h6 class="fw-bold text-dark mb-4 fs-5">{{ $question->question_text }}</h6>

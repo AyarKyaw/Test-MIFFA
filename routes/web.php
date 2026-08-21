@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\StudentController;
 
 // Course Category Controllers
 use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryController;
@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\LessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +84,11 @@ Route::middleware('auth')->group(function () {
     })->middleware('throttle:6,1')->name('verification.send');
 });
 
+
+// Enrollment Routes
+    Route::get('/enroll/{course}', [EnrollmentController::class, 'index'])->name('enroll.index');
+    Route::post('/enroll/{id}', [EnrollmentController::class, 'store'])->name('enroll.store');
+
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (Requires Auth & Email Verification)
@@ -95,7 +101,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('dashboard.index');
     })->name('dashboard');
 
-    Route::resource('/dashboard/users', UserController::class);
+    Route::resource('/dashboard/students', StudentController::class)->names('admin.students');
+
+    // Admin Lessons Routes
+    Route::resource('/dashboard/lessons', LessonController::class)->names('admin.lessons');
+    Route::get('/dashboard/lessons/{lesson}/questions', [LessonController::class, 'getQuestions'])->name('lessons.questions');
 
     // Admin Resource Routes for Categories and Courses
     Route::resource('/dashboard/course-categories', AdminCourseCategoryController::class)
@@ -103,11 +113,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/dashboard/categories', AdminCategoryController::class)
         ->names('admin.categories');
     Route::resource('/dashboard/courses', AdminCourseController::class)
-        ->names('admin.course');
-
-    // Enrollment Routes
-    Route::get('/enroll/{course}', [EnrollmentController::class, 'index'])->name('enroll.index');
-    Route::post('/enroll/{id}', [EnrollmentController::class, 'store'])->name('enroll.store');
+        ->names('admin.courses');
 
     // Payment Routes
     Route::get('/payment/qr/{course}', [PaymentController::class, 'showQr'])->name('payment.qr');
@@ -122,50 +128,50 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/lessons/{lesson}/complete', [FrontendCourseController::class, 'markComplete'])->name('lessons.complete');
 });
 
-Route::get('/account/confirm/{payload}', function (Request $request, $payload) {
-    if (! $request->hasValidSignature()) {
-        Log::warning('ACCOUNT CONFIRM: Invalid or expired signature clicked.');
-        abort(403, 'This confirmation link is invalid or has expired.');
-    }
+// Route::get('/account/confirm/{payload}', function (Request $request, $payload) {
+//     if (! $request->hasValidSignature()) {
+//         Log::warning('ACCOUNT CONFIRM: Invalid or expired signature clicked.');
+//         abort(403, 'This confirmation link is invalid or has expired.');
+//     }
 
-    try {
-        $data = decrypt($payload);
-        Log::info('ACCOUNT CONFIRM: Decrypted payload successfully', ['email' => $data['email'] ?? null]);
+//     try {
+//         $data = decrypt($payload);
+//         Log::info('ACCOUNT CONFIRM: Decrypted payload successfully', ['email' => $data['email'] ?? null]);
 
-        // 1. Create User in DB if not created yet
-        $user = User::where('email', $data['email'])->first();
-        if (! $user) {
-            $user = User::create([
-                'name'              => $data['name'],
-                'email'             => $data['email'],
-                'password'          => $data['password'],
-                'google_id'         => $data['google_id'] ?? null,
-                'email_verified_at' => now(),
-            ]);
-            Log::info('ACCOUNT CONFIRM: New user created in DB', ['user_id' => $user->id]);
-        } else {
-            Log::info('ACCOUNT CONFIRM: User already existed in DB', ['user_id' => $user->id]);
-        }
+//         // 1. Create User in DB if not created yet
+//         $user = User::where('email', $data['email'])->first();
+//         if (! $user) {
+//             $user = User::create([
+//                 'name'              => $data['name'],
+//                 'email'             => $data['email'],
+//                 'password'          => $data['password'],
+//                 'google_id'         => $data['google_id'] ?? null,
+//                 'email_verified_at' => now(),
+//             ]);
+//             Log::info('ACCOUNT CONFIRM: New user created in DB', ['user_id' => $user->id]);
+//         } else {
+//             Log::info('ACCOUNT CONFIRM: User already existed in DB', ['user_id' => $user->id]);
+//         }
 
-        // 2. Set Cache Flag for the polling tab
-        $cacheKey = 'confirmed_email_' . md5($data['email']);
-        Cache::put($cacheKey, $user->id, now()->addMinutes(10));
-        Log::info('ACCOUNT CONFIRM: Cache flag written', ['cache_key' => $cacheKey, 'user_id' => $user->id]);
+//         // 2. Set Cache Flag for the polling tab
+//         $cacheKey = 'confirmed_email_' . md5($data['email']);
+//         Cache::put($cacheKey, $user->id, now()->addMinutes(10));
+//         Log::info('ACCOUNT CONFIRM: Cache flag written', ['cache_key' => $cacheKey, 'user_id' => $user->id]);
 
-        // 3. Authenticate current browser session
-        Auth::login($user, true);
-        $request->session()->regenerate();
-        session()->forget('pending_registration');
+//         // 3. Authenticate current browser session
+//         Auth::login($user, true);
+//         $request->session()->regenerate();
+//         session()->forget('pending_registration');
 
-        return redirect('/')->with('success', 'Account confirmed! Welcome to MIFFA.');
+//         return redirect('/')->with('success', 'Account confirmed! Welcome to MIFFA.');
 
-    } catch (\Exception $e) {
-        Log::error('ACCOUNT CONFIRM ERROR: ' . $e->getMessage());
-        return redirect()->route('register')->withErrors(['email' => 'Confirmation failed.']);
-    }
-})->name('account.confirm');
+//     } catch (\Exception $e) {
+//         Log::error('ACCOUNT CONFIRM ERROR: ' . $e->getMessage());
+//         return redirect()->route('register')->withErrors(['email' => 'Confirmation failed.']);
+//     }
+// })->name('account.confirm');
 
-Route::post('/account/check-status', [AuthController::class, 'checkVerificationStatus'])->name('account.check-status');
+// Route::post('/account/check-status', [AuthController::class, 'checkVerificationStatus'])->name('account.check-status');
 
-// Route to resend link from verify-email page
-Route::post('/account/resend-confirmation', [AuthController::class, 'resendConfirmation'])->name('account.resend');
+// // Route to resend link from verify-email page
+// Route::post('/account/resend-confirmation', [AuthController::class, 'resendConfirmation'])->name('account.resend');

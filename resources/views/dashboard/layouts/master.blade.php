@@ -46,70 +46,14 @@
         <div class="container-fluid">
           <ul class="navbar-mobile__list list-unstyled">
             <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-tachometer-alt"></i>Dashboard</a>
-            <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-              <li><a href="index.html">Dashboard 1</a></li>
-              <li><a href="index2.html">Dashboard 2</a></li>
-              <li><a href="index3.html">Dashboard 3</a></li>
-              <li><a href="index4.html">Dashboard 4</a></li>
-            </ul>
           </li>
           <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>New Features</a>
             <ul class="list-unstyled navbar__sub-list js-sub-list">
-              <li><a href="/dashboard/users">Users</a></li>
+              <li><a href="/dashboard/students">Students</a></li>
               <li><a href="{{ route('admin.categories.index') }}">Categories</a></li>
               <li><a href="{{ route('admin.course-categories.index') }}">Course Categories</a></li>
             </ul>
           </li>
-          <li><a href="chart.html"><i class="fa-solid fa-chart-bar"></i>Charts</a></li>
-          <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-table"></i>Tables</a>
-          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-            <li><a href="table.html">Tables</a></li>
-            <li><a href="data-table.html">Data table</a></li>
-          </ul>
-        </li>
-        <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-regular fa-square-check"></i>Forms</a>
-        <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-          <li><a href="form.html">Forms</a></li>
-          <li><a href="wizard.html">Setup wizard</a></li>
-        </ul>
-      </li>
-      <li><a href="calendar.html"><i class="fa-solid fa-calendar-alt"></i>Calendar</a></li>
-      <li><a href="map.html"><i class="fa-solid fa-map-marker-alt"></i>Maps</a></li>
-      <li><a href="inbox.html"><i class="fa-solid fa-inbox"></i>Inbox</a></li>
-      <li><a href="kanban.html"><i class="fa-solid fa-columns"></i>Kanban</a></li>
-      <li><a href="notifications.html"><i class="fa-regular fa-bell"></i>Notifications</a></li>
-      <li><a href="docs.html"><i class="fa-regular fa-file-lines"></i>Documentation</a></li>
-      <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Account</a>
-      <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-        <li><a href="profile.html">Profile &amp; settings</a></li>
-        <li><a href="pricing.html">Pricing</a></li>
-        <li><a href="invoice.html">Invoice</a></li>
-      </ul>
-    </li>
-    <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-copy"></i>Pages</a>
-    <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-      <li><a href="login.html">Login</a></li>
-      <li><a href="register.html">Register</a></li>
-      <li><a href="forget-pass.html">Forgot password</a></li>
-      <li><a href="404.html">404 not found</a></li>
-      <li><a href="500.html">500 server error</a></li>
-      <li><a href="maintenance.html">Maintenance</a></li>
-    </ul>
-  </li>
-  <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-desktop"></i>UI Elements</a>
-  <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-    <li><a href="button.html">Buttons</a></li>
-    <li><a href="badge.html">Badges</a></li>
-    <li><a href="tab.html">Tabs</a></li>
-    <li><a href="card.html">Cards</a></li>
-    <li><a href="alert.html">Alerts</a></li>
-    <li><a href="progress-bar.html">Progress bars</a></li>
-    <li><a href="modal.html">Modals</a></li>
-    <li><a href="switch.html">Switches</a></li>
-    <li><a href="grid.html">Grid system</a></li>
-    <li><a href="fontawesome.html">Font Awesome</a></li>
-    <li><a href="typo.html">Typography</a></li>
-  </ul>
 </li>
 </ul>
 </div>
@@ -123,9 +67,9 @@
   <nav class="navbar-sidebar">
     <ul class="list-unstyled navbar__list">
       <li><a href="/dashboard"><i class="fa-solid fa-tachometer-alt"></i>Dashboard</a></li>
-      <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Users</a>
+      <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Students</a>
       <ul class="list-unstyled navbar__sub-list js-sub-list">
-        <li><a href="/dashboard/users">View</a></li>
+        <li><a href="/dashboard/students">View</a></li>
       </ul>
     </li>
       <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Categories</a>
@@ -142,61 +86,10 @@
             </li>
             <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Course</a>
               <ul class="list-unstyled navbar__sub-list js-sub-list">
-                <li><a href="{{ route('admin.course.index') }}">View</a></li>
-                <li><a href="{{ route('admin.course.create') }}">Create</a></li>
+                <li><a href="{{ route('admin.courses.index') }}">View</a></li>
+                <li><a href="{{ route('admin.courses.create') }}">Create</a></li>
               </ul>
             </li>
-            <!-- <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Account</a>
-            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                <li><a href="profile.html">Profile &amp; settings</a></li>
-                <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="invoice.html">Invoice</a></li>
-              </ul>
-            </li>
-            <li><a href="chart.html"><i class="fa-solid fa-chart-bar"></i>Charts</a></li>
-            <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-table"></i>Tables</a>
-            <ul class="list-unstyled navbar__sub-list js-sub-list">
-              <li><a href="table.html">Tables</a></li>
-              <li><a href="data-table.html">Data table</a></li>
-            </ul>
-          </li>
-          <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-regular fa-square-check"></i>Forms</a>
-          <ul class="list-unstyled navbar__sub-list js-sub-list">
-            <li><a href="form.html">Forms</a></li>
-                  <li><a href="wizard.html">Setup wizard</a></li>
-                </ul>
-              </li>
-              <li><a href="calendar.html"><i class="fa-solid fa-calendar-alt"></i>Calendar</a></li>
-              <li><a href="map.html"><i class="fa-solid fa-map-marker-alt"></i>Maps</a></li>
-              <li><a href="inbox.html"><i class="fa-solid fa-inbox"></i>Inbox</a></li>
-              <li><a href="kanban.html"><i class="fa-solid fa-columns"></i>Kanban</a></li>
-              <li><a href="notifications.html"><i class="fa-regular fa-bell"></i>Notifications</a></li>
-              <li><a href="docs.html"><i class="fa-regular fa-file-lines"></i>Documentation</a></li>
-              <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-copy"></i>Pages</a>
-                <ul class="list-unstyled navbar__sub-list js-sub-list">
-                  <li><a href="login.html">Login</a></li>
-                  <li><a href="register.html">Register</a></li>
-                  <li><a href="forget-pass.html">Forgot password</a></li>
-                  <li><a href="404.html">404 not found</a></li>
-                  <li><a href="500.html">500 server error</a></li>
-                  <li><a href="maintenance.html">Maintenance</a></li>
-                </ul>
-              </li>
-              <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-desktop"></i>UI Elements</a>
-                <ul class="list-unstyled navbar__sub-list js-sub-list">
-                  <li><a href="button.html">Buttons</a></li>
-                  <li><a href="badge.html">Badges</a></li>
-                  <li><a href="tab.html">Tabs</a></li>
-                  <li><a href="card.html">Cards</a></li>
-                  <li><a href="alert.html">Alerts</a></li>
-                  <li><a href="progress-bar.html">Progress bars</a></li>
-                  <li><a href="modal.html">Modals</a></li>
-                  <li><a href="switch.html">Switches</a></li>
-                  <li><a href="grid.html">Grid system</a></li>
-                  <li><a href="fontawesome.html">Font Awesome</a></li>
-                  <li><a href="typo.html">Typography</a></li>
-                </ul>
-              </li> -->
             </ul>
           </nav>
         </div>
@@ -207,12 +100,6 @@
             <div class="container-fluid">
               <div class="header-wrap">
                 <button class="sidebar-toggle js-sidebar-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-sidebar"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
-                
-                <form class="form-header" action="" method="GET" role="search">
-                  <i class="fa-solid fa-magnifying-glass form-header__icon" aria-hidden="true"></i>
-                  <input class="au-input au-input--xl" type="search" name="search" value="{{ request('search') }}" placeholder="Search name or email…" aria-label="Search">
-                  <kbd class="form-header__hint" aria-hidden="true">⌘K</kbd>
-                </form>
 
                 <div class="header-button">
                   <div class="noti-wrap">

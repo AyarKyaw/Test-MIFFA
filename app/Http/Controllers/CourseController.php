@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 class CourseController extends Controller
 {
+
+    const QUIZ_QUESTION_LIMIT = 6;
+
     public function index(Request $request)
     {
         $selectedCategorySlug = $request->query('category');
@@ -51,74 +54,72 @@ class CourseController extends Controller
     }
 
     public function classroom(Course $course, Lesson $lesson = null)
-{
-    $user = auth()->user();
-    if (!$user || !$user->courses->contains($course->id)) {
-        return redirect()->route('courses.show', $course->id)->with('error', 'Please enroll to access class materials.');
+    {
+        $user = auth()->user();
+        if (!$user || !$user->courses->contains($course->id)) {
+            return redirect()->route('courses.show', $course->id)->with('error', 'Please enroll to access class materials.');
+        }
+
+        $currentLesson = $lesson ?? $course->lessons()->first();
+        $questions = collect();
+
+        if ($currentLesson && $currentLesson->type === 'quiz') {
+            $sessionKey = "quiz_questions_{$user->id}_{$currentLesson->id}";
+
+            // Store selected question IDs in session to maintain consistency across step refills/refreshes
+            if (!session()->has($sessionKey)) {
+                $selectedIds = \App\Models\Question::where('lesson_id', $currentLesson->id)
+                    ->inRandomOrder()
+                    ->limit(self::QUIZ_QUESTION_LIMIT)
+                    ->pluck('id')
+                    ->toArray();
+
+                session()->put($sessionKey, $selectedIds);
+            }
+
+            $questionIds = session()->get($sessionKey, []);
+
+            // Load questions in the cached random order with randomized options
+            $questions = \App\Models\Question::whereIn('id', $questionIds)
+                ->with(['options' => fn($q) => $q->inRandomOrder()])
+                ->get()
+                ->sortBy(fn($q) => array_search($q->id, $questionIds))
+                ->values();
+        }
+
+        return view('course.classroom', compact('course', 'currentLesson', 'questions'));
     }
-
-    $currentLesson = $lesson ?? $course->lessons()->first();
-    $questions = collect();
-
-    if ($currentLesson && $currentLesson->type === 'quiz') {
-        // Fetch questions and options in random order directly on every load
-        $questions = \App\Models\Question::where('lesson_id', $currentLesson->id)
-            ->inRandomOrder()
-            ->with(['options' => function ($query) {
-                $query->inRandomOrder();
-            }])
-            ->get();
-    }
-
-    return view('course.classroom', compact('course', 'currentLesson', 'questions'));
-}
 
     public function submitQuiz(Request $request, Course $course, Lesson $lesson)
 {
     $user = auth()->user();
-
-    // 1. Debug: Log incoming request & auth status
-    Log::info('Quiz Submission Triggered', [
-        'user_id'     => $user ? $user->id : 'NOT_LOGGED_IN',
-        'lesson_id'   => $lesson->id,
-        'course_id'   => $lesson->course_id,
-        'question_id' => $request->input('question_id'),
-        'step_index'  => $request->input('step_index'),
-    ]);
+    if (!$user) {
+        return response()->json(['error' => 'Unauthenticated'], 401);
+    }
 
     $lesson->load('questions.options');
     $questionId = $request->input('question_id');
     $submittedAnswer = $request->input('answer');
     
     $question = $lesson->questions->firstWhere('id', $questionId);
-
     if (!$question) {
-        Log::error('Quiz Error: Question not found ID ' . $questionId);
         return response()->json(['error' => 'Question not found.'], 404);
     }
 
-    // 2. Evaluate answer
+    // 1. Evaluate answer
     $isCorrect = false;
-
     if ($question->type === 'multiple_choice') {
         $correctOption = $question->options->firstWhere('is_correct', true);
         if ($correctOption && (int)$submittedAnswer === $correctOption->id) {
             $isCorrect = true;
         }
     } elseif ($question->type === 'boolean') {
-        // Parse submitted answer ("true", "1", 1, true) into a clean boolean
         $userBool = filter_var($submittedAnswer, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-        // Priority 1: Check $question->is_correct from the questions table
         if (!is_null($question->is_correct)) {
-            $correctBool = (bool) $question->is_correct;
-            $isCorrect = ($userBool !== null && $userBool === $correctBool);
-        } 
-        // Priority 2: Fallback to options table if options exist
-        else {
+            $isCorrect = ($userBool !== null && $userBool === (bool)$question->is_correct);
+        } else {
             $correctOption = $question->options->firstWhere('is_correct', true);
             if ($correctOption) {
-                // If option_text is "true"/"false" or is_correct boolean flag is set
                 $correctBool = filter_var($correctOption->option_text, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) 
                     ?? (bool)$correctOption->is_correct;
                 $isCorrect = ($userBool !== null && $userBool === $correctBool);
@@ -126,12 +127,15 @@ class CourseController extends Controller
         }
     }
 
-    // 3. Track progress in session
-    $sessionKey = "quiz_progress_{$lesson->id}";
-    $progress = session()->get($sessionKey, [
-        'correct_count' => 0,
-        'results' => [],
-    ]);
+    // 2. Track progress against session subset
+    $progressKey = "quiz_progress_{$user->id}_{$lesson->id}";
+    $questionsKey = "quiz_questions_{$user->id}_{$lesson->id}";
+    
+    $progress = session()->get($progressKey, ['correct_count' => 0, 'results' => []]);
+    $sessionQuestionIds = session()->get($questionsKey, []);
+
+    // Active target length: total session question count (defaults to QUIZ_QUESTION_LIMIT if set)
+    $targetQuestionCount = count($sessionQuestionIds) > 0 ? count($sessionQuestionIds) : self::QUIZ_QUESTION_LIMIT;
 
     $progress['results'][$question->id] = [
         'submitted' => $submittedAnswer,
@@ -139,20 +143,17 @@ class CourseController extends Controller
     ];
 
     $progress['correct_count'] = count(array_filter($progress['results'], fn($item) => $item['is_correct']));
-    session()->put($sessionKey, $progress);
+    session()->put($progressKey, $progress);
 
-    $totalQuestions = $lesson->questions->count();
     $currentStepIndex = (int) $request->input('step_index', 0);
-    $isCompleted = ($currentStepIndex + 1) >= $totalQuestions;
+    $isCompleted = ($currentStepIndex + 1) >= $targetQuestionCount;
 
     $summary = null;
     if ($isCompleted) {
-        $percentage = $totalQuestions > 0 ? round(($progress['correct_count'] / $totalQuestions) * 100) : 0;
-        
-        // Khan Academy Status Tiers:
-        // - low: < 50%
-        // - mid: 50% - 79%
-        // - mastered: >= 80%
+        $percentage = $targetQuestionCount > 0 
+            ? round(($progress['correct_count'] / $targetQuestionCount) * 100) 
+            : 0;
+
         $tier = 'low';
         if ($percentage >= 80) {
             $tier = 'mastered';
@@ -164,41 +165,29 @@ class CourseController extends Controller
 
         $summary = [
             'correct_count'   => $progress['correct_count'],
-            'total_questions' => $totalQuestions,
-            'score_percentage'=> $percentage,
-            'tier'            => $tier, // 'low', 'mid', or 'mastered'
+            'total_questions' => $targetQuestionCount,
+            'score_percentage' => $percentage,
+            'tier'            => $tier,
             'passed'          => $isCompletedStatus,
         ];
 
-        Log::info('Quiz Finalizing', [
-            'total_questions' => $totalQuestions,
-            'correct_count'   => $progress['correct_count'],
-            'percentage'      => $percentage,
-            'tier'            => $tier,
-            'has_user'        => !is_null($user),
+        // 3. Preserve high score on completion
+        $existingPivot = $user->lessons()->where('lesson_id', $lesson->id)->first()?->pivot;
+        $finalScore = max($percentage, $existingPivot?->quiz_score ?? 0);
+        $finalCompletedStatus = ($existingPivot?->is_completed ?? false) || $isCompletedStatus;
+
+        $user->lessons()->syncWithoutDetaching([
+            $lesson->id => [
+                'course_id'        => $lesson->course_id,
+                'is_completed'     => $finalCompletedStatus,
+                'progress_percent' => 100,
+                'quiz_score'       => $finalScore,
+                'completed_at'     => $existingPivot?->completed_at ?? now(),
+            ]
         ]);
 
-        // Always save score on attempt completion if user is logged in
-        if ($user) {
-            try {
-                $user->lessons()->syncWithoutDetaching([
-                    $lesson->id => [
-                        'course_id'        => $lesson->course_id,
-                        'is_completed'     => $isCompletedStatus,
-                        'progress_percent' => 100,
-                        'quiz_score'       => $percentage,
-                        'completed_at'     => now(),
-                    ]
-                ]);
-                Log::info("Successfully synced lesson {$lesson->id} score ({$percentage}%) to user {$user->id}");
-            } catch (\Exception $e) {
-                Log::error("Failed syncing lesson to pivot table: " . $e->getMessage());
-            }
-        } else {
-            Log::warning('Quiz score not saved: User is null / not logged in');
-        }
-
-        session()->forget($sessionKey);
+        // Clean up session state for next attempt
+        session()->forget([$progressKey, $questionsKey]);
     }
 
     return response()->json([

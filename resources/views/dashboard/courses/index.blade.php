@@ -25,7 +25,7 @@
 
                     <div class="table-data__tool">
                         <div class="table-data__tool-left">
-                            <form action="{{ route('admin.course.index') }}" method="GET" class="d-flex gap-2">
+                            <form action="{{ route('admin.courses.index') }}" method="GET" class="d-flex gap-2">
                                 <div class="select-wrapper">
                                     <select class="form-select" name="filter" onchange="this.form.submit()">
                                         <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>All Courses</option>
@@ -34,8 +34,12 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="table-data__tool-right">
-                            <a href="{{ route('admin.course.create') }}" class="au-btn au-btn--green au-btn--small text-decoration-none d-inline-flex align-items-center gap-1">
+                        <div class="table-data__tool-right d-flex gap-2">
+                            <!-- Route changed to admin.lessons.index -->
+                            <a href="{{ route('admin.lessons.index') }}" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
+                                <i class="fa-solid fa-list-check" aria-hidden="true"></i> View Lessons
+                            </a>
+                            <a href="{{ route('admin.courses.create') }}" class="au-btn au-btn--green au-btn--small text-decoration-none d-inline-flex align-items-center gap-1">
                                 <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Course
                             </a>
                         </div>
@@ -87,11 +91,15 @@
                                         </td>
                                         <td>{{ $course->created_at ? $course->created_at->format('M d, Y H:i') : 'N/A' }}</td>
                                         <td>
-                                            <div class="table-data-feature justify-content-end">
-                                                <a href="{{ route('admin.course.edit', $course->id) }}" class="item" data-bs-toggle="tooltip" title="Edit">
+                                            <div class="table-data-feature justify-content-end gap-1">
+                                                <!-- Links directly to Lessons Index filtered by Course ID -->
+                                                <a href="{{ route('admin.lessons.index', ['course_id' => $course->id]) }}" class="item" data-bs-toggle="tooltip" title="View Lessons">
+                                                    <i class="fa-solid fa-book-open text-info"></i>
+                                                </a>
+                                                <a href="{{ route('admin.courses.edit', $course->id) }}" class="item" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
-                                                <form action="{{ route('admin.course.destroy', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this course?');" class="d-inline">
+                                                <form action="{{ route('admin.courses.destroy', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this course?');" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="item" type="submit" data-bs-toggle="tooltip" title="Delete">

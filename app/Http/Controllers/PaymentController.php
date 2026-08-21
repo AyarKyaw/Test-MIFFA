@@ -34,7 +34,7 @@ class PaymentController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'redirect' => route('courses.index')
+            'redirect' => route('courses.my')
         ]);
     }
 }

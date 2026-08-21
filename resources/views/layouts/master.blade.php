@@ -243,7 +243,7 @@
                                                     <ul class="menu-col">
                                                         <li><a href="#">Contact Us</a></li>
                                                         <li><a href="{{ url('/login') }}">Login</a></li>
-                                                        <li><a href="{{ url('/register') }}">Register</a></li>
+                                                        <!-- <li><a href="{{ url('/register') }}">Register</a></li> -->
                                                     </ul>
                                                 </div>
                                             </div>

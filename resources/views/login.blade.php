@@ -45,7 +45,7 @@
                         <div class="login-register-items text-light">
                             <h2>Sign in</h2>
                             <p>
-                                Don't have an account? <a href="{{ url('/register') }}">Create New</a>
+                                Don't have an account?
                             </p>
                             <form action="{{ route('login.perform') }}" method="POST">
                                 {{-- 1. ADD CSRF TOKEN TO PREVENT PAGE EXPIRED ERROR --}}
