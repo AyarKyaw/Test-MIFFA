@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class LessonController extends Controller
 {
@@ -121,25 +123,49 @@ class LessonController extends Controller
     }
 
     public function update(Request $request, Lesson $lesson)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:video,document,text,quiz',
-            'order' => 'required|integer',
-            'questions' => 'nullable|array',
-            'questions.*.text' => 'required_if:type,quiz|string',
-            'questions.*.type' => 'required_if:type,quiz|in:multiple_choice,boolean',
-        ]);
+{
+    $validated = $request->validate([
+        'course_id'        => 'required|exists:courses,id',
+        'title'            => 'required|string|max:255',
+        'type'             => 'required|in:video,document,text,quiz',
+        'order'            => 'required|integer|min:0',
+        'video_url'        => 'nullable|required_if:type,video|url|max:255',
+        'content'          => 'nullable|string',
+        'document_file'    => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+        'questions'        => 'nullable|array',
+        'questions.*.text' => 'required_if:type,quiz|string',
+        'questions.*.type' => 'required_if:type,quiz|in:multiple_choice,boolean',
+    ]);
 
-        // 1. Update basic lesson attributes
-        $lesson->update($request->only(['title', 'type', 'order', 'video_url', 'content']));
-
-        if ($request->hasFile('document_file')) {
-            $path = $request->file('document_file')->store('lessons/documents', 'public');
-            $lesson->update(['document_path' => $path]);
+    DB::transaction(function () use ($request, $lesson, $validated) {
+        // Handle lesson type content clearing/updating
+        if ($validated['type'] === 'video') {
+            $validated['video_url'] = $request->input('video_url');
+        } else {
+            // Nullify video_url if type switched away from video
+            $validated['video_url'] = null; 
         }
 
-        // 2. Handle Quiz Questions and Options sync
+        // Handle document file upload & replace old file
+        if ($request->hasFile('document_file')) {
+            if ($lesson->document_path && Storage::disk('public')->exists($lesson->document_path)) {
+                Storage::disk('public')->delete($lesson->document_path);
+            }
+            $validated['document_path'] = $request->file('document_file')->store('lessons/documents', 'public');
+        }
+
+        // 1. Update basic lesson attributes
+        $lesson->update([
+            'course_id'     => $validated['course_id'],
+            'title'         => $validated['title'],
+            'type'          => $validated['type'],
+            'order'         => $validated['order'],
+            'video_url'     => $validated['video_url'],
+            'content'       => $validated['content'] ?? null,
+            'document_path' => $validated['document_path'] ?? $lesson->document_path,
+        ]);
+
+        // 2. Sync Quiz Questions and Options if lesson type is quiz
         if ($lesson->type === 'quiz') {
             $submittedQuestions = $request->input('questions', []);
             $keepQuestionIds = [];
@@ -148,7 +174,6 @@ class LessonController extends Controller
                 $questionText = $qData['text'] ?? ($qData['question_text'] ?? '');
                 $questionType = $qData['type'] ?? 'multiple_choice';
 
-                // Update existing question or create a new one
                 if (!empty($qData['id'])) {
                     $question = $lesson->questions()->find($qData['id']);
                     if ($question) {
@@ -167,14 +192,12 @@ class LessonController extends Controller
                 if ($question) {
                     $keepQuestionIds[] = $question->id;
 
-                    // Sync Question Options
                     if ($questionType === 'boolean') {
-                        // For boolean type, handle standard true/false flag
                         $isCorrect = isset($qData['is_correct']) && $qData['is_correct'] == 1;
                         $question->update(['is_correct' => $isCorrect]);
+                        $question->options()->delete();
                     } else {
-                        // For multiple choice options
-                        $question->options()->delete(); // Fresh refresh for existing options
+                        $question->options()->delete();
                         
                         if (isset($qData['options']) && is_array($qData['options'])) {
                             $selectedCorrectIndex = $qData['correct_option'] ?? 0;
@@ -193,13 +216,16 @@ class LessonController extends Controller
                 }
             }
 
-            // Delete questions that were removed in the UI
             $lesson->questions()->whereNotIn('id', $keepQuestionIds)->delete();
+        } else {
+            // Delete questions if lesson type changed from quiz to something else
+            $lesson->questions()->delete();
         }
+    });
 
-        return redirect()->route('admin.lessons.index', ['course_id' => $lesson->course_id])
-                        ->with('success', 'Lesson updated successfully.');
-    }
+    return redirect()->route('admin.lessons.index', ['course_id' => $lesson->course_id])
+                    ->with('success', 'Lesson updated successfully.');
+}
 
     public function destroy(Lesson $lesson)
     {
