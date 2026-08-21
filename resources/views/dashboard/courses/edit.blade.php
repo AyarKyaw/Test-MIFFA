@@ -14,7 +14,7 @@
                             <p class="m-card__subtitle">Update the details for {{ $course->title }}</p>
                         </div>
                         <div>
-                            <a href="{{ route('admin.course.index') }}" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
+                            <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
                                 <i class="fa-solid fa-arrow-left"></i> Back to Courses
                             </a>
                         </div>
@@ -22,7 +22,7 @@
 
                     <div class="m-card__body p-4">
                         {{-- 1. Added enctype for file uploads --}}
-                        <form action="{{ route('admin.course.update', $course->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
