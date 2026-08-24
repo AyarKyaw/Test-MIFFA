@@ -11,12 +11,17 @@ return new class extends Migration
         Schema::table('lessons', function (Blueprint $table) {
             // Drop old foreign key if it existed
             if (Schema::hasColumn('lessons', 'course_id')) {
+                // Drop index/foreign key safely before dropping column
                 $table->dropForeign(['course_id']);
                 $table->dropColumn('course_id');
             }
 
-            // Add section_id relationship
-            $table->foreignId('section_id')->after('id')->constrained()->cascadeOnDelete();
+            // Make section_id nullable so existing rows don't violate integrity constraints
+            $table->foreignId('section_id')
+                ->nullable()
+                ->after('id')
+                ->constrained()
+                ->nullOnDelete();
         });
     }
 

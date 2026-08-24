@@ -64,7 +64,7 @@
                                         <!-- Single Course Item -->
                                         <div class="course-style-one-item hover-less list-layout mb-4">
                                             <div class="thumb">
-                                                <img src="{{ asset($course->image ?? 'assets/img/courses/1.jpg') }}" alt="{{ $course->title }}">
+                                                <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}">
                                             </div>
                                             <div class="info">
                                                 <div class="author">
