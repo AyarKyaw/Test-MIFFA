@@ -35,9 +35,9 @@
                             </form>
                         </div>
                         <div class="table-data__tool-right d-flex gap-2">
-                            <!-- Route changed to admin.lessons.index -->
-                            <a href="{{ route('admin.lessons.index') }}" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
-                                <i class="fa-solid fa-list-check" aria-hidden="true"></i> View Lessons
+                            <!-- Route changed to admin.units.index -->
+                            <a href="{{ route('admin.units.index') }}" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
+                                <i class="fa-solid fa-layer-group" aria-hidden="true"></i> View Units
                             </a>
                             <a href="{{ route('admin.courses.create') }}" class="au-btn au-btn--green au-btn--small text-decoration-none d-inline-flex align-items-center gap-1">
                                 <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Course
@@ -92,9 +92,9 @@
                                         <td>{{ $course->created_at ? $course->created_at->format('M d, Y H:i') : 'N/A' }}</td>
                                         <td>
                                             <div class="table-data-feature justify-content-end gap-1">
-                                                <!-- Links directly to Lessons Index filtered by Course ID -->
-                                                <a href="{{ route('admin.lessons.index', ['course_id' => $course->id]) }}" class="item" data-bs-toggle="tooltip" title="View Lessons">
-                                                    <i class="fa-solid fa-book-open text-info"></i>
+                                                <!-- Links directly to Units Index filtered by Course ID -->
+                                                <a href="{{ route('admin.units.index', ['course_id' => $course->id]) }}" class="item" data-bs-toggle="tooltip" title="View Units">
+                                                    <i class="fa-solid fa-layer-group text-info"></i>
                                                 </a>
                                                 <a href="{{ route('admin.courses.edit', $course->id) }}" class="item" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>

@@ -52,7 +52,7 @@
                                 <small class="text-muted">
                                     <i class="far fa-calendar-alt me-1"></i> {{ $course->pivot->created_at ? $course->pivot->created_at->format('M d, Y') : 'Enrolled' }}
                                 </small>
-                                <a href="{{ route('courses.learn', $course->id) }}" class="btn-primary btn-sm rounded-3 px-3">
+                                <a href="{{ route('courses.units', $course->id) }}" class="btn-primary btn-sm rounded-3 px-3">
                                     View Class
                                 </a>
                             </div>

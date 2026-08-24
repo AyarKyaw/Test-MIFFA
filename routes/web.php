@@ -23,6 +23,8 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\LessonController;
+use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\SectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,14 +117,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/dashboard/courses', AdminCourseController::class)
         ->names('admin.courses');
 
+        
     // Payment Routes
     Route::get('/payment/qr/{course}', [PaymentController::class, 'showQr'])->name('payment.qr');
     Route::post('/payment/confirm/{course}', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
-
+    
     // Learning / Classroom Routes
     Route::get('/my-courses', [FrontendCourseController::class, 'myCourses'])->name('courses.my');
     Route::get('/courses/{course}/learn/{lesson?}', [FrontendCourseController::class, 'classroom'])->name('courses.learn');
     Route::post('/courses/{course}/lessons/{lesson}/submit', [FrontendCourseController::class, 'submitQuiz'])->name('courses.lessons.submit');
+    Route::get('/courses/{course}/units', [FrontendCourseController::class, 'units'])
+        ->name('courses.units');
+    Route::resource('units', UnitController::class)->names('admin.units');
+    Route::resource('sections', SectionController::class)->names('admin.sections');
 
     // Lesson Progress / Completion Route
     Route::post('/lessons/{lesson}/complete', [FrontendCourseController::class, 'markComplete'])->name('lessons.complete');

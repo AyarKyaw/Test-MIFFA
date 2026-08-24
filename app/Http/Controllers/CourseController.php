@@ -60,13 +60,13 @@ class CourseController extends Controller
             return redirect()->route('courses.show', $course->id)->with('error', 'Please enroll to access class materials.');
         }
 
+        // Query lessons through the course sections relationship
         $currentLesson = $lesson ?? $course->lessons()->first();
         $questions = collect();
 
         if ($currentLesson && $currentLesson->type === 'quiz') {
             $sessionKey = "quiz_questions_{$user->id}_{$currentLesson->id}";
 
-            // Store selected question IDs in session to maintain consistency across step refills/refreshes
             if (!session()->has($sessionKey)) {
                 $selectedIds = \App\Models\Question::where('lesson_id', $currentLesson->id)
                     ->inRandomOrder()
@@ -79,7 +79,6 @@ class CourseController extends Controller
 
             $questionIds = session()->get($sessionKey, []);
 
-            // Load questions in the cached random order with randomized options
             $questions = \App\Models\Question::whereIn('id', $questionIds)
                 ->with(['options' => fn($q) => $q->inRandomOrder()])
                 ->get()
@@ -88,6 +87,31 @@ class CourseController extends Controller
         }
 
         return view('course.classroom', compact('course', 'currentLesson', 'questions'));
+    }
+
+    public function units(Request $request, Course $course)
+    {
+        // Eager-load units, sections, and lessons in a single query chain
+        $course->load([
+            'units' => function ($query) {
+                $query->orderBy('order', 'asc');
+            },
+            'units.sections' => function ($query) {
+                $query->orderBy('order', 'asc');
+            },
+            'units.sections.lessons' => function ($query) {
+                $query->orderBy('order', 'asc');
+            }
+        ]);
+
+        // Resolve active unit from query parameter (?unit=ID), default to the first unit
+        $selectedUnitId = $request->query('unit');
+        
+        $selectedUnit = $selectedUnitId 
+            ? $course->units->firstWhere('id', $selectedUnitId) 
+            : $course->units->first();
+
+        return view('course.units', compact('course', 'selectedUnit'));
     }
 
     public function submitQuiz(Request $request, Course $course, Lesson $lesson)
@@ -101,30 +125,52 @@ class CourseController extends Controller
     $questionId = $request->input('question_id');
     $submittedAnswer = $request->input('answer');
     
-    $question = $lesson->questions->firstWhere('id', $questionId);
+    $question = $lesson->questions->firstWhere('id', (int)$questionId);
     if (!$question) {
         return response()->json(['error' => 'Question not found.'], 404);
     }
 
-    // 1. Evaluate answer
+    // 1. Evaluate answer & grab option-specific feedback
     $isCorrect = false;
+    $feedback = null;
+
     if ($question->type === 'multiple_choice') {
-        $correctOption = $question->options->firstWhere('is_correct', true);
-        if ($correctOption && (int)$submittedAnswer === $correctOption->id) {
-            $isCorrect = true;
+        // Find the user's selected option model
+        $selectedOption = $question->options->firstWhere('id', (int)$submittedAnswer);
+        
+        if ($selectedOption) {
+            $isCorrect = (bool)$selectedOption->is_correct;
+            $feedback = $selectedOption->feedback; // Grab option feedback
         }
     } elseif ($question->type === 'boolean') {
+        // Cast submitted string "1"/"0" or "true"/"false" to boolean
         $userBool = filter_var($submittedAnswer, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if ($userBool === null) {
+            $userBool = ($submittedAnswer === '1' || $submittedAnswer === 1);
+        }
+
         if (!is_null($question->is_correct)) {
-            $isCorrect = ($userBool !== null && $userBool === (bool)$question->is_correct);
+            $isCorrect = ($userBool === (bool)$question->is_correct);
         } else {
-            $correctOption = $question->options->firstWhere('is_correct', true);
+            $correctOption = $question->options->firstWhere('is_correct', true) 
+                           ?? $question->options->firstWhere('is_correct', 1);
+                           
             if ($correctOption) {
-                $correctBool = filter_var($correctOption->option_text, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) 
-                    ?? (bool)$correctOption->is_correct;
-                $isCorrect = ($userBool !== null && $userBool === $correctBool);
+                $correctBool = filter_var($correctOption->option_text, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                if ($correctBool === null) {
+                    $correctBool = (bool)$correctOption->is_correct;
+                }
+                $isCorrect = ($userBool === $correctBool);
             }
         }
+
+        // Fetch feedback corresponding to the selected True or False option row
+        $targetText = $userBool ? 'True' : 'False';
+        $selectedBoolOption = $question->options->first(function ($opt) use ($targetText) {
+            return strtolower(trim($opt->option_text)) === strtolower($targetText);
+        });
+
+        $feedback = $selectedBoolOption?->feedback;
     }
 
     // 2. Track progress against session subset
@@ -134,7 +180,6 @@ class CourseController extends Controller
     $progress = session()->get($progressKey, ['correct_count' => 0, 'results' => []]);
     $sessionQuestionIds = session()->get($questionsKey, []);
 
-    // Active target length: total session question count (defaults to QUIZ_QUESTION_LIMIT if set)
     $targetQuestionCount = count($sessionQuestionIds) > 0 ? count($sessionQuestionIds) : self::QUIZ_QUESTION_LIMIT;
 
     $progress['results'][$question->id] = [
@@ -154,24 +199,23 @@ class CourseController extends Controller
             ? round(($progress['correct_count'] / $targetQuestionCount) * 100) 
             : 0;
 
+        $isCompletedStatus = ($percentage >= 70);
+
         $tier = 'low';
         if ($percentage >= 80) {
             $tier = 'mastered';
-        } elseif ($percentage >= 50) {
+        } elseif ($percentage >= 70) {
             $tier = 'mid';
         }
 
-        $isCompletedStatus = ($tier === 'mastered');
-
         $summary = [
-            'correct_count'   => $progress['correct_count'],
-            'total_questions' => $targetQuestionCount,
+            'correct_count'    => $progress['correct_count'],
+            'total_questions'  => $targetQuestionCount,
             'score_percentage' => $percentage,
-            'tier'            => $tier,
-            'passed'          => $isCompletedStatus,
+            'tier'             => $tier,
+            'passed'           => $isCompletedStatus,
         ];
 
-        // 3. Preserve high score on completion
         $existingPivot = $user->lessons()->where('lesson_id', $lesson->id)->first()?->pivot;
         $finalScore = max($percentage, $existingPivot?->quiz_score ?? 0);
         $finalCompletedStatus = ($existingPivot?->is_completed ?? false) || $isCompletedStatus;
@@ -186,12 +230,13 @@ class CourseController extends Controller
             ]
         ]);
 
-        // Clean up session state for next attempt
         session()->forget([$progressKey, $questionsKey]);
     }
 
     return response()->json([
         'is_correct'   => $isCorrect,
+        'feedback'     => $feedback, // Returned option feedback to JavaScript
+        'explanation'  => $question->explanation ?? null,
         'is_completed' => $isCompleted,
         'summary'      => $summary,
     ]);

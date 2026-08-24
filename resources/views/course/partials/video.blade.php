@@ -41,7 +41,6 @@
 @push('scripts')
 <script>
     let isCompleted = false;
-    // Explicitly parse lesson ID as an integer
     const lessonId = parseInt("{{ $lesson->id }}", 10);
     const storageKey = `lesson_progress_${lessonId}`;
 
@@ -59,9 +58,7 @@
 
     console.log(`[Video Tracking Initialized] Lesson ID: ${lessonId}`, { maxWatchedTime, lastPosition });
 
-    // Function to write to localStorage and log
     function saveProgress(currentTime) {
-        // Only count valid forward progress (prevents skips)
         if (currentTime - maxWatchedTime < 2) {
             maxWatchedTime = Math.max(maxWatchedTime, currentTime);
         }
@@ -119,6 +116,7 @@
     // 1. YouTube Player Integration
     @if($youtubeId)
         var player;
+        var hasRestoredPosition = false;
 
         function createYTPlayer() {
             var container = document.getElementById('youtube-player');
@@ -136,13 +134,20 @@
                     },
                     events: {
                         'onReady': function(event) {
-                            if (lastPosition > 5 && lastPosition < player.getDuration() - 5) {
+                            if (lastPosition > 0 && !hasRestoredPosition) {
                                 player.seekTo(lastPosition, true);
+                                hasRestoredPosition = true;
                             }
                         },
                         'onStateChange': function(event) {
                             // 1 = PLAYING
                             if (event.data === 1) {
+                                // Fallback seek check if onReady fired too early
+                                if (lastPosition > 0 && !hasRestoredPosition) {
+                                    player.seekTo(lastPosition, true);
+                                    hasRestoredPosition = true;
+                                }
+
                                 clearInterval(checkInterval);
                                 checkInterval = setInterval(function() {
                                     if (player && player.getCurrentTime) {
@@ -177,9 +182,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             const localVideo = document.getElementById('local-video');
             if (localVideo) {
-                if (lastPosition > 5 && lastPosition < localVideo.duration - 5) {
-                    localVideo.currentTime = lastPosition;
-                }
+                // Wait until video metadata (duration, dimensions) is fully loaded
+                localVideo.addEventListener('loadedmetadata', function() {
+                    if (lastPosition > 0 && lastPosition < localVideo.duration) {
+                        localVideo.currentTime = lastPosition;
+                    }
+                });
 
                 localVideo.addEventListener('timeupdate', function() {
                     saveProgress(localVideo.currentTime);

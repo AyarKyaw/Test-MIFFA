@@ -1,100 +1,147 @@
 @extends('dashboard.layouts.master')
 
-@section('title', 'Manage Lessons - MIFFA')
+@section('title', 'Section Lessons - MIFFA')
 
 @section('content')
 <main class="main-content" id="main-content">
     <div class="section__content section__content--p30">
         <div class="row row-tight" style="margin-top: 16px;">
             <div class="col-md-12">
-                <section class="m-card">
+                <section class="m-card" aria-labelledby="lessons-title">
                     <header class="m-card__header d-flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="m-card__title">
-                                {{ isset($selectedCourse) ? $selectedCourse->title . ' - Lessons' : 'All Lessons' }}
-                            </h2>
+                            <h2 class="m-card__title" id="lessons-title">Section Lessons</h2>
                             <p class="m-card__subtitle">
-                                {{ isset($selectedCourse) ? 'Manage and review modules for ' . $selectedCourse->title : 'Manage and review all course lessons across the platform' }}
+                                @if(isset($selectedSection))
+                                    Showing lessons for section: <strong>{{ $selectedSection->title }}</strong>
+                                    @if($selectedSection->course)
+                                        <span class="text-muted">({{ $selectedSection->course->title }})</span>
+                                    @endif
+                                @else
+                                    Manage section lessons, videos, documents, and quizzes
+                                @endif
                             </p>
                         </div>
-                        <a href="{{ isset($selectedCourse) ? route('admin.lessons.create', ['course_id' => $selectedCourse->id]) : route('admin.lessons.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fa-solid fa-plus me-1"></i> Add New Lesson
-                        </a>
+                        <a href="{{ route('admin.sections.index', ['unit_id' => $selectedSection->unit_id ?? request('unit_id')]) }}" class="btn btn-outline-secondary btn-sm">
+    <i class="fa-solid fa-arrow-left me-1"></i> Back to Sections
+</a>
                     </header>
 
-                    <!-- Alerts for session messages -->
                     @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show m-4 mb-0" role="alert">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
 
-                    <div class="p-4">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle border">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th style="width: 60px;">Order</th>
-                                        <th>Title</th>
-                                        <th>Type</th>
-                                        <th>Details</th>
-                                        <th class="text-end" style="width: 120px;">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($lessons as $lesson)
-                                        <tr>
-                                            <td class="fw-bold text-secondary">#{{ $lesson->order }}</td>
-                                            <td class="fw-semibold text-dark">{{ $lesson->title }}</td>
-                                            <td>
-                                                @switch($lesson->type)
-                                                    @case('video')
-                                                        <span class="badge bg-primary"><i class="fa-solid fa-video me-1"></i> Video</span>
-                                                        @break
-                                                    @case('document')
-                                                        <span class="badge bg-info text-dark"><i class="fa-solid fa-file-pdf me-1"></i> Document</span>
-                                                        @break
-                                                    @case('text')
-                                                        <span class="badge bg-secondary"><i class="fa-solid fa-align-left me-1"></i> Article</span>
-                                                        @break
-                                                    @case('quiz')
-                                                        <span class="badge bg-warning text-dark"><i class="fa-solid fa-list-check me-1"></i> Quiz ({{ $lesson->questions->count() }} Qs)</span>
-                                                        @break
-                                                @endswitch
-                                            </td>
-                                            <td class="small text-muted">
-                                                @if($lesson->type === 'video')
-                                                    <code>{{ Str::limit($lesson->video_url, 30) }}</code>
-                                                @elseif($lesson->type === 'quiz')
-                                                    {{ $lesson->questions->count() }} total questions configured
-                                                @else
-                                                    {{ Str::limit(strip_tags($lesson->content), 40) ?? 'N/A' }}
-                                                @endif
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="btn-group btn-group-sm">
-                                                    <a href="{{ route('admin.lessons.edit', $lesson->id) }}" class="btn btn-outline-secondary" title="Edit Lesson">
-                                                        <i class="fa-solid fa-pen"></i>
-                                                    </a>
-                                                    <form action="{{ route('admin.lessons.destroy', $lesson->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this lesson?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger" title="Delete Lesson">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center py-4 text-muted">No lessons found.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                    <!-- Action Tool Bar -->
+                    <div class="table-data__tool">
+                        <div class="table-data__tool-left"></div>
+                        <div class="table-data__tool-right d-flex gap-2">
+                            <a href="{{ route('admin.lessons.create', request()->only('section_id')) }}" class="au-btn au-btn--green au-btn--small text-decoration-none d-inline-flex align-items-center gap-1">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Lesson
+                            </a>
                         </div>
+                    </div>
+
+                    <!-- Lessons Table -->
+                    <div class="table-responsive">
+                        <table class="table table-data2">
+                            <thead>
+                                <tr>
+                                    <th style="width:24px;">
+                                        <label class="au-checkbox">
+                                            <input type="checkbox" aria-label="Select all"><span class="au-checkmark"></span>
+                                        </label>
+                                    </th>
+                                    <th>Order</th>
+                                    <th>Lesson Title</th>
+                                    <th>Section</th>
+                                    <th>Type</th>
+                                    <th>Details</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($lessons as $lesson)
+                                    <tr class="tr-shadow">
+                                        <td>
+                                            <label class="au-checkbox">
+                                                <input type="checkbox" name="selected_lessons[]" value="{{ $lesson->id }}">
+                                                <span class="au-checkmark"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border font-monospace">
+                                                #{{ $lesson->order }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold text-dark d-block">{{ $lesson->title }}</span>
+                                        </td>
+                                        <td>
+                                            @if($lesson->section)
+                                                <span class="fw-semibold text-primary d-block">{{ $lesson->section->title }}</span>
+                                            @else
+                                                <span class="text-muted">Unassigned</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @switch($lesson->type)
+                                                @case('video')
+                                                    <span class="badge bg-primary"><i class="fa-solid fa-video me-1"></i> Video</span>
+                                                    @break
+                                                @case('document')
+                                                    <span class="badge bg-warning text-dark"><i class="fa-solid fa-file-pdf me-1"></i> Document</span>
+                                                    @break
+                                                @case('quiz')
+                                                    <span class="badge bg-info text-dark"><i class="fa-solid fa-clipboard-question me-1"></i> Quiz</span>
+                                                    @break
+                                                @default
+                                                    <span class="badge bg-secondary"><i class="fa-solid fa-file-lines me-1"></i> Text</span>
+                                            @endswitch
+                                        </td>
+                                        <td>
+                                            @if($lesson->type === 'video' && $lesson->video_url)
+                                                <a href="{{ $lesson->video_url }}" target="_blank" class="small text-decoration-none text-truncate d-block" style="max-width: 180px;">
+                                                    <i class="fa-solid fa-external-link me-1"></i> Watch Link
+                                                </a>
+                                            @elseif($lesson->type === 'document' && $lesson->document_path)
+                                                <a href="{{ Storage::url($lesson->document_path) }}" target="_blank" class="small text-decoration-none text-success">
+                                                    <i class="fa-solid fa-download me-1"></i> View Document
+                                                </a>
+                                            @elseif($lesson->type === 'quiz')
+                                                <small class="text-muted">{{ $lesson->questions->count() }} Questions</small>
+                                            @else
+                                                <small class="text-muted">Text Content</small>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="table-data-feature justify-content-end gap-1">
+                                                <a href="{{ route('admin.lessons.edit', $lesson->id) }}" class="item" data-bs-toggle="tooltip" title="Edit Lesson">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </a>
+                                                <form action="{{ route('admin.lessons.destroy', $lesson->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this lesson?');" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="item" type="submit" data-bs-toggle="tooltip" title="Delete Lesson">
+                                                        <i class="fa-solid fa-trash text-danger"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="spacer"></tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-muted">
+                                            <i class="fa-solid fa-book-open fs-4 d-block mb-2"></i>
+                                            No lessons found for this section.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </section>
             </div>

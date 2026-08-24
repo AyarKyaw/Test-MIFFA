@@ -38,24 +38,38 @@
             </a>
         </div>
     </div>
+
     @php
         $quizQuestions = $questions ?? $lesson->questions;
         $totalQuestions = $quizQuestions->count();
     @endphp
+
     <!-- Active Quiz Form -->
     <form id="quizForm" action="{{ route('courses.lessons.submit', [$course->id, $lesson->id]) }}" method="POST">
         @csrf
         @forelse($quizQuestions as $qIndex => $question)
             <div class="quiz-step" data-step="{{ $qIndex }}" data-question-id="{{ $question->id }}" style="{{ $qIndex !== 0 ? 'display: none;' : '' }}">
                 
-                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-3">
-                    Question {{ $qIndex + 1 }} of {{ $totalQuestions }}
-                </span>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
+                        Question {{ $qIndex + 1 }} of {{ $totalQuestions }}
+                    </span>
+
+                    @if(!empty($question->hint))
+                        <button type="button" class="btn btn-link btn-sm text-decoration-none toggle-hint-btn p-0 text-warning fw-semibold">
+                            <i class="far fa-lightbulb me-1"></i> Need a Hint?
+                        </button>
+                    @endif
+                </div>
+
+                <!-- Hint Container -->
+                @if(!empty($question->hint))
+                    <div class="alert alert-warning alert-dismissible fade show hint-box mb-3 py-2 px-3 small" style="display: none;">
+                        <i class="fas fa-info-circle me-1"></i> <strong>Hint:</strong> {{ $question->hint }}
+                    </div>
+                @endif
 
                 <h6 class="fw-bold text-dark mb-4 fs-5">{{ $question->question_text }}</h6>
-
-                <!-- Feedback Alert Container -->
-                <div class="feedback-container mb-3" style="display: none;"></div>
 
                 <!-- Options -->
                 @if($question->type === 'multiple_choice')
@@ -89,6 +103,9 @@
                     </div>
                 @endif
 
+                <!-- Feedback Alert & Explanation Container -->
+                <div class="feedback-container mb-4" style="display: none;"></div>
+
                 <!-- Action Button -->
                 <div class="d-flex justify-content-end mt-4 pt-3 border-top">
                     <button type="button" class="btn btn-secondary px-4 rounded-3 action-btn" data-state="submit" disabled>
@@ -107,6 +124,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const quizForm = document.getElementById('quizForm');
     if (!quizForm) return;
+
+    // Toggle Hint Box Visibility
+    quizForm.addEventListener('click', function (e) {
+        const hintBtn = e.target.closest('.toggle-hint-btn');
+        if (!hintBtn) return;
+
+        const step = hintBtn.closest('.quiz-step');
+        const hintBox = step.querySelector('.hint-box');
+        if (hintBox) {
+            hintBox.style.display = hintBox.style.display === 'none' ? 'block' : 'none';
+        }
+    });
 
     // 1. Radio Selection Styling & Button Activation
     quizForm.addEventListener('change', function (e) {
@@ -173,17 +202,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Lock inputs for current step
                 currentStep.querySelectorAll('.quiz-radio').forEach(r => r.disabled = true);
 
-                // Show feedback UI
+                // Show feedback UI & optional explanation from server
                 const feedbackBox = currentStep.querySelector('.feedback-container');
                 const selectedLabel = selectedRadio.closest('.option-label');
                 selectedLabel.classList.remove('active-option');
 
+                let messageBody = '';
+                if (data.feedback) {
+                    messageBody += `<div class="mt-1 small">${data.feedback}</div>`;
+                }
+                if (data.explanation) {
+                    messageBody += `<div class="mt-2 small text-secondary border-top pt-2"><strong>Explanation:</strong> ${data.explanation}</div>`;
+                }
+
                 if (data.is_correct) {
                     selectedLabel.classList.add('correct-option');
-                    feedbackBox.innerHTML = `<div class="alert alert-success d-flex align-items-center gap-2 mb-0 py-2"><i class="fas fa-check-circle"></i> Correct!</div>`;
+                    feedbackBox.innerHTML = `
+                        <div class="alert alert-success mb-0 py-3">
+                            <div class="d-flex align-items-center gap-2 fw-semibold">
+                                <i class="fas fa-check-circle fs-5"></i> Correct!
+                            </div>
+                            ${messageBody}
+                        </div>`;
                 } else {
                     selectedLabel.classList.add('incorrect-option');
-                    feedbackBox.innerHTML = `<div class="alert alert-danger d-flex align-items-center gap-2 mb-0 py-2"><i class="fas fa-times-circle"></i> Incorrect.</div>`;
+                    feedbackBox.innerHTML = `
+                        <div class="alert alert-danger mb-0 py-3">
+                            <div class="d-flex align-items-center gap-2 fw-semibold">
+                                <i class="fas fa-times-circle fs-5"></i> Incorrect.
+                            </div>
+                            ${messageBody}
+                        </div>`;
                 }
                 feedbackBox.style.display = 'block';
 

@@ -30,11 +30,21 @@ class Course extends Model
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
-    public function lessons()
+    public function units()
     {
-        return $this->hasMany(Lesson::class)->orderBy('order', 'asc');
+        return $this->hasMany(Unit::class);
     }
 
+    public function lessons()
+    {
+        // Traverses Course -> Unit -> Section -> Lesson
+        return $this->hasManyThrough(
+            Lesson::class,
+            Section::class,
+            'unit_id',    // Foreign key on sections table (via unit)
+            'section_id'  // Foreign key on lessons table
+        );
+    }
     public function getProgressForUser($userId = null): int
     {
         $userId = $userId ?? auth()->id();
