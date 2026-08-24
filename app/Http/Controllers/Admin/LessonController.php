@@ -323,6 +323,8 @@ class LessonController extends Controller
             }
         });
 
+        session()->forget("quiz_questions_" . auth()->id() . "_{$lesson->id}");
+
         return redirect()->route('admin.lessons.index', ['section_id' => $lesson->section_id])
                          ->with('success', 'Lesson updated successfully.');
     }
