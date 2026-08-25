@@ -42,32 +42,17 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="course-single-meta">
-                           @forelse ($course->instructors as $instructor)
-    <div class="item author">
-        <div class="thumb">
-            <a href="#">
-                <img alt="{{ $instructor->name }}" 
-                     src="{{ !empty($instructor->image) ? asset('storage/' . $instructor->image) : asset('assets/img/team/m3.jpg') }}">
-            </a>
-        </div>
-        <div class="desc">
-            <h4>Instructor</h4>
-            <a href="#">{{ $instructor->name }}</a>
-        </div>
-    </div>
-@empty
-    <div class="item author">
-        <div class="thumb">
-            <a href="#">
-                <img alt="MIFFA Instructor" src="{{ asset('assets/img/team/m3.jpg') }}">
-            </a>
-        </div>
-        <div class="desc">
-            <h4>Instructor</h4>
+                            <!-- Instructor / Author -->
+                           <div class="item author">
+    <div class="desc">
+        <h4>{{ Str::plural('Instructor', count($course->instructors)) }}</h4>
+        @forelse ($course->instructors as $instructor)
+            <a href="#">{{ $instructor->name }}</a>{{ !$loop->last ? ', ' : '' }}
+        @empty
             <a href="#">MIFFA Instructor</a>
-        </div>
+        @endforelse
     </div>
-@endforelse
+</div>
 
                             <!-- Category -->
                             <div class="item category">
