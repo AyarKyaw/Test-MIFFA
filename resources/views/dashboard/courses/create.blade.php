@@ -21,7 +21,6 @@
                     </header>
 
                     <div class="m-card__body p-4">
-                        {{-- 1. Added enctype for file upload --}}
                         <form action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
@@ -58,80 +57,76 @@
 
                                 <!-- Category Selection -->
                                 <div class="col-md-6">
-                                    <label for="course_category_id" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('course_category_id') is-invalid @enderror" 
-                                            id="course_category_id" 
-                                            name="course_category_id" 
+                                    <label for="category_id" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('category_id') is-invalid @enderror" 
+                                            id="category_id" 
+                                            name="category_id" 
                                             required>
-                                        <option value="" disabled {{ old('course_category_id') ? '' : 'selected' }}>Select Category</option>
+                                        <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Select Category</option>
                                         @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ old('course_category_id') == $category->id ? 'selected' : '' }}>
+                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                                 {{ $category->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('course_category_id')
+                                    @error('category_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <div class="row mb-3">
-    <!-- Regular / Non-Member Price -->
-    <div class="col-md-6">
-        <label for="price" class="form-label fw-semibold">Standard Price (Non-Member)</label>
-        <div class="input-group">
-            <span class="input-group-text">MMK</span>
-            <input type="number" 
-                   step="0.01" 
-                   class="form-control @error('price') is-invalid @enderror" 
-                   id="price" 
-                   name="price" 
-                   value="{{ old('price', $course->price ?? '') }}" 
-                   placeholder="150000.00" 
-                   required>
-        </div>
-        @error('price')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <!-- Member Price -->
-    <div class="col-md-6">
-        <label for="member_price" class="form-label fw-semibold">Member Price</label>
-        <div class="input-group">
-            <span class="input-group-text">MMK</span>
-            <input type="number" 
-                   step="0.01" 
-                   class="form-control @error('member_price') is-invalid @enderror" 
-                   id="member_price" 
-                   name="member_price" 
-                   value="{{ old('member_price', $course->member_price ?? '') }}" 
-                   placeholder="120000.00">
-        </div>
-        @error('member_price')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
                                 <!-- Total Hours -->
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <label for="hour" class="form-label fw-semibold">Total Hours <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <input type="number" 
-                                               min="1" 
-                                               class="form-control @error('hour') is-invalid @enderror" 
-                                               id="hour" 
-                                               name="hour" 
-                                               value="{{ old('hour') }}" 
-                                               placeholder="e.g. 40"
-                                               required>
-                                    </div>
+                                    <input type="number" 
+                                           min="1" 
+                                           class="form-control @error('hour') is-invalid @enderror" 
+                                           id="hour" 
+                                           name="hour" 
+                                           value="{{ old('hour') }}" 
+                                           placeholder="e.g. 40"
+                                           required>
                                     @error('hour')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                {{-- 2. Added Image File Input with Live Preview --}}
+                                <!-- Standard Price -->
+                                <div class="col-md-6">
+                                    <label for="price" class="form-label fw-semibold">Standard Price (Non-Member)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">MMK</span>
+                                        <input type="number" 
+                                               step="0.01" 
+                                               class="form-control @error('price') is-invalid @enderror" 
+                                               id="price" 
+                                               name="price" 
+                                               value="{{ old('price') }}" 
+                                               placeholder="150000.00">
+                                    </div>
+                                    @error('price')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Member Price -->
+                                <div class="col-md-6">
+                                    <label for="member_price" class="form-label fw-semibold">Member Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">MMK</span>
+                                        <input type="number" 
+                                               step="0.01" 
+                                               class="form-control @error('member_price') is-invalid @enderror" 
+                                               id="member_price" 
+                                               name="member_price" 
+                                               value="{{ old('member_price') }}" 
+                                               placeholder="120000.00">
+                                    </div>
+                                    @error('member_price')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Image Upload -->
                                 <div class="col-md-12">
                                     <label for="image" class="form-label fw-semibold">Course Thumbnail Image</label>
                                     <input type="file" 
@@ -145,7 +140,6 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
 
-                                    <!-- Image Preview Container -->
                                     <div class="mt-2" id="image-preview-wrapper" style="display: none;">
                                         <img id="image-preview" src="#" alt="Course Image Preview" class="img-thumbnail rounded" style="max-height: 150px; object-fit: cover;">
                                     </div>
@@ -158,14 +152,14 @@
                                               id="desc" 
                                               name="desc" 
                                               rows="5" 
-                                              placeholder="Provide a detailed overview of the course curriculum, target audience, and objectives...">{{ old('desc') }}</textarea>
+                                              placeholder="Provide a detailed overview of the course curriculum...">{{ old('desc') }}</textarea>
                                     @error('desc')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
 
-                            <!-- Action Buttons -->
+                            <!-- Buttons -->
                             <div class="mt-4 d-flex justify-content-end gap-2">
                                 <a href="{{ route('admin.courses.index') }}" class="btn btn-light border">Cancel</a>
                                 <button type="submit" class="au-btn au-btn--green au-btn--small d-inline-flex align-items-center gap-1 border-0">
@@ -180,7 +174,6 @@
     </div>
 </main>
 
-{{-- Image Preview Script --}}
 <script>
 function previewCourseImage(event) {
     const input = event.target;

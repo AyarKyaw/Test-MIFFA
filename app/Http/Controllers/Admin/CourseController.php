@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
-use App\Models\CourseCategory;
 use App\Models\Category;
 use App\Models\Instructor;
 use Illuminate\Http\RedirectResponse;
@@ -50,17 +49,13 @@ class CourseController extends Controller
         $validated = $request->validate([
             'title'              => 'required|string|max:255',
             'code'               => 'required|string|max:50|unique:courses,code',
-            'course_category_id' => 'required|exists:course_categories,id',
+            'category_id' => 'required|exists:categories,id', // Fixed table name
             'price'              => 'nullable|numeric|min:0',
             'hour'               => 'required|integer|min:1',
             'desc'               => 'nullable|string',
-            'member_price' => 'nullable|numeric|min:0|lte:price',
+            'member_price'       => 'nullable|numeric|min:0|lte:price',
             'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
-
-        // Map form input 'course_category_id' to database column 'category_id'
-        $validated['category_id'] = $validated['course_category_id'];
-        unset($validated['course_category_id']);
 
         $validated['price'] = $validated['price'] ?? 0;
 
@@ -80,7 +75,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course): View
     {
-        $categories = CourseCategory::orderBy('name')->get();
+        $categories = Category::orderBy('name')->get(); // Fixed Model
         $instructors = Instructor::orderBy('name')->get();
 
         // Eager load assigned instructor IDs for pre-selection in view
@@ -97,13 +92,13 @@ class CourseController extends Controller
         $validated = $request->validate([
             'title'              => 'required|string|max:255',
             'code'               => 'required|string|max:50|unique:courses,code,' . $course->id,
-            'course_category_id' => 'required|exists:course_categories,id',
+            'course_category_id' => 'required|exists:categories,id', // Fixed table name
             'instructor_ids'     => 'nullable|array',
             'instructor_ids.*'   => 'exists:instructors,id',
             'price'              => 'nullable|numeric|min:0',
             'hour'               => 'required|integer|min:1',
             'desc'               => 'nullable|string',
-            'member_price' => 'nullable|numeric|min:0|lte:price',
+            'member_price'       => 'nullable|numeric|min:0|lte:price',
             'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
