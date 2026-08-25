@@ -86,7 +86,7 @@
                                         </td>
                                         <td>
                                             <span class="fw-semibold text-success">
-                                                {{ $course->price ? '$' . number_format($course->price, 2) : 'Free' }}
+                                                {{ number_format($course->price, 0) }} MMK
                                             </span>
                                         </td>
                                         <td>{{ $course->created_at ? $course->created_at->format('M d, Y H:i') : 'N/A' }}</td>

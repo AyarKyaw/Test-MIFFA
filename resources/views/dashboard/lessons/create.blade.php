@@ -23,16 +23,15 @@
 
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label for="course_id" class="form-label fw-bold">Course <span class="text-danger">*</span></label>
-                                <select name="course_id" id="course_id" class="form-select @error('course_id') is-invalid @enderror" required>
-                                    <option value="">-- Select Course --</option>
-                                    @foreach($courses as $course)
-                                        <option value="{{ $course->id }}" {{ old('course_id', request('course_id')) == $course->id ? 'selected' : '' }}>
-                                            {{ $course->title }}
+                                <label for="section_id" class="form-label fw-bold">Section <span class="text-danger">*</span></label>
+                                <select name="section_id" id="section_id" class="form-select @error('section_id') is-invalid @enderror" required>
+                                    @foreach($sections as $section)
+                                        <option value="{{ $section->id }}" {{ old('section_id', $lesson->section_id) == $section->id ? 'selected' : '' }}>
+                                            {{ $section->title }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('course_id')
+                                @error('section_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

@@ -32,16 +32,15 @@ class LessonController extends Controller
 
     public function create(Request $request)
     {
-        $courses = Course::orderBy('title')->get();
+        $sections = Section::orderBy('title')->get();
         $sectionId = $request->query('section_id');
 
-        return view('dashboard.lessons.create', compact('courses', 'sectionId'));
+        return view('dashboard.lessons.create', compact('sections', 'sectionId'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'course_id'                         => 'required|exists:courses,id',
             'section_id'                        => 'nullable|exists:sections,id',
             'title'                             => 'required|string|max:255',
             'type'                              => 'required|string|in:video,article,document,quiz',
