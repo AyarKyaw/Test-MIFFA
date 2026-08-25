@@ -157,22 +157,49 @@
                                 </div>
                             </div>
 
-                            <!-- NRC Number -->
+                            <!-- Formatted Myanmar NRC Input -->
                             <div class="mb-3">
-                                <label for="nrc_number" class="form-label fw-semibold">NRC / Identity Number <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">NRC / Identity Number <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-address-card"></i></span>
+                                    <span class="input-group-text bg-white text-muted"><i class="fas fa-address-card"></i></span>
+                                    
+                                    <!-- State Number -->
+                                    <select class="form-select @error('nrc_state') is-invalid @enderror" id="nrc_state" name="nrc_state" style="max-width: 90px;" required>
+                                        <option value="" disabled {{ old('nrc_state') ? '' : 'selected' }}>State</option>
+                                        @for ($i = 1; $i <= 14; $i++)
+                                            <option value="{{ $i }}" {{ old('nrc_state') == $i ? 'selected' : '' }}>{{ $i }}/</option>
+                                        @endfor
+                                    </select>
+
+                                    <!-- Township / District Code -->
+                                    <select class="form-select @error('nrc_district') is-invalid @enderror" id="nrc_district" name="nrc_district" required>
+                                        <option value="" disabled selected>District</option>
+                                    </select>
+
+                                    <!-- Type -->
+                                    <select class="form-select @error('nrc_type') is-invalid @enderror" id="nrc_type" name="nrc_type" style="max-width: 100px;" required>
+                                        <option value="(N)" {{ old('nrc_type', '(N)') == '(N)' ? 'selected' : '' }}>(N)</option>
+                                        <option value="(P)" {{ old('nrc_type') == '(P)' ? 'selected' : '' }}>(P)</option>
+                                        <option value="(E)" {{ old('nrc_type') == '(E)' ? 'selected' : '' }}>(E)</option>
+                                        <option value="(NRA)" {{ old('nrc_type') == '(NRA)' ? 'selected' : '' }}>(NRA)</option>
+                                    </select>
+
+                                    <!-- 6-Digit Number -->
                                     <input type="text" 
-                                           class="form-control border-start-0 ps-0 @error('nrc_number') is-invalid @enderror" 
+                                           class="form-control @error('nrc_number') is-invalid @enderror" 
                                            id="nrc_number" 
                                            name="nrc_number" 
                                            value="{{ old('nrc_number') }}" 
-                                           placeholder="e.g. 12/YAGANA(N)123456" 
+                                           placeholder="123456" 
+                                           maxlength="6"
+                                           pattern="[0-9]{6}"
                                            required>
-                                    @error('nrc_number')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
                                 </div>
+                                @if($errors->has('nrc_state') || $errors->has('nrc_district') || $errors->has('nrc_type') || $errors->has('nrc_number'))
+                                    <div class="text-danger small mt-1">
+                                        Please provide a valid NRC format (e.g. 12/YAGANA(N)123456).
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Company & Job Title -->
@@ -281,4 +308,58 @@
     </div>
 </div>
 <!-- End Enrollment Form Area -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const stateSelect = document.getElementById('nrc_state');
+    const districtSelect = document.getElementById('nrc_district');
+    
+    const districtOptions = {
+        "1": ["ကပတ", "ကမတ", "ခပန", "ခလဖ", "ဆဒန", "ဆပရ", "ဆဘန", "တဆလ", "တနန", "ဒဖယ", "နမန", "ပတအ", "ပနဒ", "ပဝန", "ဖကန", "ဗမန", "မကတ", "မကန", "မခဘ", "မစန", "မညန", "မမန", "မလန", "ရှကန", "ရှဗယ", "လဂျန", "ဟပန", "အဂျယ", "၀မန"],
+        "2": ["ဒမဆ", "ဖဆန", "ဖရဆ", "ဘလခ", "မစန", "ရတန", "ရသန", "လကန"],
+        "3": ["ကကရ", "ကဆက", "ကဒတ", "ကဒန", "ကမမ", "စကလ", "ပကန", "ဖပန", "ဘဂလ", "ဘသဆ", "ဘအန", "မဝတ", "ရသန", "လဘန", "လသန", "ဝလမ", "သတက", "သတန"],
+        "4": ["ကခန", "ကပလ", "ဆမန", "တဇန", "တတန", "ထတလ", "ပလဝ", "ဖလန", "မတန", "မတပ", "ရခဒ", "ရဇန", "ဟခန"],
+        "5": ["ကနန", "ကဘလ", "ကမန", "ကလတ", "ကလထ", "ကလန", "ကလဝ", "ကသန", "ခတန", "ခပန", "ခဥတ", "ခဥန", "ငဇန", "စကန", "ဆလက", "တဆန", "တမန", "ထခန", "ဒပယ", "နယန", "ပလန", "ပလဘ", "ဖပန", "ဗမန", "ဘတလ", "မကန", "မမတ", "မမန", "မရန", "မလန", "ယမပ", "ရဘန", "ရဥန", "လရန", "လဟန", "ဝလန", "ဝသန", "ဟမလ", "အတန", "အရတ"],
+        "6": ["ကစန", "ကရရ", "ကလအ", "ကသန", "ခမန", "တသရ", "ထဝန", "ပလတ", "ပလန", "ဘပန", "မတန", "မမန", "ရဖြန", "လလန", "သရခ"],
+        "7": ["ကကန", "ကတခ", "ကပက", "ကဝန", "ဇကန", "ညလပ", "တငန", "ထတပ", "ဒဥန", "နတလ", "ပခတ", "ပခန", "ပတဆ", "ပတတ", "ပတန", "ပနက", "ပမန", "ဖမန", "မညန", "မလန", "ရကန", "ရတန", "ရတရှ", "လပတ", "ဝမန", "သကန", "သဆန", "သနပ", "သဝတ", "အတန", "အဖန"],
+        "8": ["ကထန", "ကမန", "ခမန", "ဂဂန", "ငဖန", "စတရ", "စလန", "ဆပဝ", "ဆဖန", "ဆမန", "တတက", "ထလန", "နမန", "ပခက", "ပဖြန", "ပမန", "မကန", "မတန", "မထန", "မဘန", "မမန", "မလန", "မသန", "ရစက", "ရနခ", "သရန", "အလန"],
+        "9": ["ကဆန", "ကပတ", "ခမစ", "ခအစ", "ငဇန", "ငသရ", "စကတ", "စကန", "ဇဗသ", "ဇယသ", "ညဥန", "တကတ", "တကန", "တတဥ", "တသန", "ဒခသ", "နထက", "ပကခ", "ပဗသ", "ပဘန", "ပမန", "ပသက", "ပဥလ", "မကန", "မခန", "မတရ", "မထလ", "မမန", "မလန", "မသန", "မဟမ", "ရမသ", "လဝန", "ဝတန", "သစန", "သပက", "အမစ", "အမရ", "ဥတသ"],
+        "10": ["ကထန", "ကမရ", "ခဆန", "ခဇန", "ပမန", "ဘလန", "မဒန", "မလမ", "ရမန", "လမန", "သထန", "သဖြရ"],
+        "11": ["ကတန", "ကတလ", "ကဖန", "ဂမန", "စတန", "တကန", "တပဝ", "ပဏတ", "ပတန", "ဗတထ", "ဘသတ", "မတန", "မပတ", "မပန", "မအတ", "မအန", "မဥန", "ရဗန", "ရသတ", "သတန", "အမန"],
+        "12": ["ကကက", "ကခက", "ကတတ", "ကတန", "ကမတ", "ကမန", "ကမရ", "ခရန", "စခန", "ဆကခ", "ဆကန", "တကန", "တတထ", "တတန", "တမန", "ထတပ", "ဒဂဆ", "ဒဂတ", "ဒဂန", "ဒဂမ", "ဒဂရ", "ဒပန", "ဒလန", "ပဇတ", "ပဘတ", "ဗဟန", "မဂတ", "မဂဒ", "မဘန", "မရက", "ရကန", "ရပသ", "လကန", "လမတ", "လမန", "လသန", "လသယ", "သကတ", "သခန", "သဃက", "သလန", "အစန", "အလန", "ဥကတ", "ဥကန", "ဥကမ"],
+        "13": ["ကခန", "ကတတ", "ကတန", "ကတလ", "ကမဆ", "ကမန", "ကရန", "ကလတ", "ကလဒ", "ကလန", "ကလဖ", "ကသန", "ကဟန", "ခမန", "ခရဟ", "ခလန", "ဆဆန", "ဆဖန", "ညရန", "တကန", "တခလ", "တမည", "တယန", "တလန", "နကန", "နခတ", "နခန", "နခဝ", "နဆန", "နတန", "နတယ", "နဖန", "နမတ", "နဝန", "ပခန", "ပဆန", "ပတယ", "ပပက", "ပယန", "ပလတ", "ပလန", "ပဝန", "ဖခန", "မကန", "မခန", "မငန", "မဆတ", "မဆန", "မတတ", "မတန", "မနန", "မပန", "မဖန", "မဗတ", "မဘန", "မမဆ", "မမတ", "မမန", "မယန", "မရတ", "မရန", "မလန", "မဟရ", "ယလန", "ရငန", "ရစန", "ရဖန", "လကတ", "လခတ", "လခန", "လရန", "လလန", "လဟန", "သနန", "သပန", "ဟတန", "ဟပတ", "ဟပန", "အခန", "အတန"],
+        "14": ["ကကထ", "ကကန", "ကခန", "ကပန", "ကလန", "ငဆန", "ငပတ", "ငရက", "ငသခ", "ငသယ", "ဇလန", "ညတန", "ဒဒရ", "ဒနဖြ", "ပစလ", "ပတန", "ပသန", "ဖပန", "ဘကလ", "မမက", "မမန", "မအန", "မအပ", "ရကန", "ရသယ", "လပတ", "လမန", "ဝခမ", "သပန", "ဟကကျ", "ဟသတ", "အဂပ", "အမတ", "အမန"]
+    };
+
+    const oldState = "{{ old('nrc_state') }}";
+    const oldDistrict = "{{ old('nrc_district') }}";
+
+    function populateDistricts(selectedState, preselectDistrict = '') {
+        districtSelect.innerHTML = '<option value="" disabled selected>District</option>';
+
+        if (selectedState && districtOptions[selectedState]) {
+            districtOptions[selectedState].forEach(function (district) {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+
+                if (district === preselectDistrict) {
+                    option.selected = true;
+                }
+
+                districtSelect.appendChild(option);
+            });
+        }
+    }
+
+    stateSelect.addEventListener('change', function () {
+        populateDistricts(this.value);
+    });
+
+    if (oldState) {
+        stateSelect.value = oldState;
+        populateDistricts(oldState, oldDistrict);
+    }
+});
+</script>
 @endsection
