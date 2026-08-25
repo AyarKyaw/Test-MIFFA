@@ -38,135 +38,147 @@ class LessonController extends Controller
         return view('dashboard.lessons.create', compact('sections', 'sectionId'));
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'section_id'                        => 'nullable|exists:sections,id',
-            'title'                             => 'required|string|max:255',
-            'type'                              => 'required|string|in:video,article,document,quiz',
-            'video_url'                         => 'nullable|url|max:255',
-            'content'                           => 'nullable|string',
-            'document_file'                     => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
-            'order'                             => 'nullable|integer',
-            'questions'                         => 'nullable|array',
-            'questions.*.text'                  => 'required_if:type,quiz|string',
-            'questions.*.type'                  => 'required_if:type,quiz|in:multiple_choice,boolean',
-            'questions.*.hint'                  => 'nullable|string',
-            'questions.*.explanation'           => 'nullable|string',
-            'questions.*.options'               => 'nullable|array',
-            'questions.*.options.*'             => 'nullable|array',
-            'questions.*.options.*.text'        => 'nullable|string',
-            'questions.*.options.*.feedback'    => 'nullable|string',
-            'questions.*.boolean_feedback'      => 'nullable|array',
-            'questions.*.boolean_feedback.true' => 'nullable|string',
-            'questions.*.boolean_feedback.false'=> 'nullable|string',
-        ]);
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'course_id'                           => 'nullable|exists:courses,id',
+        'section_id'                          => 'nullable|exists:sections,id',
+        'title'                               => 'required|string|max:255',
+        'type'                                => 'required|string|in:video,article,document,quiz',
+        'video_url'                           => 'nullable|url|max:255',
+        'content'                             => 'nullable|string',
+        'document_file'                       => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+        'order'                               => 'nullable|integer',
+        'questions'                           => 'nullable|array',
+        'questions.*.text'                    => 'required_if:type,quiz|nullable|string',
+        'questions.*.question_text'           => 'nullable|string',
+        'questions.*.type'                    => 'required_if:type,quiz|nullable|in:multiple_choice,boolean',
+        'questions.*.is_correct'              => 'nullable',
+        'questions.*.correct_option'          => 'nullable',
+        'questions.*.hint'                    => 'nullable|string',
+        'questions.*.explanation'             => 'nullable|string',
+        'questions.*.options'                 => 'nullable|array',
+        'questions.*.option_feedbacks'        => 'nullable|array',
+        'questions.*.boolean_feedback'        => 'nullable|array',
+        'questions.*.boolean_feedback.true'   => 'nullable|string',
+        'questions.*.boolean_feedback.false'  => 'nullable|string',
+        'questions.*.true_feedback'           => 'nullable|string',
+        'questions.*.false_feedback'          => 'nullable|string',
+    ]);
 
-        $courseId = $validated['course_id'];
-        $sectionId = $request->input('section_id');
+    // Safely retrieve course_id from request or fallback
+    $courseId = $request->input('course_id');
+    $sectionId = $request->input('section_id');
 
-        if (!$sectionId) {
-            $section = Section::whereHas('unit', function ($query) use ($courseId) {
-                $query->where('course_id', $courseId);
-            })->first();
+    if (!$sectionId && $courseId) {
+        $section = Section::whereHas('unit', function ($query) use ($courseId) {
+            $query->where('course_id', $courseId);
+        })->first();
 
-            if (!$section) {
-                $unit = Unit::where('course_id', $courseId)->first();
+        if (!$section) {
+            $unit = Unit::where('course_id', $courseId)->first();
 
-                if (!$unit) {
-                    $unit = Unit::create([
-                        'course_id' => $courseId,
-                        'title'     => 'General Unit',
-                        'order'     => 1,
-                    ]);
-                }
-
-                $section = Section::create([
-                    'unit_id' => $unit->id,
-                    'title'   => 'General Section',
-                    'order'   => 1,
+            if (!$unit) {
+                $unit = Unit::create([
+                    'course_id' => $courseId,
+                    'title'     => 'General Unit',
+                    'order'     => 1,
                 ]);
             }
 
-            $sectionId = $section->id;
-        }
-
-        $validated['section_id'] = $sectionId;
-        $validated['order'] = $validated['order'] ?? 1;
-
-        if ($request->hasFile('document_file')) {
-            $validated['document_path'] = $request->file('document_file')->store('lessons/documents', 'public');
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $lesson = Lesson::create([
-                'section_id'    => $validated['section_id'],
-                'title'         => $validated['title'],
-                'type'          => $validated['type'],
-                'video_url'     => $validated['video_url'] ?? null,
-                'content'       => $validated['content'] ?? null,
-                'document_path' => $validated['document_path'] ?? null,
-                'order'         => $validated['order'],
+            $section = Section::create([
+                'unit_id' => $unit->id,
+                'title'   => 'General Section',
+                'order'   => 1,
             ]);
+        }
 
-            if ($lesson->type === 'quiz' && !empty($request->input('questions'))) {
-                foreach ($request->input('questions') as $qData) {
-                    $questionText = $qData['text'] ?? ($qData['question_text'] ?? '');
-                    $questionType = $qData['type'] ?? 'multiple_choice';
+        $sectionId = $section->id;
+    }
 
-                    $question = $lesson->questions()->create([
-                        'question_text' => $questionText,
-                        'type'          => $questionType,
-                        'is_correct'    => $questionType === 'boolean' ? (isset($qData['is_correct']) && $qData['is_correct'] == 1) : false,
-                        'hint'          => $qData['hint'] ?? null,
-                        'explanation'   => $qData['explanation'] ?? null,
+    $validated['section_id'] = $sectionId;
+    $validated['order'] = $validated['order'] ?? 1;
+
+    if ($request->hasFile('document_file')) {
+        $validated['document_path'] = $request->file('document_file')->store('lessons/documents', 'public');
+    }
+
+    try {
+        DB::beginTransaction();
+
+        $lesson = Lesson::create([
+            'section_id'    => $validated['section_id'],
+            'title'         => $validated['title'],
+            'type'          => $validated['type'],
+            'video_url'     => $validated['video_url'] ?? null,
+            'content'       => $validated['content'] ?? null,
+            'document_path' => $validated['document_path'] ?? null,
+            'order'         => $validated['order'],
+        ]);
+
+        if ($lesson->type === 'quiz' && !empty($request->input('questions'))) {
+            foreach ($request->input('questions') as $qData) {
+                $questionText = $qData['text'] ?? ($qData['question_text'] ?? null);
+                
+                // Skip empty question blocks
+                if (empty($questionText)) {
+                    continue;
+                }
+
+                $questionType = $qData['type'] ?? 'multiple_choice';
+                $isCorrectBool = filter_var($qData['is_correct'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+                $question = $lesson->questions()->create([
+                    'question_text' => $questionText,
+                    'type'          => $questionType,
+                    'is_correct'    => $questionType === 'boolean' ? $isCorrectBool : false,
+                    'hint'          => $qData['hint'] ?? null,
+                    'explanation'   => $qData['explanation'] ?? null,
+                ]);
+
+                if ($questionType === 'multiple_choice' && isset($qData['options']) && is_array($qData['options'])) {
+                    $selectedCorrectIndex = $qData['correct_option'] ?? 0;
+
+                    foreach ($qData['options'] as $optIndex => $optData) {
+                        $optText = is_array($optData) ? ($optData['text'] ?? '') : $optData;
+                        $optFeedback = is_array($optData) 
+                            ? ($optData['feedback'] ?? null) 
+                            : ($qData['option_feedbacks'][$optIndex] ?? null);
+
+                        if (!empty(trim((string)$optText))) {
+                            $question->options()->create([
+                                'option_text' => $optText,
+                                'is_correct'  => ((string)$optIndex === (string)$selectedCorrectIndex),
+                                'feedback'    => $optFeedback,
+                            ]);
+                        }
+                    }
+                } elseif ($questionType === 'boolean') {
+                    $question->options()->create([
+                        'option_text' => 'True',
+                        'is_correct'  => $isCorrectBool,
+                        'feedback'    => $qData['boolean_feedback']['true'] ?? ($qData['true_feedback'] ?? null),
                     ]);
 
-                    if ($questionType === 'multiple_choice' && isset($qData['options']) && is_array($qData['options'])) {
-                        $selectedCorrectIndex = $qData['correct_option'] ?? 0;
-
-                        foreach ($qData['options'] as $optIndex => $optData) {
-                            $optText = is_array($optData) ? ($optData['text'] ?? '') : $optData;
-                            $optFeedback = is_array($optData) ? ($optData['feedback'] ?? null) : ($qData['option_feedbacks'][$optIndex] ?? null);
-
-                            if (!empty(trim($optText))) {
-                                $question->options()->create([
-                                    'option_text' => $optText,
-                                    'is_correct'  => ((string)$optIndex === (string)$selectedCorrectIndex),
-                                    'feedback'    => $optFeedback,
-                                ]);
-                            }
-                        }
-                    } elseif ($questionType === 'boolean') {
-                        $correctIsTrue = (isset($qData['is_correct']) && $qData['is_correct'] == '1');
-                        
-                        $question->options()->create([
-                            'option_text' => 'True',
-                            'is_correct'  => $correctIsTrue,
-                            'feedback'    => $qData['boolean_feedback']['true'] ?? ($qData['true_feedback'] ?? null),
-                        ]);
-
-                        $question->options()->create([
-                            'option_text' => 'False',
-                            'is_correct'  => !$correctIsTrue,
-                            'feedback'    => $qData['boolean_feedback']['false'] ?? ($qData['false_feedback'] ?? null),
-                        ]);
-                    }
+                    $question->options()->create([
+                        'option_text' => 'False',
+                        'is_correct'  => !$isCorrectBool,
+                        'feedback'    => $qData['boolean_feedback']['false'] ?? ($qData['false_feedback'] ?? null),
+                    ]);
                 }
             }
-
-            DB::commit();
-
-            return redirect()->route('admin.lessons.index', ['course_id' => $courseId])
-                             ->with('success', 'Lesson created successfully.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withInput()->withErrors(['error' => 'Failed to store lesson: ' . $e->getMessage()]);
         }
+
+        DB::commit();
+
+        return redirect()->route('admin.lessons.index', ['course_id' => $courseId])
+                         ->with('success', 'Lesson created successfully.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withInput()->withErrors(['error' => 'Failed to store lesson: ' . $e->getMessage()]);
     }
+}
 
     public function getQuestions(Lesson $lesson)
     {

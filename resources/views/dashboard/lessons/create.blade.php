@@ -24,16 +24,17 @@
                         <div class="row g-3">
                             <div class="col-md-8">
                                 <label for="section_id" class="form-label fw-bold">Section <span class="text-danger">*</span></label>
-                                <select name="section_id" id="section_id" class="form-select @error('section_id') is-invalid @enderror" required>
-                                    @foreach($sections as $section)
-                                        <option value="{{ $section->id }}" {{ old('section_id', $lesson->section_id) == $section->id ? 'selected' : '' }}>
-                                            {{ $section->title }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('section_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                    <select name="section_id" id="section_id" class="form-select @error('section_id') is-invalid @enderror" required>
+                                        <option value="" disabled {{ old('section_id', $sectionId) ? '' : 'selected' }}>Select a Section</option>
+                                        @foreach($sections as $section)
+                                            <option value="{{ $section->id }}" {{ old('section_id', $sectionId ?? null) == $section->id ? 'selected' : '' }}>
+                                                {{ $section->title }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('section_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                             </div>
 
                             <div class="col-md-4">
