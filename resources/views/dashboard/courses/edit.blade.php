@@ -21,7 +21,6 @@
                     </header>
 
                     <div class="m-card__body p-4">
-                        {{-- 1. Added enctype for file uploads --}}
                         <form action="{{ route('admin.courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -76,8 +75,27 @@
                                     @enderror
                                 </div>
 
+                                <!-- Instructor Selection -->
+                                <div class="col-md-6">
+                                    <label for="instructor_ids" class="form-label fw-semibold">Instructors</label>
+                                        <select class="form-select @error('instructor_ids') is-invalid @enderror" 
+                                                id="instructor_ids" 
+                                                name="instructor_ids[]" 
+                                                multiple>
+                                            @foreach ($instructors as $instructor)
+                                                <option value="{{ $instructor->id }}" 
+                                                    {{ in_array($instructor->id, old('instructor_ids', $course->instructors->pluck('id')->toArray())) ? 'selected' : '' }}>
+                                                    {{ $instructor->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @error('instructor_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 <!-- Course Fee/Price -->
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <label for="price" class="form-label fw-semibold">Course Fee ($)</label>
                                     <div class="input-group">
                                         <input type="number" 
@@ -95,7 +113,7 @@
                                 </div>
 
                                 <!-- Total Hours -->
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <label for="hour" class="form-label fw-semibold">Total Hours <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input type="number" 
@@ -112,7 +130,7 @@
                                     @enderror
                                 </div>
 
-                                {{-- 2. Added Image Field + Preview of existing/new image --}}
+                                <!-- Course Thumbnail Image -->
                                 <div class="col-md-12">
                                     <label for="image" class="form-label fw-semibold">Course Thumbnail Image</label>
                                     <input type="file" 
@@ -180,7 +198,7 @@ function previewCourseImage(event) {
         const reader = new FileReader();
         reader.onload = function(e) {
             previewImage.src = e.target.result;
-            previewLabel.textContent = 'New Image Preview:';
+            if (previewLabel) previewLabel.textContent = 'New Image Preview:';
             previewWrapper.style.display = 'block';
         }
         reader.readAsDataURL(input.files[0]);

@@ -92,7 +92,7 @@
                         </div>
                     </li>
                     <li>
-                        <i class="fas fa-user"></i> {{ $course->students_count ?? 0 }} Students
+                        <i class="fas fa-user"></i>{{ $course->users_count ?? $course->students_count ?? 0 }} Students
                     </li>
                 </ul>
             </div>

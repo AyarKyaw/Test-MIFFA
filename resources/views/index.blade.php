@@ -46,36 +46,55 @@
     <!-- End Banner -->
 
     <!-- Start Category 
-    ============================================= -->
-    <div class="category-style-two-area default-padding bg-cover bg-gray-secondary" style="background-image: url(assets/img/shape/wooden.png);">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <div class="site-heading text-center">
-                        <h4 class="sub-title">Top categories</h4>
-                        <h2 class="title split-text">Most demanding category to learn from today</h2>
-                    </div>
+============================================= -->
+<div class="category-style-two-area default-padding bg-cover bg-gray-secondary" style="background-image: url({{ asset('assets/img/shape/wooden.png') }});">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="site-heading text-center">
+                    <h4 class="sub-title">Top Categories</h4>
+                    <h2 class="title split-text">Explore Logistics & Freight Training Programs</h2>
                 </div>
             </div>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="category-style-two-carousel swiper">
-                        <!-- Additional required wrapper -->
-                        <div class="swiper-wrapper">
-            
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="category-style-two-carousel swiper">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper">
+        
+                        @forelse($categories as $index => $category)
+                            <!-- Single Item -->
+                            <div class="swiper-slide">
+                                <div class="category-style-two-item wow fadeInUp" data-wow-delay="{{ $index * 100 }}ms">
+                                    <a href="{{ url('/course/categories') }}">
+                                        <div class="info">
+                                            <h4>{{ $category->name }}</h4>
+                                            <span>{{ $category->courses_count ?? 0 }} Courses</span>
+                                        </div>
+                                        <div class="thumb">
+                                            <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('assets/img/category/' . (($index % 4) + 1) . '.jpg') }}" alt="{{ $category->name }}">
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- End Single Item -->
+                        @empty
+                            <!-- Fallback Static Items if $categories collection is empty -->
+                            
                             <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp">
-                                    <a href="course-filter.html">
+                                    <a href="{{ url('/course/categories') }}">
                                         <div class="info">
-                                            <h4>Programming <strong>interface </strong></h4>
-                                            <span>10 Courses</span>
+                                            <h4>Freight <strong>Forwarding</strong></h4>
+                                            <span>12 Courses</span>
                                         </div>
                                         <i class="fas fa-long-arrow-right"></i>
                                         <div class="thumb">
-                                            <img src="assets/img/category/1.jpg" alt="Image Not Found">
+                                            <img src="{{ asset('assets/img/category/1.jpg') }}" alt="Freight Forwarding">
                                         </div>
                                     </a>
                                 </div>
@@ -85,14 +104,14 @@
                             <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="100ms">
-                                    <a href="course-filter.html">
+                                    <a href="{{ url('/course/categories') }}">
                                         <div class="info">
-                                            <h4>Business Guide <strong>& Finance </strong></h4>
-                                            <span>26 Courses</span>
+                                            <h4>Customs Clearance <strong>& Documentation</strong></h4>
+                                            <span>8 Courses</span>
                                         </div>
                                         <i class="fas fa-long-arrow-right"></i>
                                         <div class="thumb">
-                                            <img src="assets/img/category/2.jpg" alt="Image Not Found">
+                                            <img src="{{ asset('assets/img/category/2.jpg') }}" alt="Customs Clearance">
                                         </div>
                                     </a>
                                 </div>
@@ -102,14 +121,14 @@
                             <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="200ms">
-                                    <a href="course-filter.html">
+                                    <a href="{{ url('/course/categories') }}">
                                         <div class="info">
-                                            <h4>Arts & Design <strong>Diagram </strong></h4>
-                                            <span>38 Courses</span>
+                                            <h4>Supply Chain <strong>Management</strong></h4>
+                                            <span>15 Courses</span>
                                         </div>
                                         <i class="fas fa-long-arrow-right"></i>
                                         <div class="thumb">
-                                            <img src="assets/img/category/3.jpg" alt="Image Not Found">
+                                            <img src="{{ asset('assets/img/category/3.jpg') }}" alt="Supply Chain Management">
                                         </div>
                                     </a>
                                 </div>
@@ -119,31 +138,32 @@
                             <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="300ms">
-                                    <a href="course-filter.html">
+                                    <a href="{{ url('/course/categories') }}">
                                         <div class="info">
-                                            <h4>Web Design & <strong>Development </strong></h4>
-                                            <span>20 Courses</span>
+                                            <h4>Multimodal <strong>Transport</strong></h4>
+                                            <span>10 Courses</span>
                                         </div>
                                         <i class="fas fa-long-arrow-right"></i>
                                         <div class="thumb">
-                                            <img src="assets/img/category/4.jpg" alt="Image Not Found">
+                                            <img src="{{ asset('assets/img/category/4.jpg') }}" alt="Multimodal Transport">
                                         </div>
                                     </a>
                                 </div>
                             </div>
                             <!-- End Single Item -->
 
-                        </div>
+                        @endforelse
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Category -->
+</div>
+<!-- End Category -->
 
     
-    <!-- Start Course 
-    ============================================= -->
+    <!-- Start Course ============================================= -->
     <div class="course-style-two-area default-padding bottom-less bg-gray-gradient-secondary overflow-hidden">
         <div class="container">
             <div class="row">
@@ -155,225 +175,95 @@
                 </div>
             </div>
         </div>
+        
         <div class="container">
-            <!-- <div class="row">
-                <div class="col-lg-12">
-                    <div class="course-style-one-bullet swiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="course-bullet-item">
-                                    <div class="icon">
-                                        <img src="assets/img/icon/26.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Design</h4>
-                                        <span>14 Courses</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="course-bullet-item">
-                                    <div class="icon">
-                                        <img src="assets/img/icon/27.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>App Development</h4>
-                                        <span>26 Courses</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="course-bullet-item">
-                                    <div class="icon">
-                                        <img src="assets/img/icon/28.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Spoken English</h4>
-                                        <span>15 Courses</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="course-bullet-item">
-                                    <div class="icon">
-                                        <img src="assets/img/icon/29.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Development</h4>
-                                        <span>12 Courses</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="course-bullet-item">
-                                    <div class="icon">
-                                        <img src="assets/img/icon/30.png" alt="Image Not Found">
-                                    </div>
-                                    <div class="info">
-                                        <h4>Security</h4>
-                                        <span>23 Courses</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            
             <div class="course-style-one-carousel swiper">
                 <div class="swiper-wrapper">
-                    
-                    <!-- Single Item -->
+                    <!-- Swiper Slide Container -->
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="course-inner-carousel swiper">
                                 <div class="swiper-wrapper">
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/course-1.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star-half-alt"></i>  
-                                                            <span>(4.8)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
+                                    
+                                    @foreach($courses as $course)
+                                        <!-- Single Item -->
+                                        <div class="swiper-slide">
+                                            <div class="course-style-one-item hover-less style-two">
+                                                <div class="thumb">
+                                                    <a href="{{ url('/courses/' . $course->id) }}">
+                                                        <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}">
+                                                    </a>
                                                 </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m2.jpg" alt="Image Not Found">
-                                                    <a href="#">Aleesha Brown <span>WordPress Developer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Basic to Advance UX & UI Design and live Training Course</a></h4>
-                                                <div class="course-meta">
+                                                <div class="top-meta">
                                                     <ul>
                                                         <li>
-                                                            <i class="fas fa-file-alt"></i> 78 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 120 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$48.00</del> $32.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/course-2.jpg" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i>  
-                                                            <span>(5.0)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m1.jpg" alt="Image Not Found">
-                                                    <a href="#">Kevin Martin <span>Graphics Designer</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Best live Figma Courses online with expertise certificates</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 54 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 340 Students
+                                                            <div class="course-rating">
+                                                                @php
+                                                                    $rating = $course->rating ?? 0;
+                                                                    $fullStars = floor($rating);
+                                                                    $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                                                    $emptyStars = 5 - $fullStars - ($hasHalfStar ? 1 : 0);
+                                                                @endphp
+
+                                                                @for($i = 0; $i < $fullStars; $i++)
+                                                                    <i class="fas fa-star"></i>
+                                                                @endfor
+
+                                                                @if($hasHalfStar)
+                                                                    <i class="fas fa-star-half-alt"></i>
+                                                                @endif
+
+                                                                @for($i = 0; $i < $emptyStars; $i++)
+                                                                    <i class="far fa-star"></i>
+                                                                @endfor
+
+                                                                <span>({{ number_format($rating, 1) }})</span>
+                                                            </div>
                                                         </li>
                                                     </ul>
+                                                    <div class="bookmark">
+                                                        <a href="#">
+                                                            <i class="fas fa-bookmark"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$53.00</del> $28.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
+                                                
+                                                <div class="info">
+                                                    <h4>
+                                                        <a href="{{ url('/courses/' . $course->id) }}">
+                                                            {{ $course->title }}
+                                                        </a>
+                                                    </h4>
+                                                    
+                                                    <div class="course-meta">
+                                                        <ul>
+                                                            <!-- <li>
+                                                                <i class="fas fa-file-alt"></i> {{ $course->lessons_count }} Lessons
+                                                            </li> -->
+                                                            <li>
+                                                                <i class="fas fa-user"></i> {{ $course->users_count ?? $course->students_count ?? 0 }} Students
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="course-bottom-meta">
+                                                    <h2 class="price">
+                                                        {{ number_format($course->price, 0) }} MMK
+                                                    </h2>
+                                                    <a href="{{ url('/courses/' . $course->id) }}">
+                                                        <i class="fas fa-shopping-cart"></i> View Detail
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <!-- Single Item -->
-                                    <!-- Single Item -->
-                                    <div class="swiper-slide">
-                                        <div class="course-style-one-item hover-less style-two">
-                                            <div class="thumb">
-                                                <img src="assets/img/courses/course-3.png" alt="Image Not Found">
-                                            </div>
-                                            <div class="top-meta">
-                                                <ul>
-                                                    <li>
-                                                        <div class="course-rating">
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star"></i> 
-                                                            <i class="fas fa-star-half-alt"></i>  
-                                                            <span>(4.9)</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="bookmark">
-                                                    <a href="#"><i class="fas fa-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="assets/img/team/m3.jpg" alt="Image Not Found">
-                                                    <a href="#">Sarah Albert <span>Marketing Expert</span></a>
-                                                </div>
-                                                <h4><a href="course-single.html">Complete React Front-end developer course</a></h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <i class="fas fa-file-alt"></i> 48 Lessons
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> 650 Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="course-bottom-meta">
-                                                <h2 class="price"><del>$36.00</del> $20.00</h2>
-                                                <a href="#"><i class="fas fa-shopping-cart"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
+                                        <!-- End Single Item -->
+                                    @endforeach
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- End Single Item -->
                 </div>
             </div>
         </div>

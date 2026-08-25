@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Course extends Model
 {
@@ -18,6 +19,11 @@ class Course extends Model
         'desc',
         'image',
     ];
+
+    public function instructors(): BelongsToMany
+    {
+        return $this->belongsToMany(Instructor::class);
+    }
 
     // Relationship to Course Category
     public function category()
@@ -45,6 +51,13 @@ class Course extends Model
             'section_id'  // Foreign key on lessons table
         );
     }
+
+    // Relationship to Enrolled Students
+    public function students()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+    
     public function getProgressForUser($userId = null): int
     {
         $userId = $userId ?? auth()->id();

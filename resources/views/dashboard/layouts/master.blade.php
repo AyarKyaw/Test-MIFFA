@@ -90,6 +90,12 @@
                 <li><a href="{{ route('admin.courses.create') }}">Create</a></li>
               </ul>
             </li>
+            <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Instructor</a>
+              <ul class="list-unstyled navbar__sub-list js-sub-list">
+                <li><a href="{{ route('admin.instructors.index') }}">View</a></li>
+                <li><a href="{{ route('admin.instructors.create') }}">Create</a></li>
+              </ul>
+            </li>
             </ul>
           </nav>
         </div>

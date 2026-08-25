@@ -25,6 +25,9 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\InstructorController;
+
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,9 +36,7 @@ use App\Http\Controllers\Admin\SectionController;
 */
 
 // Public / Frontend Routes
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('/about', function () {
     return view('about-us');
@@ -116,6 +117,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->names('admin.categories');
     Route::resource('/dashboard/courses', AdminCourseController::class)
         ->names('admin.courses');
+
+    Route::resource('instructors', InstructorController::class)->names('admin.instructors');
 
         
     // Payment Routes

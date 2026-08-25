@@ -42,19 +42,32 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="course-single-meta">
-                            <!-- Instructor / Author -->
-                            <div class="item author">
-                                <div class="thumb">
-                                    <a href="#">
-                                        <img alt="{{ $course->instructor->name ?? 'Instructor' }}" 
-                                            src="{{ isset($course->instructor->avatar) ? asset($course->instructor->avatar) : asset('assets/img/team/m3.jpg') }}">
-                                    </a>
-                                </div>
-                                <div class="desc">
-                                    <h4>Author</h4>
-                                    <a href="#">{{ $course->instructor->name ?? 'MIFFA Instructor' }}</a>
-                                </div>
-                            </div>
+                           @forelse ($course->instructors as $instructor)
+    <div class="item author">
+        <div class="thumb">
+            <a href="#">
+                <img alt="{{ $instructor->name }}" 
+                     src="{{ !empty($instructor->image) ? asset('storage/' . $instructor->image) : asset('assets/img/team/m3.jpg') }}">
+            </a>
+        </div>
+        <div class="desc">
+            <h4>Instructor</h4>
+            <a href="#">{{ $instructor->name }}</a>
+        </div>
+    </div>
+@empty
+    <div class="item author">
+        <div class="thumb">
+            <a href="#">
+                <img alt="MIFFA Instructor" src="{{ asset('assets/img/team/m3.jpg') }}">
+            </a>
+        </div>
+        <div class="desc">
+            <h4>Instructor</h4>
+            <a href="#">MIFFA Instructor</a>
+        </div>
+    </div>
+@endforelse
 
                             <!-- Category -->
                             <div class="item category">
@@ -63,10 +76,10 @@
                             </div>
 
                             <!-- Rating / Code -->
-                            <div class="item rating">
+                            <!-- <div class="item rating">
                                 <h4>Course Code</h4>
                                 <span class="fw-bold text-dark">{{ $course->code ?? 'N/A' }}</span>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -447,9 +460,9 @@
                                         <div class="course-includes">
                                             <div class="info">
                                                 <ul>
-                                                    <li>
+                                                    <!-- <li>
                                                         <i class="fas fa-code"></i> Course Code <span>{{ $course->code ?? 'N/A' }}</span>
-                                                    </li>
+                                                    </li> -->
                                                     <li>
                                                         <i class="fas fa-clock"></i> Duration <span>{{ $course->hour ?? '0' }} Hours</span>
                                                     </li>

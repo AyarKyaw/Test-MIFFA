@@ -20,8 +20,18 @@ class CourseController extends Controller
 {
     $selectedCategorySlug = $request->query('category');
 
-    // Query top-tier CourseCategories with their middle-tier categories and courses
-    $categoriesQuery = CourseCategory::with('categories.courses');
+    // Eager load nested categories and courses with their respective counts
+    $categoriesQuery = CourseCategory::with([
+        'categories.courses' => function ($query) {
+            $query->withCount([
+                'users',
+                'units as lessons_count' => function ($subQuery) {
+                    $subQuery->join('sections', 'units.id', '=', 'sections.unit_id')
+                             ->join('lessons', 'sections.id', '=', 'lessons.section_id');
+                }
+            ]);
+        }
+    ]);
 
     if ($selectedCategorySlug) {
         $categoriesQuery->where('slug', $selectedCategorySlug);
@@ -32,10 +42,9 @@ class CourseController extends Controller
     $subCategories = $categories->pluck('categories')->flatten();
 
     // Fetch enrolled course IDs for authenticated user
-    $enrolledCourseIds = [];
-    if (auth()->check()) {
-        $enrolledCourseIds = auth()->user()->courses()->pluck('courses.id')->toArray();
-    }
+    $enrolledCourseIds = auth()->check() 
+        ? auth()->user()->courses()->pluck('courses.id')->toArray() 
+        : [];
 
     return view('course.index', [
         'courseCategory'    => $courseCategory,
@@ -47,7 +56,8 @@ class CourseController extends Controller
     public function show($id)
     {
         // Eager load category, units, and nested sections directly on the course model
-        $course = Course::with(['category', 'units.sections'])->findOrFail($id);
+        $course = Course::with(['category', 'instructors', 'units.sections'])->findOrFail($id);
+        
 
         // Fetch enrolled course IDs for authenticated user
         $enrolledCourseIds = [];
