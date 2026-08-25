@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CourseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class CourseCategoryController extends Controller
 {
@@ -35,28 +36,37 @@ class CourseCategoryController extends Controller
         $request->validate([
             'name'        => 'required|string|max:255|unique:course_categories,name',
             'slug'        => 'nullable|string|max:255|unique:course_categories,slug',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'description' => 'nullable|string',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('course-categories', 'public');
+        }
 
         CourseCategory::create([
             'name'        => $request->name,
             'slug'        => $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->name),
+            'image'       => $imagePath,
             'description' => $request->description,
         ]);
 
         return redirect()->route('admin.course-categories.index')
-                         ->with('success', 'Category created successfully!');
+                        ->with('success', 'Category created successfully!');
     }
 
     public function show(CourseCategory $courseCategory)
     {
-        $courseCategory->loadCount('courses');
-        return view('dashboard.course-categories.show', compact('courseCategory'));
+        $category = $courseCategory;
+        $category->loadCount('courses');
+        return view('dashboard.course-categories.show', compact('category'));
     }
 
     public function edit(CourseCategory $courseCategory)
     {
-        return view('dashboard.course-categories.edit', compact('courseCategory'));
+        $category = $courseCategory;
+        return view('dashboard.course-categories.edit', compact('category'));
     }
 
     public function update(Request $request, CourseCategory $courseCategory)
@@ -64,17 +74,30 @@ class CourseCategoryController extends Controller
         $request->validate([
             'name'        => 'required|string|max:255|unique:course_categories,name,' . $courseCategory->id,
             'slug'        => 'nullable|string|max:255|unique:course_categories,slug,' . $courseCategory->id,
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'description' => 'nullable|string',
         ]);
 
-        $courseCategory->update([
+        $data = [
             'name'        => $request->name,
             'slug'        => $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->name),
             'description' => $request->description,
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists
+            if ($courseCategory->image && Storage::disk('public')->exists($courseCategory->image)) {
+                Storage::disk('public')->delete($courseCategory->image);
+            }
+
+            // Store new image in storage/app/public/course-categories
+            $data['image'] = $request->file('image')->store('course-categories', 'public');
+        }
+
+        $courseCategory->update($data);
 
         return redirect()->route('admin.course-categories.index')
-                         ->with('success', 'Category updated successfully!');
+                        ->with('success', 'Category updated successfully!');
     }
 
     public function destroy(CourseCategory $courseCategory)

@@ -26,7 +26,7 @@
                             <strong>Add New</strong> Category
                         </div>
                         <div class="card-body card-block">
-                            <form action="{{ route('admin.course-categories.store') }}" method="POST">
+                            <form action="{{ route('admin.course-categories.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
 
                                 <!-- Category Name -->
@@ -54,6 +54,20 @@
                                            placeholder="e.g. diploma-courses" 
                                            value="{{ old('slug') }}">
                                     @error('slug')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Image Upload -->
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">Category Image</label>
+                                    <input type="file" 
+                                           id="image" 
+                                           name="image" 
+                                           class="form-control @error('image') is-invalid @enderror" 
+                                           accept="image/*">
+                                    <small class="form-text text-muted">Upload an optional cover image for this category (PNG, JPG, WEBP up to 2MB).</small>
+                                    @error('image')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

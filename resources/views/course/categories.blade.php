@@ -122,7 +122,7 @@
                                         <div class="course-style-one-item hover-less equal-card">
                                             <div class="thumb">
                                                 <a href="{{ $categoryTargetUrl }}">
-                                                    <img src="{{ !empty($category->image_url) ? asset($category->image_url) : asset('assets/img/courses/4.jpg') }}" alt="{{ $category->name }}">
+                                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}">
                                                 </a>
                                             </div>
                                             <div class="info">
