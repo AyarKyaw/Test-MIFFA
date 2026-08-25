@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\Category;
 use App\Models\Instructor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class CourseController extends Controller
      */
     public function create(): View
     {
-        $categories = CourseCategory::orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
 
         return view('dashboard.courses.create', compact('categories'));
     }
