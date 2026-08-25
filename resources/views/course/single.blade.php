@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="course-single-meta-box">
+        <div class="course-single-meta-box" style="padding-top: 20px;">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -89,7 +89,7 @@
                                             Curriculum
                                         </button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
+                                    <!-- <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="tabs_3" data-bs-toggle="tab" data-bs-target="#tab_3" type="button" role="tab" aria-controls="tab_3" aria-selected="false">
                                             Advisor
                                         </button>
@@ -98,292 +98,78 @@
                                         <button class="nav-link" id="tabs_4" data-bs-toggle="tab" data-bs-target="#tab_4" type="button" role="tab" aria-controls="tab_4" aria-selected="false">
                                             Reviews
                                         </button>
-                                    </li>
+                                    </li> -->
                                 </ul>
 
                                 <div class="tab-content course-details-tab-content" id="myTabContent">
                                     <!-- Tab Single -->
                                     <div class="tab-pane fade show active" id="tab_1" role="tabpanel" aria-labelledby="tabs_1">
                                         <h2>About this course</h2>
-                                        <p>
-                                            There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. 
-                                        </p>
-                                        <p>
-                                            All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first   true generator on the Internet. It uses a dictionary of over 200 Latin words.
-                                        </p>
+                                        <div>
+                                            {!! $course->desc !!}
+                                        </div>
+
                                         <h2>What you’ll learn</h2>
                                         <ul class="list-style-one">
-                                            <li>Artificial Intelligence and Machine learning</li>
-                                            <li>AI-based tutoring platforms can connect students</li>
-                                            <li>Detecting suspicious behavior</li>
-                                            <li>AI algorithms can analyze students' academic</li>
-                                            <li>Algorithms can identify students</li>
-                                            <li>Automatically grade assignments</li>
+                                            @forelse($units as $unit)
+                                                <li>{{ $unit->title }}</li>
+                                            @empty
+                                                <li>No units available for this course yet.</li>
+                                            @endforelse
                                         </ul>
-                                        <h2>What is the target audience?</h2>
-                                        <p>
-                                            Placing assured be if removed it besides on. Far shed each high read are men over day. Afraid we praise lively he suffer family estate is. Ample order up in of in ready. Timed blind had now those ought set often which
-                                        </p>
                                     </div>
                                     <!-- End Tab Single -->
                                     <!-- Tab Single -->
                                     <div class="tab-pane fade" id="tab_2" role="tabpanel" aria-labelledby="tabs_2">
                                         <div class="faq-style-one-items curriculum-accordion">
                                             <div class="accordion" id="faqAccordion">
-                                                <div class="accordion-item faq-style-one">
-                                                    <h2 class="accordion-header" id="headingOne">
-                                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                            Understanding UI and UX design
-                                                        </button>
-                                                    </h2>
-                                                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                                                        <div class="accordion-body">
-                                                            <ul class="curriculum-list">
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>01</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i>Introduction to UI/UX Design
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <a href="#">Preview</a>
-                                                                        <span>2 hrs 45 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>02</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i> Persona Development
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>7 hrs 48 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>03</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-file"></i>
-                                                                                User Research Sssignments
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>3 hrs 25 min</span>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
+                                                @foreach($units as $unit)
+                                                    <div class="accordion-item faq-style-one">
+                                                        <!-- Unit Header -->
+                                                        <h2 class="accordion-header" id="headingUnit{{ $unit->id }}">
+                                                            <button class="accordion-button {{ $loop->first ? '' : 'collapsed' }}" 
+                                                                    type="button" 
+                                                                    data-bs-toggle="collapse" 
+                                                                    data-bs-target="#collapseUnit{{ $unit->id }}" 
+                                                                    aria-expanded="{{ $loop->first ? 'true' : 'false' }}" 
+                                                                    aria-controls="collapseUnit{{ $unit->id }}">
+                                                                {{ $unit->title }}
+                                                            </button>
+                                                        </h2>
+
+                                                        <!-- Unit Dropdown Content -->
+                                                        <div id="collapseUnit{{ $unit->id }}" 
+                                                            class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}" 
+                                                            aria-labelledby="headingUnit{{ $unit->id }}" 
+                                                            data-bs-parent="#faqAccordion">
+                                                            <div class="accordion-body">
+                                                                <ul class="curriculum-list">
+                                                                    @foreach($unit->sections as $index => $section)
+                                                                        <li>
+                                                                            <div class="left-content">
+                                                                                <span>{{ sprintf('%02d', $index + 1) }}</span>
+                                                                                <h5>
+                                                                                    <a href="{{ $section->url ?? '#' }}">
+                                                                                        <i class="fas {{ ($section->type ?? 'video') === 'file' ? 'fa-file' : 'fa-play-circle' }}"></i>
+                                                                                        {{ $section->title }}
+                                                                                    </a>
+                                                                                </h5>
+                                                                            </div>
+                                                                            <div class="right-content">
+                                                                                @if($section->is_preview)
+                                                                                    <a href="{{ $section->preview_url ?? '#' }}">Preview</a>
+                                                                                @else
+                                                                                    <i class="fas fa-lock"></i>
+                                                                                @endif
+                                                                                <span>{{ $section->duration }}</span>
+                                                                            </div>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="accordion-item faq-style-one">
-                                                    <h2 class="accordion-header" id="headingTwo">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                            Roles in UI/UX design
-                                                        </button>
-                                                    </h2>
-                                                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                                                        <div class="accordion-body">
-                                                            <ul class="curriculum-list">
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>01</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i> Understanding user needs
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <a href="#">Preview</a>
-                                                                        <span>2 hrs 45 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>02</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i> Visual design
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>7 hrs 48 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>03</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i>
-                                                                                Design and prototyping
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>3 hrs 25 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>04</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-file"></i>
-                                                                                Accessibility and inclusivity
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>5 hrs 24 min</span>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="accordion-item faq-style-one">
-                                                    <h2 class="accordion-header" id="headingThree">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                            User research techniques
-                                                        </button>
-                                                    </h2>
-                                                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                                                        <div class="accordion-body">
-                                                            <ul class="curriculum-list">
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>01</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i>Introduction to UI/UX Design
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <a href="#">Preview</a>
-                                                                        <span>2 hrs 45 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>02</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i> Persona Development
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>7 hrs 48 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>03</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-file"></i>
-                                                                                User Research Sssignments
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>3 hrs 25 min</span>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="accordion-item faq-style-one">
-                                                    <h2 class="accordion-header" id="headingFour">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                                            Analytics – Reports and dashboards
-                                                        </button>
-                                                    </h2>
-                                                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
-                                                        <div class="accordion-body">
-                                                            <ul class="curriculum-list">
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>01</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i> Understanding user needs
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <a href="#">Preview</a>
-                                                                        <span>2 hrs 45 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>02</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i> Visual design
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>7 hrs 48 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>03</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-play-circle"></i>
-                                                                                Design and prototyping
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>3 hrs 25 min</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="left-content">
-                                                                        <span>04</span>
-                                                                        <h5>
-                                                                            <a href="#">
-                                                                                <i class="fas fa-file"></i>
-                                                                                Accessibility and inclusivity
-                                                                            </a>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="right-content">
-                                                                        <i class="fas fa-lock"></i>
-                                                                        <span>5 hrs 24 min</span>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -622,7 +408,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="course-details-category">
+                        <div class="course-details-category" style="top: -60px !important">
                             <!-- Single Item -->
                             <div class="course-cat-single">
                                 <div class="course-preview-info style-two">
@@ -639,13 +425,24 @@
                                             <div class="pricce">
                                                 <h2>
                                                     @if(isset($course->price) && $course->price > 0)
-                                                        ${{ number_format($course->price, 2) }}
+                                                        {{ number_format($course->price, 0) }} MMK
                                                     @else
                                                         Free
                                                     @endif
                                                 </h2>
                                             </div>
-                                            <a class="btn btn-gradient animation btn-sm" href="{{ route('enroll.index', $course->id) }}">Buy Now</a>
+                                            @php
+                                                $isEnrolled = in_array($course->id, $enrolledCourseIds ?? []);
+                                            @endphp
+                                            @if($isEnrolled)
+                                                <a class="btn btn-gradient animation btn-sm" href="{{ route('courses.show', $course->id) }}">
+                                                    <i class="fas fa-check-circle"></i> Already Enrolled
+                                                </a>
+                                            @else
+                                                <a class="btn btn-gradient animation btn-sm" href="{{ route('enroll.index', $course->id) }}">
+                                                    Buy Now
+                                                </a>
+                                            @endif
                                         </div>
                                         <div class="course-includes">
                                             <div class="info">
@@ -682,7 +479,7 @@
 
     <!-- Start Related Course 
     ============================================= -->
-    <div class="related-course-area overflow-hidden default-padding-bottom">
+    <!-- <div class="related-course-area overflow-hidden default-padding-bottom">
         <div class="container">
             <div class="heading-left">
                 <div class="row">
@@ -698,7 +495,6 @@
                 <div class="col-lg-12">
                     <div class="related-course-carousel swiper">
                         <div class="swiper-wrapper">
-                            <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="course-style-one-item hover-less">
                                     <div class="thumb">
@@ -743,8 +539,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End Single Item -->
-                            <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="course-style-one-item hover-less">
                                     <div class="thumb">
@@ -789,8 +583,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End Single Item -->
-                            <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="course-style-one-item hover-less">
                                     <div class="thumb">
@@ -835,8 +627,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End Single Item -->
-                            <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="course-style-one-item hover-less">
                                     <div class="thumb">
@@ -881,12 +671,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End Single Item -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Related Course  -->
 @endsection

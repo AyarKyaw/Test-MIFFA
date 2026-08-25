@@ -3,6 +3,7 @@
 @section('title', ($courseCategory->name ?? 'Courses') . ' - MIFFA')
 
 @section('content')
+
     <!-- Start Breadcrumb -->
     <div class="breadcrumb-area text-center bg-gray-gradient-secondary">
         <div class="container">
@@ -61,53 +62,66 @@
                                      aria-labelledby="tabs_{{ $category->id }}">
                                     
                                     @forelse($category->courses as $course)
-                                        <!-- Single Course Item -->
-                                        <div class="course-style-one-item hover-less list-layout mb-4">
-                                            <div class="thumb">
-                                                <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}">
-                                            </div>
-                                            <div class="info">
-                                                <div class="author">
-                                                    <img src="{{ asset($course->instructor_image ?? 'assets/img/team/m2.jpg') }}" alt="{{ $course->instructor_name ?? 'Instructor' }}">
-                                                    <a href="#">{{ $course->instructor_name ?? 'Instructor' }}</a>
-                                                </div>
-                                                <h4>
-                                                    <a href="{{ route('courses.show', $course->id) }}">{{ $course->title }}</a>
-                                                </h4>
-                                                <div class="course-meta">
-                                                    <ul>
-                                                        <li>
-                                                            <div class="course-rating">
-                                                                <i class="fas fa-star"></i> 
-                                                                <i class="fas fa-star"></i> 
-                                                                <i class="fas fa-star"></i> 
-                                                                <i class="fas fa-star"></i> 
-                                                                <i class="fas fa-star"></i>  
-                                                                <span>({{ $course->rating_count ?? '0' }})</span>
-                                                            </div>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-user"></i> {{ $course->students_count ?? 0 }} Students
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="bottom-meta">
-                                                    <a href="{{ route('courses.show', $course->id) }}">Enroll Now <i class="fas fa-long-arrow-right"></i></a>
-                                                    <h2 class="price">
-                                                        @if($course->old_price)
-                                                            <del>${{ number_format($course->old_price, 2) }}</del>
-                                                        @endif
-                                                        ${{ number_format($course->price, 2) }}
-                                                    </h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End Single Course Item -->
-                                    @empty
-                                        <div class="alert alert-info text-center">
-                                            No courses found in <strong>{{ $category->name }}</strong>.
-                                        </div>
-                                    @endforelse
+    @php
+        $isEnrolled = in_array($course->id, $enrolledCourseIds ?? []);
+    @endphp
+
+    <!-- Single Course Item -->
+    <div class="course-style-one-item hover-less list-layout mb-4">
+        <div class="thumb">
+            <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}">
+        </div>
+        <div class="info">
+            <div class="author">
+                <img src="{{ asset($course->instructor_image ?? 'assets/img/team/m2.jpg') }}" alt="{{ $course->instructor_name ?? 'Instructor' }}">
+                <a href="#">{{ $course->instructor_name ?? 'Instructor' }}</a>
+            </div>
+            <h4>
+                <a href="{{ route('courses.show', $course->id) }}">{{ $course->title }}</a>
+            </h4>
+            <div class="course-meta">
+                <ul>
+                    <li>
+                        <div class="course-rating">
+                            <i class="fas fa-star"></i> 
+                            <i class="fas fa-star"></i> 
+                            <i class="fas fa-star"></i> 
+                            <i class="fas fa-star"></i> 
+                            <i class="fas fa-star"></i>  
+                            <span>({{ $course->rating_count ?? '0' }})</span>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-user"></i> {{ $course->students_count ?? 0 }} Students
+                    </li>
+                </ul>
+            </div>
+            <div class="bottom-meta">
+                @if($isEnrolled)
+                    <a href="{{ route('courses.show', $course->id) }}">
+                        Enrolled <i class="fas fa-long-arrow-right"></i>
+                    </a>
+                @else
+                    <a href="{{ route('courses.show', $course->id) }}">
+                        Enroll Now <i class="fas fa-long-arrow-right"></i>
+                    </a>
+                @endif
+
+                <h2 class="price">
+                    @if($course->old_price)
+                        <del>{{ number_format($course->old_price, 0) }} MMK</del>
+                    @endif
+                    {{ number_format($course->price, 0) }} MMK
+                </h2>
+            </div>
+        </div>
+    </div>
+    <!-- End Single Course Item -->
+@empty
+    <div class="alert alert-info text-center">
+        No courses found in <strong>{{ $category->name }}</strong>.
+    </div>
+@endforelse
 
                                 </div>
                             @empty

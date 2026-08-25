@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\CourseCategory;
 use App\Models\Course;
+use App\Models\Unit;
 use App\Models\Lesson;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -16,31 +17,48 @@ class CourseController extends Controller
     const QUIZ_QUESTION_LIMIT = 6;
 
     public function index(Request $request)
-    {
-        $selectedCategorySlug = $request->query('category');
+{
+    $selectedCategorySlug = $request->query('category');
 
-        // Query top-tier CourseCategories with their middle-tier categories and courses
-        $categoriesQuery = CourseCategory::with('categories.courses');
+    // Query top-tier CourseCategories with their middle-tier categories and courses
+    $categoriesQuery = CourseCategory::with('categories.courses');
 
-        // If a specific ?category=... slug is passed in the URL, filter to ONLY that CourseCategory
-        if ($selectedCategorySlug) {
-            $categoriesQuery->where('slug', $selectedCategorySlug);
-        }
-
-        $categories = $categoriesQuery->get();
-
-        return view('course.index', [
-            'courseCategory' => $categories->first(), // The current main CourseCategory
-            'categories'     => $categories->pluck('categories')->flatten(), // The sub-categories inside it
-        ]);
+    if ($selectedCategorySlug) {
+        $categoriesQuery->where('slug', $selectedCategorySlug);
     }
+
+    $categories = $categoriesQuery->get();
+    $courseCategory = $categories->first();
+    $subCategories = $categories->pluck('categories')->flatten();
+
+    // Fetch enrolled course IDs for authenticated user
+    $enrolledCourseIds = [];
+    if (auth()->check()) {
+        $enrolledCourseIds = auth()->user()->courses()->pluck('courses.id')->toArray();
+    }
+
+    return view('course.index', [
+        'courseCategory'    => $courseCategory,
+        'categories'        => $subCategories,
+        'enrolledCourseIds' => $enrolledCourseIds,
+    ]);
+}
 
     public function show($id)
     {
-        // Eager load category to prevent N+1 queries
-        $course = Course::with('category')->findOrFail($id);
+        // Eager load category, units, and nested sections directly on the course model
+        $course = Course::with(['category', 'units.sections'])->findOrFail($id);
 
-        return view('course.single', compact('course'));
+        // Fetch enrolled course IDs for authenticated user
+        $enrolledCourseIds = [];
+        if (auth()->check()) {
+            $enrolledCourseIds = auth()->user()->courses()->pluck('courses.id')->toArray();
+        }
+
+        // Access units directly from the loaded course relationship
+        $units = $course->units;
+
+        return view('course.single', compact('course', 'enrolledCourseIds', 'units'));
     }
 
     public function myCourses()

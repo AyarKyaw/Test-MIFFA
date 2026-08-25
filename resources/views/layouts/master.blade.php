@@ -81,8 +81,7 @@
                                 English <i class="fas fa-angle-down"></i>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                              <li><a class="dropdown-item" href="#">Spanish</a></li>
-                              <li><a class="dropdown-item" href="#">Arabic</a></li>
+                              <li><a class="dropdown-item" href="#">Myanmar</a></li>
                             </ul>
                         </div>
                         <div>
@@ -127,12 +126,6 @@
                             <img src="{{ asset('assets/img/new/logo-light.png') }}" class="logo" alt="Logo">
                         </a>
                     </div>
-                    <form class="search-form" action="#">
-                        <input type="text" placeholder="Search" class="form-control" name="text">
-                        <button type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>  
-                    </form>
                 </div>
                 <!-- End Header Navigation -->
 
@@ -146,39 +139,24 @@
                         </button>
                         
                         <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
-                            <li class="dropdown megamenu-fw megamenu-style-two">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Demos</a>
-                                <ul class="dropdown-menu megamenu-content" role="menu">
-                                    <li>
-                                        <div class="col-menu-wrap">
-                                            <div class="menu-cal-items">
-                                                <div class="col-menu">
-                                                    <h4>Homepage Layout</h4>
-                                                    <ul class="menu-col">
-                                                        <li><a href="{{ url('/') }}">Main Home</a></li>
-                                                        <li><a href="#">Digital Course Hub</a></li>
-                                                        <li><a href="#">Distance learning</a></li>
-                                                        <li><a href="#">Remote Training</a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-menu">
-                                                    <h4>Homepage Layout</h4>
-                                                    <ul class="menu-col">
-                                                        <li><a href="#">Digital Education</a></li>
-                                                        <li><a href="#">Online Academy</a></li>
-                                                        <li><a href="#">University Classic</a></li>
-                                                        <li><a href="#">Kindergarten</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="megamenu-banner">
-                                                <img src="{{ asset('assets/img/thumb/20.jpg') }}" alt="Image Not Found">
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                            <li>
+                                <a href="{{ url('/') }}">Home</a>
                             </li>
-                            <li class="dropdown megamenu-fw megamenu-style-four">
+
+                            <!-- <li>
+                                <a href="{{ url('/about') }}">About Us</a>
+                            </li> -->
+
+                            <!-- <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Academic Programs</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ url('/course/categories') }}">Diploma Programs</a></li>
+                                    <li><a href="{{ url('/course/categories') }}">Short Courses</a></li>
+                                    <li><a href="{{ url('/course/categories') }}">Online Modules</a></li>
+                                </ul>
+                            </li> -->
+
+                            <li class="dropdown megamenu-fw megamenu-style-four" style="right: 0 !important;">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Courses</a>
                                 <ul class="dropdown-menu megamenu-content" role="menu">
                                     <li>
@@ -187,17 +165,10 @@
                                                 <h6 class="title">Course Layout</h6>
                                                 <div class="content">
                                                     <ul class="menu-col">
-                                                        <li><a href="{{ url('/course/categories') }}">Course</a></li>
-                                                        <li><a href="{{ url('/my-courses') }}">My Courses</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-menu">
-                                                <h6 class="title">Course Layout</h6>
-                                                <div class="content">
-                                                    <ul class="menu-col">
-                                                        <li><a href="#">Course Filter</a></li>
-                                                        <li><a href="#">Course Details</a></li>
+                                                        <li><a href="{{ url('/course/categories') }}">All Courses</a></li>
+                                                        @auth
+                                                            <li><a href="{{ url('/my-courses') }}">My Enrolled Courses</a></li>
+                                                        @endauth
                                                     </ul>
                                                 </div>
                                             </div>
@@ -205,134 +176,23 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="dropdown megamenu-fw megamenu-style-three">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pages</a>
-                                <ul class="dropdown-menu megamenu-content" role="menu">
-                                    <li>
-                                        <div class="col-menu-wrap">
-                                            <div class="col-menu">
-                                                <h6 class="title">Get Started</h6>
-                                                <div class="content">
-                                                    <ul class="menu-col">
-                                                        <li><a href="{{ url('/about') }}">About Us</a></li>
-                                                        <li><a href="#">Instructor</a></li>
-                                                        <li><a href="#">Gallery</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-menu">
-                                                <h6 class="title">Events</h6>
-                                                <div class="content">
-                                                    <ul class="menu-col">
-                                                        <li><a href="#">Events</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-menu">
-                                                <h6 class="title">Important Pages</h6>
-                                                <div class="content">
-                                                    <ul class="menu-col">
-                                                        <li><a href="#">Faqs</a></li>
-                                                        <li><a href="#">Privacy Policy</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>    
-                                            <div class="col-menu">
-                                                <h6 class="title">Other Pages</h6>
-                                                <div class="content">
-                                                    <ul class="menu-col">
-                                                        <li><a href="#">Contact Us</a></li>
-                                                        <li><a href="{{ url('/login') }}">Login</a></li>
-                                                        <!-- <li><a href="{{ url('/register') }}">Register</a></li> -->
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Blog</a>
+
+                            <!-- <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Media & Events</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Blog Standard</a></li>
-                                    <li><a href="#">Blog Single</a></li>
+                                    <li><a href="#">Latest News</a></li>
+                                    <li><a href="#">Events & Workshops</a></li>
+                                    <li><a href="#">Photo Gallery</a></li>
                                 </ul>
-                            </li>
-                            <li><a href="#">Contact</a></li>
+                            </li> -->
+
+                            <!-- <li>
+                                <a href="#">Contact Us</a>
+                            </li> -->
                         </ul>
                     </div>
-
-                    <div class="attr-right">
-                        <!-- Start Attribute Navigation -->
-                        <div class="attr-nav">
-                            <ul>
-                                <li class="side-menu">
-                                    <a href="#">
-                                        <div class="menu-icon">
-                                            <span class="bar-1"></span>
-                                            <span class="bar-2"></span>
-                                            <span class="bar-3"></span>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- End Attribute Navigation -->
-                    </div>
                 </div>
-
-                <!-- Start Side Menu -->
-                <div class="side">
-                    <a href="#" class="close-side"><i class="fas fa-times"></i></a>
-                    <div class="widget">
-                        <div class="logo">
-                            <img src="{{ asset('assets/img/new/logo-light.png') }}" alt="Logo">
-                        </div>
-                        <p>
-                            Arrived compass prepare an on as. Reasonable particular on my it in sympathize.
-                        </p>
-                    </div>
-                    <div class="widget address">
-                        <div>
-                            <ul>
-                                <li>
-                                    <div class="content">
-                                        <p>Address</p> 
-                                        <strong>California, TX 70240</strong>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="content">
-                                        <p>Email</p> 
-                                        <strong>support@validtheme.com</strong>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="content">
-                                        <p>Contact</p> 
-                                        <strong>+44-20-7328-4499</strong>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="widget newsletter">
-                        <h4 class="title">Get Subscribed!</h4>
-                        <form action="#">
-                            <div class="input-group stylish-input-group">
-                                <input type="email" placeholder="Enter your e-mail" class="form-control" name="email">
-                                <span class="input-group-addon">
-                                    <button type="submit">
-                                        <i class="fa fa-long-arrow-right"></i>
-                                    </button>  
-                                </span>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- End Side Menu -->
-
-            </div>   
+            </div>    
             <!-- Overlay screen for menu -->
             <div class="overlay-screen"></div>
         </nav>
@@ -359,7 +219,7 @@
                                 <img src="{{ asset('assets/img/new/logo-light.png') }}" alt="Image Not Found">
                             </div>
                             <p>
-                                Indulgence diminution so discovered mr apartments. Are off under folly death wrote cause her way spite plan upon.
+                                Myanmar International Freight Forwarders' Association Education & Training Institute.
                             </p>
                         </div>
                     </div>
@@ -368,24 +228,7 @@
                             <h4 class="widget-title">About</h4>
                             <ul>
                                 <li><a href="{{ url('/about') }}">About Us</a></li>
-                                <li><a href="{{ url('/course') }}">Courses</a></li>
-                                <li><a href="#">News & Blogs</a></li>
-                                <li><a href="#">Become a Teacher</a></li>
-                                <li><a href="#">Events</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-6 footer-item">
-                        <div class="f-item link">
-                            <h4 class="widget-title">Quick Link</h4>
-                            <ul>
-                                <li><a href="#">Live Workshop</a></li>
-                                <li><a href="#">Free Courses</a></li>
-                                <li><a href="#">Admission</a></li>
-                                <li><a href="#">Request A Demo</a></li>
-                                <li><a href="#">Media Relations</a></li>
-                                <li><a href="#">Students</a></li>
+                                <li><a href="{{ url('/course/categories') }}">Courses</a></li>
                             </ul>
                         </div>
                     </div>

@@ -486,7 +486,7 @@ button.btn:hover::after {
 .sidebar .sidebar-item.archives ul li a::after {
 	border-radius: 50%;
 	content: "\f07b";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	height: 8px;
 	left: 0;
 	position: absolute;
@@ -773,7 +773,7 @@ a.button-regular:hover i::after {
 
 .breadcrumb-area .breadcrumb > li + li::before {
 	content: "\f105";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	font-weight: 600;
 	padding: 0 5px;
 	color: var(--white);
@@ -795,7 +795,7 @@ a.button-regular:hover i::after {
 
 .breadcrumb-area .breadcrumb li::after {
 	content: "\f105";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	font-weight: 500;
 	right: 5px;
 	position: absolute;
@@ -947,7 +947,7 @@ a.button-regular:hover i::after {
 	position: absolute;
 	right: 50px;
 	content: "\f10d";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	color: var(--white);
 	bottom: -50px;
 	font-weight: 1;

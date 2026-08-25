@@ -109,7 +109,7 @@ Sidebar heading:  20px 'Outfit', sans-serif
 :root {
 	--font-default: 'Outfit', sans-serif;
 	--font-heading: 'Outfit', sans-serif;
-	--fontawesome: "Font Awesome 5 Pro";
+	--fontawesome: "Font Awesome 5 Free";
 	--black: #000000;
 	--dark: #0e2a47;
 	--dark-secondary: #033120;
@@ -3542,7 +3542,7 @@ button {
 }
 
 .banner-area.navigation-custom-large .swiper-button-prev::after {
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	content: "\f104";
 	font-weight: 100;
 	font-size: 30px;
@@ -3565,7 +3565,7 @@ button {
 }
 
 .banner-area.navigation-custom-large .swiper-button-next::after {
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	content: "\f105";
 	font-weight: 100;
 	font-size: 30px;
@@ -4128,7 +4128,7 @@ ul.list-style-one li::after {
 	left: 0;
 	top: 0;
 	content: "\f058";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	font-weight: 600;
 	color: var(--color-primary);
 }
@@ -6427,7 +6427,7 @@ nav.woocommerce-pagination {
 	content: "";
 	height: 100%;
 	width: 100%;
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	text-align: center;
 	color: var(--white);
 	left: 0;
@@ -8034,7 +8034,7 @@ ul.curriculum-list li .right-content i {
 	content: "";
 	height: 100%;
 	width: 100%;
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	text-align: center;
 	color: var(--white);
 }
@@ -11081,7 +11081,7 @@ ul.event-location li a:hover {
 	left: 0;
 	top: 0;
 	content: "\f104";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	height: 45px;
 	width: 45px;
 	text-align: center;
@@ -11094,7 +11094,7 @@ ul.event-location li a:hover {
 	right: 0;
 	top: 0;
 	content: "\f105";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	width: 45px;
 	height: 45px;
 	font-size: 20px;
@@ -11476,7 +11476,7 @@ ul.event-location li a:hover {
 	left: 0;
 	top: 0;
 	content: "\f104";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	height: 55px;
 	width: 55px;
 	text-align: center;
@@ -11489,7 +11489,7 @@ ul.event-location li a:hover {
 	right: 0;
 	top: 0;
 	content: "\f105";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	height: 55px;
 	width: 55px;
 	text-align: center;
@@ -11636,7 +11636,7 @@ ul.list-check li::after {
 	left: 0;
 	top: 0;
 	content: "\f058";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	font-weight: 600;
 	color: var(--color-primary);
 }
@@ -12444,29 +12444,29 @@ button.mfp-arrow.mfp-prevent-close::after {
 }
 
 .faq-style-one button.accordion-button::before {
-	background: transparent;
-	content: "\f067";
-	font-family: "Font Awesome 5 Pro";
-	font-weight: 1;
-	font-size: 20px;
-	position: absolute;
-	top: 25px;
-	right: 25px;
+    background: transparent;
+    content: "\f067";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900; /* Fixed: Changed from 1 to 900 (or 400/300 depending on style) */
+    font-size: 20px;
+    position: absolute;
+    top: 25px;
+    right: 25px;
 }
 
 .faq-style-one button.accordion-button:not(.collapsed)::before {
-	transform: none;
-	content: "\f068";
+    transform: none;
+    content: "\f068";
 }
 
 .faq-style-one button.accordion-button:focus {
-	background: transparent;
-	color: var(--color-heading);
-	border: none;
-	-webkit-box-shadow: inherit;
-	box-shadow: inherit;
-	padding-left: 0;
-	font-weight: 600;
+    background: transparent;
+    color: var(--color-heading);
+    border: none;
+    -webkit-box-shadow: inherit;
+    box-shadow: inherit;
+    padding-left: 0;
+    font-weight: 600;
 }
 
 .faq-style-one .accordion-item:first-child {
@@ -12550,7 +12550,7 @@ button.mfp-arrow.mfp-prevent-close::after {
 .accordion-item.faq-style-two button.accordion-button::before {
 	background: transparent;
 	content: "\f107";
-	font-family: "Font Awesome 5 Pro";
+	font-family: "Font Awesome 5 Free";
 	font-size: 25px;
 	position: absolute;
 	top: 2px;
