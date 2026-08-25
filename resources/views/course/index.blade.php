@@ -72,10 +72,10 @@
             <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}">
         </div>
         <div class="info">
-            <div class="author">
+            <!-- <div class="author">
                 <img src="{{ asset($course->instructor_image ?? 'assets/img/team/m2.jpg') }}" alt="{{ $course->instructor_name ?? 'Instructor' }}">
                 <a href="#">{{ $course->instructor_name ?? 'Instructor' }}</a>
-            </div>
+            </div> -->
             <h4>
                 <a href="{{ route('courses.show', $course->id) }}">{{ $course->title }}</a>
             </h4>
