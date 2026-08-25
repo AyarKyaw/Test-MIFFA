@@ -14,7 +14,7 @@
                             <p class="m-card__subtitle">Fill in the details below to create a new course listing</p>
                         </div>
                         <div>
-                            <a href="{{ route('admin.course.index') }}" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
+                            <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
                                 <i class="fa-solid fa-arrow-left"></i> Back to Courses
                             </a>
                         </div>
@@ -22,7 +22,7 @@
 
                     <div class="m-card__body p-4">
                         {{-- 1. Added enctype for file upload --}}
-                        <form action="{{ route('admin.course.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="row g-3">
@@ -75,24 +75,44 @@
                                     @enderror
                                 </div>
 
-                                <!-- Course Fee/Price -->
-                                <div class="col-md-3">
-                                    <label for="price" class="form-label fw-semibold">Course Fee ($)</label>
-                                    <div class="input-group">
-                                        <input type="number" 
-                                               step="0.01" 
-                                               min="0" 
-                                               class="form-control @error('price') is-invalid @enderror" 
-                                               id="price" 
-                                               name="price" 
-                                               value="{{ old('price', '0.00') }}" 
-                                               placeholder="0.00">
-                                    </div>
-                                    @error('price')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                                <div class="row mb-3">
+    <!-- Regular / Non-Member Price -->
+    <div class="col-md-6">
+        <label for="price" class="form-label fw-semibold">Standard Price (Non-Member)</label>
+        <div class="input-group">
+            <span class="input-group-text">MMK</span>
+            <input type="number" 
+                   step="0.01" 
+                   class="form-control @error('price') is-invalid @enderror" 
+                   id="price" 
+                   name="price" 
+                   value="{{ old('price', $course->price ?? '') }}" 
+                   placeholder="150000.00" 
+                   required>
+        </div>
+        @error('price')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
 
+    <!-- Member Price -->
+    <div class="col-md-6">
+        <label for="member_price" class="form-label fw-semibold">Member Price</label>
+        <div class="input-group">
+            <span class="input-group-text">MMK</span>
+            <input type="number" 
+                   step="0.01" 
+                   class="form-control @error('member_price') is-invalid @enderror" 
+                   id="member_price" 
+                   name="member_price" 
+                   value="{{ old('member_price', $course->member_price ?? '') }}" 
+                   placeholder="120000.00">
+        </div>
+        @error('member_price')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
                                 <!-- Total Hours -->
                                 <div class="col-md-3">
                                     <label for="hour" class="form-label fw-semibold">Total Hours <span class="text-danger">*</span></label>
@@ -147,7 +167,7 @@
 
                             <!-- Action Buttons -->
                             <div class="mt-4 d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.course.index') }}" class="btn btn-light border">Cancel</a>
+                                <a href="{{ route('admin.courses.index') }}" class="btn btn-light border">Cancel</a>
                                 <button type="submit" class="au-btn au-btn--green au-btn--small d-inline-flex align-items-center gap-1 border-0">
                                     <i class="fa-solid fa-save"></i> Save Course
                                 </button>

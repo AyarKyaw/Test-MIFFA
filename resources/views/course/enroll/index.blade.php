@@ -52,7 +52,7 @@
                         <form action="{{ route('enroll.store', $course->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            <!-- Full Name (Editable) -->
+                            <!-- Full Name -->
                             <div class="mb-3">
                                 <label for="name" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
                                 <div class="input-group">
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
 
-                            <!-- Email Address (Editable) -->
+                            <!-- Email Address -->
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
                                 <div class="input-group">
@@ -163,7 +163,6 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-white text-muted"><i class="fas fa-address-card"></i></span>
                                     
-                                    <!-- State Number -->
                                     <select class="form-select @error('nrc_state') is-invalid @enderror" id="nrc_state" name="nrc_state" style="max-width: 90px;" required>
                                         <option value="" disabled {{ old('nrc_state') ? '' : 'selected' }}>State</option>
                                         @for ($i = 1; $i <= 14; $i++)
@@ -171,12 +170,10 @@
                                         @endfor
                                     </select>
 
-                                    <!-- Township / District Code -->
                                     <select class="form-select @error('nrc_district') is-invalid @enderror" id="nrc_district" name="nrc_district" required>
                                         <option value="" disabled selected>District</option>
                                     </select>
 
-                                    <!-- Type -->
                                     <select class="form-select @error('nrc_type') is-invalid @enderror" id="nrc_type" name="nrc_type" style="max-width: 100px;" required>
                                         <option value="(N)" {{ old('nrc_type', '(N)') == '(N)' ? 'selected' : '' }}>(N)</option>
                                         <option value="(P)" {{ old('nrc_type') == '(P)' ? 'selected' : '' }}>(P)</option>
@@ -184,7 +181,6 @@
                                         <option value="(NRA)" {{ old('nrc_type') == '(NRA)' ? 'selected' : '' }}>(NRA)</option>
                                     </select>
 
-                                    <!-- 6-Digit Number -->
                                     <input type="text" 
                                            class="form-control @error('nrc_number') is-invalid @enderror" 
                                            id="nrc_number" 
@@ -290,8 +286,21 @@
                             <hr class="my-2">
                             <div class="d-flex justify-content-between align-items-center pt-1">
                                 <span class="fw-bold text-dark">Total Fee</span>
-                                <span class="fs-4 fw-bold text-success">
-                                    {{ isset($course->price) && $course->price > 0 ? number_format($course->price) . ' MMK' : 'Free' }}
+                                <span class="fs-4 fw-bold text-success" id="course_price_display">
+                                    @php
+                                        $initialStatus = old('membership_status');
+                                        $memberPrice = $course->member_price ?? $course->price ?? 0;
+                                        $nonMemberPrice = $course->non_member_price ?? $course->price ?? 0;
+
+                                        if ($initialStatus === 'member') {
+                                            $displayPrice = $memberPrice > 0 ? number_format($memberPrice) . ' MMK' : 'Free';
+                                        } elseif ($initialStatus === 'non-member') {
+                                            $displayPrice = $nonMemberPrice > 0 ? number_format($nonMemberPrice) . ' MMK' : 'Free';
+                                        } else {
+                                            $displayPrice = ($course->price ?? 0) > 0 ? number_format($course->price) . ' MMK' : 'Free';
+                                        }
+                                    @endphp
+                                    {{ $displayPrice }}
                                 </span>
                             </div>
                         </div>
@@ -361,5 +370,25 @@ document.addEventListener('DOMContentLoaded', function () {
         populateDistricts(oldState, oldDistrict);
     }
 });
+document.addEventListener('DOMContentLoaded', function () {
+        const membershipSelect = document.getElementById('membership_status');
+        const priceDisplay = document.getElementById('course_price_display');
+
+        const memberPrice = {{ $course->member_price ?? $course->price ?? 0 }};
+        const nonMemberPrice = {{ $course->non_member_price ?? $course->price ?? 0 }};
+
+        function formatPrice(amount) {
+            if (amount <= 0) return 'Free';
+            return new Intl.NumberFormat().format(amount) + ' MMK';
+        }
+
+        membershipSelect.addEventListener('change', function () {
+            if (this.value === 'member') {
+                priceDisplay.textContent = formatPrice(memberPrice);
+            } else if (this.value === 'non-member') {
+                priceDisplay.textContent = formatPrice(nonMemberPrice);
+            }
+        });
+    });
 </script>
 @endsection

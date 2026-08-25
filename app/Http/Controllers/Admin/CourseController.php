@@ -53,6 +53,7 @@ class CourseController extends Controller
             'price'              => 'nullable|numeric|min:0',
             'hour'               => 'required|integer|min:1',
             'desc'               => 'nullable|string',
+            'member_price' => 'nullable|numeric|min:0|lte:price',
             'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
@@ -101,6 +102,7 @@ class CourseController extends Controller
             'price'              => 'nullable|numeric|min:0',
             'hour'               => 'required|integer|min:1',
             'desc'               => 'nullable|string',
+            'member_price' => 'nullable|numeric|min:0|lte:price',
             'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 

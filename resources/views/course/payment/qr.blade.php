@@ -22,9 +22,40 @@
                     <div class="p-3 bg-light rounded-3 mb-4 text-start border border-light-subtle">
                         <small class="text-uppercase text-muted fw-bold d-block mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">Selected Course</small>
                         <h6 class="fw-bold text-dark mb-2">{{ $course->title }}</h6>
+                        
                         <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                            <span class="text-muted small">Total Amount</span>
-                            <span class="fs-5 fw-bold text-primary">{{ number_format($course->price ?? 50000) }} <small class="fs-6 fw-normal text-muted">MMK</small></span>
+                            <div>
+                                <span class="text-muted small d-block">Total Amount</span>
+                                @php
+                                    // Fetch status from explicit variable, studentProfile relationship, user relation, or session
+                                    $status = $membershipStatus 
+                                        ?? $studentProfile->membership_status 
+                                        ?? auth()->user()?->studentProfile?->membership_status 
+                                        ?? session('membership_status');
+                                @endphp
+                                @if($status)
+                                    <span class="badge bg-info-subtle text-info-emphasis rounded-pill small" style="font-size: 0.7rem;">
+                                        {{ ucfirst($status) }} Rate
+                                    </span>
+                                @endif
+                            </div>
+                            <span class="fs-5 fw-bold text-primary">
+                                @php
+                                    if ($status === 'member') {
+                                        $finalPrice = $course->member_price ?? $course->price ?? 0;
+                                    } elseif ($status === 'non-member') {
+                                        $finalPrice = $course->non_member_price ?? $course->price ?? 0;
+                                    } else {
+                                        $finalPrice = $course->price ?? 0;
+                                    }
+                                @endphp
+
+                                @if($finalPrice > 0)
+                                    {{ number_format($finalPrice) }} <small class="fs-6 fw-normal text-muted">MMK</small>
+                                @else
+                                    <span class="text-success">Free</span>
+                                @endif
+                            </span>
                         </div>
                     </div>
 

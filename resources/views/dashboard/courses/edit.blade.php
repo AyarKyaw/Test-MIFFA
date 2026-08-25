@@ -75,42 +75,80 @@
                                     @enderror
                                 </div>
 
-                                <!-- Instructor Selection -->
                                 <div class="col-md-6">
-                                    <label for="instructor_ids" class="form-label fw-semibold">Instructors</label>
-                                        <select class="form-select @error('instructor_ids') is-invalid @enderror" 
-                                                id="instructor_ids" 
-                                                name="instructor_ids[]" 
-                                                multiple>
-                                            @foreach ($instructors as $instructor)
-                                                <option value="{{ $instructor->id }}" 
-                                                    {{ in_array($instructor->id, old('instructor_ids', $course->instructors->pluck('id')->toArray())) ? 'selected' : '' }}>
-                                                    {{ $instructor->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    @error('instructor_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+    <label class="form-label fw-semibold">Assign Instructors</label>
+    
+    <div class="card p-3 @if($errors->has('instructor_ids') || $errors->has('instructor_ids.*')) border-danger @endif" 
+         style="max-height: 220px; overflow-y: auto;">
+        
+        @php
+            $selectedInstructors = old('instructor_ids', isset($course) ? $course->instructors->pluck('id')->toArray() : []);
+        @endphp
 
-                                <!-- Course Fee/Price -->
-                                <div class="col-md-6">
-                                    <label for="price" class="form-label fw-semibold">Course Fee ($)</label>
-                                    <div class="input-group">
-                                        <input type="number" 
-                                               step="0.01" 
-                                               min="0" 
-                                               class="form-control @error('price') is-invalid @enderror" 
-                                               id="price" 
-                                               name="price" 
-                                               value="{{ old('price', $course->price) }}" 
-                                               placeholder="0.00">
-                                    </div>
-                                    @error('price')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
+        @forelse ($instructors as $instructor)
+            <div class="form-check py-1">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       name="instructor_ids[]" 
+                       value="{{ $instructor->id }}" 
+                       id="instructor_{{ $instructor->id }}"
+                       {{ in_array($instructor->id, $selectedInstructors) ? 'checked' : '' }}>
+                
+                <label class="form-check-label w-100 cursor-pointer" for="instructor_{{ $instructor->id }}">
+                    <span class="fw-medium text-dark">{{ $instructor->name }}</span>
+                </label>
+            </div>
+        @empty
+            <p class="text-muted small mb-0">No instructors available.</p>
+        @endforelse
+    </div>
+
+    @error('instructor_ids')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+    @enderror
+    @error('instructor_ids.*')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+    @enderror
+</div>
+
+                                <div class="row mb-3">
+    <!-- Regular / Non-Member Price -->
+    <div class="col-md-6">
+        <label for="price" class="form-label fw-semibold">Standard Price (Non-Member)</label>
+        <div class="input-group">
+            <span class="input-group-text">MMK</span>
+            <input type="number" 
+                   step="0.01" 
+                   class="form-control @error('price') is-invalid @enderror" 
+                   id="price" 
+                   name="price" 
+                   value="{{ old('price', $course->price ?? '') }}" 
+                   placeholder="150000.00" 
+                   required>
+        </div>
+        @error('price')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <!-- Member Price -->
+    <div class="col-md-6">
+        <label for="member_price" class="form-label fw-semibold">Member Price</label>
+        <div class="input-group">
+            <span class="input-group-text">MMK</span>
+            <input type="number" 
+                   step="0.01" 
+                   class="form-control @error('member_price') is-invalid @enderror" 
+                   id="member_price" 
+                   name="member_price" 
+                   value="{{ old('member_price', $course->member_price ?? '') }}" 
+                   placeholder="120000.00">
+        </div>
+        @error('member_price')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
 
                                 <!-- Total Hours -->
                                 <div class="col-md-6">

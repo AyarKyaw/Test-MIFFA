@@ -16,9 +16,22 @@ class Course extends Model
         'title',
         'hour',
         'price',
+        'member_price',
         'desc',
         'image',
     ];
+
+    public function getPriceForUser(?User $user = null): float
+    {
+        $user = $user ?? auth()->user();
+
+        // Adjust 'is_member' to match your User model's member attribute/role check
+        if ($user && $user->is_member && !is_null($this->member_price)) {
+            return (float) $this->member_price;
+        }
+
+        return (float) $this->price;
+    }
 
     public function instructors(): BelongsToMany
     {
