@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -136,6 +137,35 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Lesson Progress / Completion Route
     Route::post('/lessons/{lesson}/complete', [FrontendCourseController::class, 'markComplete'])->name('lessons.complete');
+});
+
+Route::get('/debug-storage', function () {
+    $targetFile = 'course-categories/0SoMZjSza3XhqzRmREd9lNPioDJaLvWePBH18fmd.jpg';
+    
+    $storagePath = storage_path('app/public/' . $targetFile);
+    $publicPath = public_path('storage/' . $targetFile);
+    $symlinkTarget = public_path('storage');
+
+    return response()->json([
+        'php_user' => exec('whoami'),
+        'symlink' => [
+            'exists' => file_exists($symlinkTarget),
+            'is_link' => is_link($symlinkTarget),
+            'link_target' => is_link($symlinkTarget) ? readlink($symlinkTarget) : null,
+        ],
+        'actual_file_in_storage' => [
+            'path' => $storagePath,
+            'exists' => file_exists($storagePath),
+            'readable' => is_readable($storagePath),
+            'permissions' => file_exists($storagePath) ? substr(sprintf('%o', fileperms($storagePath)), -4) : null,
+            'owner_id' => file_exists($storagePath) ? fileowner($storagePath) : null,
+        ],
+        'file_via_public_symlink' => [
+            'path' => $publicPath,
+            'exists' => file_exists($publicPath),
+            'readable' => is_readable($publicPath),
+        ],
+    ]);
 });
 
 // Route::get('/account/confirm/{payload}', function (Request $request, $payload) {
