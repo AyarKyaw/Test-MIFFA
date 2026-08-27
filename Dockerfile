@@ -16,8 +16,8 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/conf-available/*.conf
 
-# Grant Apache permissions to serve the public directory
-RUN echo "<Directory /var/www/html/public>" >> /etc/apache2/apache2.conf \
+# Grant Apache permissions to follow symlinks across the entire app directory
+RUN echo "<Directory /var/www/html>" >> /etc/apache2/apache2.conf \
     && echo "    Options Indexes FollowSymLinks" >> /etc/apache2/apache2.conf \
     && echo "    AllowOverride All" >> /etc/apache2/apache2.conf \
     && echo "    Require all granted" >> /etc/apache2/apache2.conf \
@@ -38,8 +38,9 @@ COPY . .
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set proper permissions for storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Set proper ownership and permissions for storage and bootstrap cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
