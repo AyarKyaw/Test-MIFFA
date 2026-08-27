@@ -45,9 +45,12 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expose port 80
 EXPOSE 80
 
-# Run artisan setup and start Apache
-CMD php artisan config:cache && \
+# Run artisan setup, fix storage permissions, recreate symlink, and start Apache
+CMD rm -rf /var/www/html/public/storage && \
+    php artisan storage:link && \
+    chown -R www-data:www-data /var/www/html/storage && \
+    chmod -R 755 /var/www/html/storage && \
+    php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
-    php artisan storage:link --force && \
     apache2-foreground
