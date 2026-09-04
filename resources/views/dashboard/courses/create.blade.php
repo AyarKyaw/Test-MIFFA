@@ -90,6 +90,52 @@
                                     @enderror
                                 </div>
 
+                                <!-- Assign Course Admins (Multi-Select) -->
+                                <div class="col-md-6">
+                                    <label for="admin_ids" class="form-label fw-semibold">Assign Course Admins</label>
+                                    <select class="form-select @error('admin_ids') is-invalid @enderror @error('admin_ids.*') is-invalid @enderror" 
+                                            id="admin_ids" 
+                                            name="admin_ids[]" 
+                                            multiple 
+                                            style="min-height: 120px;">
+                                        @foreach($admins as $admin)
+                                            <option value="{{ $admin->id }}" {{ is_array(old('admin_ids')) && in_array($admin->id, old('admin_ids')) ? 'selected' : '' }}>
+                                                {{ $admin->name }} ({{ $admin->email }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted d-block mt-1">Hold Ctrl (Cmd on Mac) to select multiple admins.</small>
+                                    @error('admin_ids')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    @error('admin_ids.*')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Assign Instructors (Multi-Select) -->
+                                <div class="col-md-6">
+                                    <label for="instructor_ids" class="form-label fw-semibold">Assign Instructors</label>
+                                    <select class="form-select @error('instructor_ids') is-invalid @enderror @error('instructor_ids.*') is-invalid @enderror" 
+                                            id="instructor_ids" 
+                                            name="instructor_ids[]" 
+                                            multiple 
+                                            style="min-height: 120px;">
+                                        @foreach($instructors as $instructor)
+                                            <option value="{{ $instructor->id }}" {{ is_array(old('instructor_ids')) && in_array($instructor->id, old('instructor_ids')) ? 'selected' : '' }}>
+                                                {{ $instructor->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted d-block mt-1">Hold Ctrl (Cmd on Mac) to select multiple instructors.</small>
+                                    @error('instructor_ids')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    @error('instructor_ids.*')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 <!-- Standard Price -->
                                 <div class="col-md-6">
                                     <label for="price" class="form-label fw-semibold">Standard Price (Non-Member)</label>
@@ -173,7 +219,9 @@
         </div>
     </div>
 </main>
+@endsection
 
+@push('scripts')
 <script>
 function previewCourseImage(event) {
     const input = event.target;
@@ -192,4 +240,4 @@ function previewCourseImage(event) {
     }
 }
 </script>
-@endsection
+@endpush

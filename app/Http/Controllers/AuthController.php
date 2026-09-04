@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Google\Client as GoogleClient;
+use App\Models\Admin;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use App\Mail\ConfirmAccountMail;
 use Illuminate\Support\Facades\Log;
 
@@ -20,20 +20,16 @@ class AuthController extends Controller
     // Handle user registration via Form
     public function register(Request $request)
     {
-        // 1. Validate fields
+        // 1. Validate fields (email & password only)
         $request->validate([
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password'  => ['required', 'string', 'min:8', 'confirmed'],
-            'google_id' => ['nullable', 'string'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         // 2. Prepare payload (hashed password)
         $userData = [
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'google_id' => $request->google_id,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
         ];
 
         // 3. Store payload in session for resend capability
@@ -69,65 +65,104 @@ class AuthController extends Controller
             ['payload' => encrypt($userData)]
         );
 
-        Mail::raw(
-            "Welcome to MIFFA!\n\nPlease click the link below to confirm your email and log in to your account:\n\n" . $confirmationUrl, 
-            function ($message) use ($userData) {
-                $message->to($userData['email'])
-                        ->subject('Confirm Your MIFFA Account');
+        Mail::to($userData['email'])->send(new ConfirmAccountMail($confirmationUrl));
+    }
+
+    public function handleGoogleOneTap(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'google_id' => 'required',
+                'name' => 'nullable|string',
+            ]);
+
+            // Check if user already exists by email or google_id
+            $user = User::where('email', $request->email)
+                        ->orWhere('google_id', $request->google_id)
+                        ->first();
+
+            if (!$user) {
+                $user = User::create([
+                    'name' => $request->name ?? explode('@', $request->email)[0],
+                    'email' => $request->email,
+                    'google_id' => $request->google_id,
+                    'password' => Hash::make(Str::random(24)), // Sets dummy password if column is NOT NULL
+                ]);
+            } else {
+                // Attach google_id if account existed without it
+                if (empty($user->google_id)) {
+                    $user->update(['google_id' => $request->google_id]);
+                }
             }
-        );
+
+            Auth::login($user);
+
+            return response()->json([
+                'success' => true,
+                'redirect' => route('home'), // Change 'dashboard' to your post-login route name
+            ]);
+
+        } catch (\Throwable $e) {
+            Log::error('Google Auth Error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Authentication failed: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function checkVerificationStatus(Request $request)
-{
-    $pendingEmail = session('pending_registration.email');
+    {
+        $pendingEmail = session('pending_registration.email');
 
-    // 1. Already Logged In
-    if (Auth::check()) {
-        Log::info('POLL STATUS: User is already logged in on this tab.', ['user_id' => Auth::id()]);
-        session()->forget('pending_registration');
-        return response()->json([
-            'confirmed' => true,
-            'redirect'  => url('/')
-        ]);
-    }
-
-    // 2. Pending Email Check
-    if ($pendingEmail) {
-        $cacheKey = 'confirmed_email_' . md5($pendingEmail);
-        $cachedUserId = Cache::get($cacheKey);
-
-        // Check Cache first, then DB
-        $user = $cachedUserId ? User::find($cachedUserId) : User::where('email', $pendingEmail)->first();
-
-        Log::info('POLL STATUS: Checking for confirmed user...', [
-            'pending_email'  => $pendingEmail,
-            'cache_key'      => $cacheKey,
-            'cached_user_id' => $cachedUserId,
-            'user_found'     => (bool) $user,
-        ]);
-
-        if ($user) {
-            Auth::login($user, true);
-            $request->session()->regenerate();
+        // 1. Already Logged In
+        if (Auth::check()) {
+            Log::info('POLL STATUS: User is already logged in on this tab.', ['user_id' => Auth::id()]);
             session()->forget('pending_registration');
-            Cache::forget($cacheKey);
-
-            Log::info('POLL STATUS: SUCCESS! User found, logged in, and redirecting.', ['user_id' => $user->id]);
-
             return response()->json([
                 'confirmed' => true,
                 'redirect'  => url('/')
             ]);
         }
-    } else {
-        Log::warning('POLL STATUS: No pending_registration.email found in session!');
+
+        // 2. Pending Email Check
+        if ($pendingEmail) {
+            $cacheKey = 'confirmed_email_' . md5($pendingEmail);
+            $cachedUserId = Cache::get($cacheKey);
+
+            // Check Cache first, then DB
+            $user = $cachedUserId ? User::find($cachedUserId) : User::where('email', $pendingEmail)->first();
+
+            Log::info('POLL STATUS: Checking for confirmed user...', [
+                'pending_email'  => $pendingEmail,
+                'cache_key'      => $cacheKey,
+                'cached_user_id' => $cachedUserId,
+                'user_found'     => (bool) $user,
+            ]);
+
+            if ($user) {
+                Auth::login($user, true);
+                $request->session()->regenerate();
+                session()->forget('pending_registration');
+                Cache::forget($cacheKey);
+
+                Log::info('POLL STATUS: SUCCESS! User found, logged in, and redirecting.', ['user_id' => $user->id]);
+
+                return response()->json([
+                    'confirmed' => true,
+                    'redirect'  => url('/')
+                ]);
+            }
+        } else {
+            Log::warning('POLL STATUS: No pending_registration.email found in session!');
+        }
+
+        return response()->json(['confirmed' => false]);
     }
 
-    return response()->json(['confirmed' => false]);
-}
-
-    // Handle standard login attempt
+    // Handle standard user login attempt
     public function login(Request $request)
     {
         // 1. Validate form fields
@@ -139,11 +174,11 @@ class AuthController extends Controller
         // 2. Check "Remember Me" checkbox
         $remember = $request->has('remember');
 
-        // 3. Attempt to log the user in
+        // 3. Attempt to log the user in via default guard
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            // Redirect to intended page (or verify notice if unverified)
+            // Redirect to intended page
             return redirect()->intended('/')->with('success', 'Welcome back!');
         }
 
@@ -153,7 +188,7 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // Handle logout
+    // Handle standard user logout
     public function logout(Request $request)
     {
         Auth::logout();
@@ -163,75 +198,85 @@ class AuthController extends Controller
         return redirect('/login');
     }
 
-    // Handle Google Sign-In
-    public function handleGoogleOneTap(Request $request)
+    /**
+     * Show Admin Login Form
+     */
+    public function showAdminLoginForm()
     {
-        $request->validate([
-            'email'     => 'required|email',
-            'google_id' => 'required|string',
-            'name'      => 'nullable|string',
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('dashboard');
+        }
+
+        return view('admin.auth.login');
+    }
+
+    /**
+     * Handle Admin Login Request
+     */
+    public function adminLogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email'    => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
-        try {
-            $googleId = $request->google_id;
-            $email    = $request->email;
-            $name     = $request->name ?? 'Google User';
+        $remember = $request->has('remember');
 
-            // Check if user already exists
-            $user = User::where('google_id', $googleId)
-                        ->orWhere('email', $email)
-                        ->first();
-
-            $isNewRegistration = false;
-
-            if (!$user) {
-                // Brand new user registration via Google: AUTO-VERIFY EMAIL
-                $user = User::create([
-                    'name'              => $name,
-                    'email'             => $email,
-                    'google_id'         => $googleId,
-                    'password'          => Hash::make(Str::random(16)),
-                    'email_verified_at' => now(), // Auto-verified instantly
-                ]);
-                
-                $isNewRegistration = true;
-            } else {
-                // If existing account links with Google, auto-verify if not already verified
-                $updates = [];
-                if (!$user->google_id) {
-                    $updates['google_id'] = $googleId;
-                }
-                if (is_null($user->email_verified_at)) {
-                    $updates['email_verified_at'] = now();
-                }
-
-                if (!empty($updates)) {
-                    $user->update($updates);
-                }
-            }
-
-            // Log user in
-            Auth::login($user, true);
+        // Authenticate against the 'admin' guard
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
-
-            // Session feedback & redirects
-            if ($isNewRegistration) {
-                session()->flash('success', 'Registration successful! Welcome to MIFFA.');
-            } else {
-                session()->flash('success', 'Welcome back, ' . $user->name . '!');
-            }
-
-            return response()->json([
-                'success'  => true,
-                'is_new'   => $isNewRegistration,
-                'redirect' => url('/') // Directly to home, bypassing verification screens
-            ]);
-
-        } catch (\Throwable $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+            return redirect()->intended('/dashboard/admins')->with('success', 'Welcome back to Admin Dashboard!');
         }
+
+        return back()->withErrors([
+            'email' => 'The provided admin credentials do not match our records.',
+        ])->onlyInput('email');
+    }
+
+    /**
+     * Handle Admin Logout
+     */
+    public function adminLogout(Request $request)
+    {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('admin.login');
+    }
+
+    public function confirmAccount(Request $request, $payload)
+    {
+        // 1. Decrypt payload safely
+        try {
+            $userData = decrypt($payload);
+        } catch (\Exception $e) {
+            return redirect()->route('register')->withErrors(['email' => 'Invalid or expired confirmation link.']);
+        }
+
+        // 2. Prevent duplicate user creation
+        $existingUser = User::where('email', $userData['email'])->first();
+
+        if ($existingUser) {
+            Auth::login($existingUser, true);
+            return redirect('/')->with('success', 'Account already confirmed. Welcome back!');
+        }
+
+        // 3. Create User in Database
+        $user = User::create([
+            'email'             => $userData['email'],
+            'password'          => $userData['password'], // Pre-hashed in register action
+            'email_verified_at' => now(),
+        ]);
+
+        // 4. Cache confirmation for polling tab check
+        $cacheKey = 'confirmed_email_' . md5($userData['email']);
+        Cache::put($cacheKey, $user->id, now()->addMinutes(10));
+
+        // 5. Log user in and clean up pending registration session
+        Auth::login($user, true);
+        session()->forget('pending_registration');
+
+        return redirect('/')->with('success', 'Account confirmed successfully! Welcome to MIFFA.');
     }
 }

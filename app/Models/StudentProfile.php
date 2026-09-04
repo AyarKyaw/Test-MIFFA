@@ -12,8 +12,10 @@ class StudentProfile extends Model
     protected $fillable = [
         'user_id',
         'phone',
+        'viber_phone',
         'gender',
         'membership_status',
+        'member_code',
         'nrc_number',
         'company',
         'job_title',

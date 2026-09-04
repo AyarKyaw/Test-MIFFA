@@ -115,20 +115,23 @@
                                         $userLessonRecord = $userLessons->get($item->id);
                                         $quizScore = $userLessonRecord ? $userLessonRecord->pivot->quiz_score : null;
                                         $isCompleted = $userLessonRecord ? $userLessonRecord->pivot->is_completed : false;
+                                        $hasHomework = $userLessonRecord ? !empty($userLessonRecord->pivot->homework_file_path) : false;
                                     @endphp
 
                                     <div class="list-group-item p-3 d-flex align-items-center justify-content-between gap-3 border-bottom-0">
                                         <div class="d-flex align-items-center gap-3 text-truncate">
                                             <!-- Status Icon -->
                                             <div>
-                                                @if(is_null($quizScore) && !$isCompleted)
-                                                    <i class="far fa-circle text-muted fs-5" title="Not Started"></i>
-                                                @elseif($quizScore < 50 && !$isCompleted)
+                                                @if($isCompleted || $quizScore >= 80)
+                                                    <i class="fas fa-check-circle text-success fs-5" title="Completed"></i>
+                                                @elseif($item->type === 'homework' && $hasHomework)
+                                                    <i class="fas fa-clock text-info fs-5" title="Homework Submitted (Pending Review)"></i>
+                                                @elseif(!is_null($quizScore) && $quizScore < 50)
                                                     <i class="fas fa-exclamation-circle text-danger fs-5" title="Needs Practice"></i>
-                                                @elseif($quizScore >= 50 && $quizScore < 80 && !$isCompleted)
+                                                @elseif(!is_null($quizScore) && $quizScore >= 50 && $quizScore < 80)
                                                     <i class="fas fa-adjust text-warning fs-5" title="Familiar"></i>
                                                 @else
-                                                    <i class="fas fa-check-circle text-success fs-5" title="Completed"></i>
+                                                    <i class="far fa-circle text-muted fs-5" title="Not Started"></i>
                                                 @endif
                                             </div>
 
@@ -141,6 +144,10 @@
                                                         <span class="badge bg-warning text-warning-emphasis"><i class="fas fa-question-circle me-1"></i> Quiz</span>
                                                     @elseif($item->type === 'article')
                                                         <span class="badge bg-secondary-subtle text-secondary"><i class="fas fa-file-alt me-1"></i> Article</span>
+                                                    @elseif($item->type === 'document')
+                                                        <span class="badge bg-dark-subtle text-dark"><i class="fas fa-file-pdf me-1"></i> Document</span>
+                                                    @elseif($item->type === 'homework')
+                                                        <span class="badge bg-primary-subtle text-primary"><i class="fas fa-file-signature me-1"></i> Homework</span>
                                                     @endif
 
                                                     @if(!is_null($quizScore))
@@ -148,11 +155,27 @@
                                                             Score: {{ $quizScore }}%
                                                         </span>
                                                     @endif
+
+                                                    @if($item->type === 'homework' && $hasHomework)
+                                                        <span class="badge bg-success-subtle text-success rounded-pill">
+                                                            <i class="fas fa-check me-1"></i> Submitted
+                                                        </span>
+                                                    @endif
                                                 </div>
                                                 <a href="{{ route('courses.learn', [$course->id, $item->id]) }}" class="text-decoration-none fw-semibold text-dark {{ $isCompleted ? 'text-secondary' : '' }} hover-primary">
                                                     {{ $item->title }}
                                                 </a>
                                             </div>
+                                        </div>
+
+                                        <div class="flex-shrink-0">
+                                            <a href="{{ route('courses.learn', [$course->id, $item->id]) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                @if($item->type === 'homework')
+                                                    {{ $hasHomework ? 'View Submission' : 'Submit Homework' }}
+                                                @else
+                                                    {{ $isCompleted ? 'Review' : 'Start' }}
+                                                @endif
+                                            </a>
                                         </div>
                                     </div>
                                 @empty

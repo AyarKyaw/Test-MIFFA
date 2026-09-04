@@ -87,7 +87,7 @@
                         <div>
                             @auth
                                 <div class="d-inline-flex align-items-center gap-2">
-                                    <a href="#" class="text-light text-decoration-none d-inline-flex align-items-center gap-1">
+                                    <a href="{{ route('student.dashboard') }}" class="text-light text-decoration-none d-inline-flex align-items-center gap-1">
                                         <img src="{{ asset('assets/img/icon/1.png') }}" alt="Icon"> {{ auth()->user()->name }}
                                     </a>
                                     <span class="text-light opacity-50">|</span>

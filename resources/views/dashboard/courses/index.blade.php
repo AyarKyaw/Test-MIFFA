@@ -92,6 +92,9 @@
                                         <td>{{ $course->created_at ? $course->created_at->format('M d, Y H:i') : 'N/A' }}</td>
                                         <td>
                                             <div class="table-data-feature justify-content-end gap-1">
+                                                <a href="{{ route('admin.courses.students', $course->id) }}" class="item" data-bs-toggle="tooltip" title="View Enrolled Students">
+                                                    <i class="fa-solid fa-users text-primary"></i>
+                                                </a>
                                                 <!-- Links directly to Units Index filtered by Course ID -->
                                                 <a href="{{ route('admin.units.index', ['course_id' => $course->id]) }}" class="item" data-bs-toggle="tooltip" title="View Units">
                                                     <i class="fa-solid fa-layer-group text-info"></i>

@@ -63,6 +63,7 @@
                         $userLessonRecord = $userLessons->get($item->id);
                         $quizScore = $userLessonRecord ? $userLessonRecord->pivot->quiz_score : null;
                         $isCompleted = $userLessonRecord ? $userLessonRecord->pivot->is_completed : false;
+                        $hasHomework = $userLessonRecord ? !empty($userLessonRecord->pivot->homework_file_path) : false;
                     @endphp
 
                     <a href="{{ route('courses.learn', [$course->id, $item->id]) }}" 
@@ -70,18 +71,20 @@
                         
                         <!-- Status Icon -->
                         <div>
-                            @if(is_null($quizScore) && !$isCompleted)
+                            @if(is_null($quizScore) && !$isCompleted && !$hasHomework)
                                 @if($isActive)
                                     <i class="fas fa-play-circle text-primary fs-5" title="Current Lesson"></i>
                                 @else
                                     <i class="far fa-circle text-muted fs-5" title="Not Started"></i>
                                 @endif
+                            @elseif($item->type === 'homework' && $hasHomework)
+                                <i class="fas fa-check-circle text-success fs-5" title="Homework Submitted"></i>
                             @elseif($quizScore < 50 && !$isCompleted)
                                 <i class="fas fa-exclamation-circle text-danger fs-5" title="Needs Practice ({{ $quizScore }}%)"></i>
                             @elseif($quizScore >= 50 && $quizScore < 80 && !$isCompleted)
                                 <i class="fas fa-adjust text-warning fs-5" title="Familiar ({{ $quizScore }}%)"></i>
                             @else
-                                <i class="fas fa-check-circle text-success fs-5" title="Mastered ({{ $quizScore ?? 100 }}%)"></i>
+                                <i class="fas fa-check-circle text-success fs-5" title="Completed"></i>
                             @endif
                         </div>
 
@@ -94,10 +97,12 @@
                                     <span class="badge rounded-pill {{ $quizScore >= 80 ? 'bg-success-subtle text-success' : ($quizScore >= 50 ? 'bg-warning-subtle text-warning-emphasis' : 'bg-danger-subtle text-danger') }}" style="font-size: 0.7rem;">
                                         {{ $quizScore }}%
                                     </span>
+                                @elseif($item->type === 'homework' && $hasHomework)
+                                    <span class="badge bg-success-subtle text-success rounded-pill" style="font-size: 0.7rem;">Submitted</span>
                                 @endif
                             </div>
 
-                            <span class="text-truncate d-block {{ $isCompleted && !$isActive ? 'text-secondary' : '' }}">
+                            <span class="text-truncate d-block {{ ($isCompleted || $hasHomework) && !$isActive ? 'text-secondary' : '' }}">
                                 {{ $item->title }}
                             </span>
                         </div>
@@ -129,7 +134,7 @@
                             <!-- Unit Route -->
                             @if($activeUnit)
                                 <li class="breadcrumb-item">
-                                    <a href="{{ route('courses.units', [$course->id, $activeUnit->id]) }}" 
+                                    <a href="{{ route('courses.units', [$course->id, 'unit' => $activeUnit->id]) }}" 
                                        class="text-decoration-none fw-semibold text-secondary hover-primary">
                                         {{ $activeUnit->title }}
                                     </a>
@@ -139,7 +144,7 @@
                             <!-- Section Route -->
                             @if($activeSection)
                                 <li class="breadcrumb-item">
-                                    <a href="{{ route('courses.units', [$course->id, $activeSection->id]) }}" 
+                                    <a href="{{ route('courses.units', [$course->id, 'unit' => $activeUnit->id]) }}" 
                                        class="text-decoration-none fw-semibold text-secondary hover-primary">
                                         {{ $activeSection->title }}
                                     </a>
@@ -164,6 +169,11 @@
                                 ])
                         @elseif($currentLesson->type === 'article')
                             @include('course.partials.article', ['lesson' => $currentLesson])
+                        @elseif($currentLesson->type === 'homework')
+                            @include('course.partials.homework', [
+                                    'lesson' => $currentLesson,
+                                    'userLessons' => $userLessons
+                                ])
                         @endif
                     </div>
                 </div>

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 class LessonController extends Controller
 {
@@ -44,10 +45,11 @@ class LessonController extends Controller
         'course_id'                           => 'nullable|exists:courses,id',
         'section_id'                          => 'nullable|exists:sections,id',
         'title'                               => 'required|string|max:255',
-        'type'                                => 'required|string|in:video,article,document,quiz',
+        'type'                                => 'required|string|in:video,article,document,homework,quiz',
         'video_url'                           => 'nullable|url|max:255',
         'content'                             => 'nullable|string',
         'document_file'                       => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+        'homework_file'                       => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:20480',
         'order'                               => 'nullable|integer',
         'questions'                           => 'nullable|array',
         'questions.*.text'                    => 'required_if:type,quiz|nullable|string',
@@ -103,6 +105,10 @@ class LessonController extends Controller
         $validated['document_path'] = $request->file('document_file')->store('lessons/documents', 'public');
     }
 
+    if ($request->hasFile('homework_file')) {
+        $validated['homework_path'] = $request->file('homework_file')->store('lessons/homeworks', 'public');
+    }
+
     try {
         DB::beginTransaction();
 
@@ -112,7 +118,7 @@ class LessonController extends Controller
             'type'          => $validated['type'],
             'video_url'     => $validated['video_url'] ?? null,
             'content'       => $validated['content'] ?? null,
-            'document_path' => $validated['document_path'] ?? null,
+            'document_path' => $validated['document_path'] ?? ($validated['homework_path'] ?? null),
             'order'         => $validated['order'],
         ]);
 
@@ -171,7 +177,7 @@ class LessonController extends Controller
 
         DB::commit();
 
-        return redirect()->route('admin.lessons.index', ['course_id' => $courseId])
+        return redirect()->route('admin.lessons.index', array_filter(['section_id' => $sectionId]))
                          ->with('success', 'Lesson created successfully.');
 
     } catch (\Exception $e) {
@@ -338,5 +344,119 @@ class LessonController extends Controller
 
         return redirect()->route('admin.lessons.index', ['section_id' => $lesson->section_id])
                          ->with('success', 'Lesson updated successfully.');
+    }
+
+    public function destroy(Lesson $lesson)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Capture section_id before removing the record
+            $sectionId = $lesson->section_id;
+
+            // Delete uploaded file asset if present
+            if ($lesson->document_path && Storage::disk('public')->exists($lesson->document_path)) {
+                Storage::disk('public')->delete($lesson->document_path);
+            }
+
+            $lesson->delete();
+
+            DB::commit();
+
+            return redirect()->route('admin.lessons.index', array_filter(['section_id' => $sectionId]))
+                            ->with('success', 'Lesson deleted successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Failed to delete lesson: ' . $e->getMessage()]);
+        }
+    }
+
+    public function submissions($lessonId)
+    {
+        $lesson = Lesson::find($lessonId);
+
+        if (!$lesson) {
+            return redirect()->route('admin.lessons.index')
+                ->withErrors(['error' => "Lesson with ID {$lessonId} was not found."]);
+        }
+
+        if ($lesson->type !== 'homework') {
+            return redirect()->route('admin.lessons.index')
+                ->withErrors(['error' => 'This lesson is not configured as a homework assignment.']);
+        }
+
+        // Check which columns exist in lesson_user table to prevent SQL errors
+        $hasStatusColumn = Schema::hasColumn('lesson_user', 'status');
+        $hasFeedbackColumn = Schema::hasColumn('lesson_user', 'feedback');
+
+        $selectColumns = [
+            'lesson_user.id as pivot_id',
+            'lesson_user.user_id',
+            'lesson_user.lesson_id',
+            'lesson_user.homework_file_path',
+            'lesson_user.quiz_score as score',
+            'lesson_user.submitted_at',
+            'lesson_user.is_completed',
+            'lesson_user.created_at',
+            'lesson_user.updated_at',
+            'users.name as user_name',
+            'users.email as user_email',
+        ];
+
+        if ($hasStatusColumn) {
+            $selectColumns[] = 'lesson_user.status';
+        }
+
+        if ($hasFeedbackColumn) {
+            $selectColumns[] = 'lesson_user.feedback';
+        }
+
+        $submissions = DB::table('lesson_user')
+            ->join('users', 'lesson_user.user_id', '=', 'users.id')
+            ->where('lesson_user.lesson_id', $lesson->id)
+            ->whereNotNull('lesson_user.homework_file_path')
+            ->select($selectColumns)
+            ->orderBy('lesson_user.submitted_at', 'desc')
+            ->paginate(15);
+
+        return view('dashboard.lessons.submissions', compact('lesson', 'submissions'));
+    }
+
+    /**
+     * Update grade/score and evaluation for a submission.
+     */
+    public function updateSubmission(Request $request, $pivotId)
+    {
+        $validated = $request->validate([
+            'score'    => 'nullable|numeric|min:0|max:100',
+            'status'   => 'nullable|string|in:pending,reviewed,graded,rejected',
+            'feedback' => 'nullable|string|max:1000',
+        ]);
+
+        $updateData = [
+            'quiz_score' => $validated['score'] ?? null,
+            'updated_at' => now(),
+        ];
+
+        // Safely update columns if present in schema
+        if (Schema::hasColumn('lesson_user', 'status')) {
+            $updateData['status'] = $validated['status'] ?? 'pending';
+        }
+
+        if (Schema::hasColumn('lesson_user', 'feedback')) {
+            $updateData['feedback'] = $validated['feedback'] ?? null;
+        }
+
+        // Map status to is_completed if applicable
+        if (isset($validated['status']) && $validated['status'] === 'graded') {
+            $updateData['is_completed'] = 1;
+        }
+
+        DB::table('lesson_user')
+            ->where('id', $pivotId)
+            ->update($updateData);
+
+        return back()->with('success', 'Homework evaluation saved successfully.');
     }
 }

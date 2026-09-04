@@ -10,9 +10,6 @@
             <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
                 <!-- Header -->
                 <div class="bg-primary bg-gradient text-white text-center p-4 position-relative">
-                    <span class="badge bg-white text-primary rounded-pill px-3 py-2 mb-2 font-monospace fw-semibold shadow-sm">
-                        REF: {{ $orderRef }}
-                    </span>
                     <h4 class="fw-bold mb-0">Scan & Pay</h4>
                     <p class="text-white-50 small mb-0 mt-1">Complete your course enrollment</p>
                 </div>

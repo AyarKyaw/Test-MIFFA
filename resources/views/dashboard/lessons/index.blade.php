@@ -18,13 +18,13 @@
                                         <span class="text-muted">({{ $selectedSection->course->title }})</span>
                                     @endif
                                 @else
-                                    Manage section lessons, videos, documents, and quizzes
+                                    Manage section lessons, videos, documents, homework, and quizzes
                                 @endif
                             </p>
                         </div>
                         <a href="{{ route('admin.sections.index', ['unit_id' => $selectedSection->unit_id ?? request('unit_id')]) }}" class="btn btn-outline-secondary btn-sm">
-    <i class="fa-solid fa-arrow-left me-1"></i> Back to Sections
-</a>
+                            <i class="fa-solid fa-arrow-left me-1"></i> Back to Sections
+                        </a>
                     </header>
 
                     @if (session('success'))
@@ -94,6 +94,9 @@
                                                 @case('document')
                                                     <span class="badge bg-warning text-dark"><i class="fa-solid fa-file-pdf me-1"></i> Document</span>
                                                     @break
+                                                @case('homework')
+                                                    <span class="badge bg-purple text-white" style="background-color: #6f42c1;"><i class="fa-solid fa-file-pen me-1"></i> Homework</span>
+                                                    @break
                                                 @case('quiz')
                                                     <span class="badge bg-info text-dark"><i class="fa-solid fa-clipboard-question me-1"></i> Quiz</span>
                                                     @break
@@ -110,6 +113,14 @@
                                                 <a href="{{ Storage::url($lesson->document_path) }}" target="_blank" class="small text-decoration-none text-success">
                                                     <i class="fa-solid fa-download me-1"></i> View Document
                                                 </a>
+                                            @elseif($lesson->type === 'homework')
+                                                @if($lesson->homework_file_path ?? $lesson->document_path ?? false)
+                                                    <a href="{{ Storage::url($lesson->homework_file_path ?? $lesson->document_path) }}" target="_blank" class="small text-decoration-none text-purple" style="color: #6f42c1;">
+                                                        <i class="fa-solid fa-paperclip me-1"></i> Download Template
+                                                    </a>
+                                                @else
+                                                    <small class="text-muted"><i class="fa-solid fa-upload me-1"></i> Student Upload</small>
+                                                @endif
                                             @elseif($lesson->type === 'quiz')
                                                 <small class="text-muted">{{ $lesson->questions->count() }} Questions</small>
                                             @else
@@ -118,6 +129,11 @@
                                         </td>
                                         <td>
                                             <div class="table-data-feature justify-content-end gap-1">
+                                                @if($lesson->type === 'homework')
+                                                    <a href="{{ route('admin.lessons.submissions', $lesson->id) }}" class="item" data-bs-toggle="tooltip" title="View Student Submissions">
+                                                        <i class="fa-solid fa-file-arrow-down text-primary"></i>
+                                                    </a>
+                                                @endif
                                                 <a href="{{ route('admin.lessons.edit', $lesson->id) }}" class="item" data-bs-toggle="tooltip" title="Edit Lesson">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>

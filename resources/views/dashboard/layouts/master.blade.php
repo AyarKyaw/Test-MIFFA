@@ -45,7 +45,7 @@
       <nav class="navbar-mobile">
         <div class="container-fluid">
           <ul class="navbar-mobile__list list-unstyled">
-            <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-tachometer-alt"></i>Dashboard</a>
+            <!-- <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-tachometer-alt"></i>Dashboard</a> -->
           </li>
           <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>New Features</a>
             <ul class="list-unstyled navbar__sub-list js-sub-list">
@@ -66,7 +66,12 @@
 <div class="menu-sidebar__content js-scrollbar1">
   <nav class="navbar-sidebar">
     <ul class="list-unstyled navbar__list">
-      <li><a href="/dashboard"><i class="fa-solid fa-tachometer-alt"></i>Dashboard</a></li>
+      <!-- <li><a href="/dashboard"><i class="fa-solid fa-tachometer-alt"></i>Dashboard</a></li> -->
+      <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Admins</a>
+      <ul class="list-unstyled navbar__sub-list js-sub-list">
+        <li><a href="/dashboard/admins">View</a></li>
+        <li><a href="/dashboard/admins/create">Create</a></li>
+      </ul>
       <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Students</a>
       <ul class="list-unstyled navbar__sub-list js-sub-list">
         <li><a href="/dashboard/students">View</a></li>
@@ -138,7 +143,7 @@
                           <div class="account-dropdown__item"><a href="#"><i class="fa-solid fa-gear"></i>Setting</a></div>
                         </div>
                         <div class="account-dropdown__footer">
-                          <form action="{{ route('logout') }}" method="POST">
+                          <form action="{{ route('admin.logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn text-danger ps-3"><i class="fa-solid fa-power-off me-2"></i>Logout</button>
                           </form>

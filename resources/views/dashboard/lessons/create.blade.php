@@ -11,7 +11,7 @@
                     <header class="m-card__header d-flex justify-content-between align-items-center">
                         <div>
                             <h2 class="m-card__title">Create New Lesson</h2>
-                            <p class="m-card__subtitle">Add video, text, document, or quiz content</p>
+                            <p class="m-card__subtitle">Add video, text, document, homework, or quiz content</p>
                         </div>
                         <a href="{{ route('admin.lessons.index', array_filter(['section_id' => $sectionId ?? request('section_id')])) }}" class="btn btn-outline-secondary btn-sm">
                             <i class="fa-solid fa-arrow-left me-1"></i> Back to Lessons
@@ -21,20 +21,33 @@
                     <form action="{{ route('admin.lessons.store') }}" method="POST" enctype="multipart/form-data" class="p-3">
                         @csrf
 
+                        <!-- Global Error Display -->
+                        @if ($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <strong class="d-block mb-2"><i class="fa-solid fa-triangle-exclamation me-1"></i> Form Submission Failed:</strong>
+                                <ul class="mb-0 ps-3">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         <div class="row g-3">
                             <div class="col-md-8">
                                 <label for="section_id" class="form-label fw-bold">Section <span class="text-danger">*</span></label>
-                                    <select name="section_id" id="section_id" class="form-select @error('section_id') is-invalid @enderror" required>
-                                        <option value="" disabled {{ old('section_id', $sectionId) ? '' : 'selected' }}>Select a Section</option>
-                                        @foreach($sections as $section)
-                                            <option value="{{ $section->id }}" {{ old('section_id', $sectionId ?? null) == $section->id ? 'selected' : '' }}>
-                                                {{ $section->title }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('section_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <select name="section_id" id="section_id" class="form-select @error('section_id') is-invalid @enderror" required>
+                                    <option value="" disabled {{ old('section_id', $sectionId) ? '' : 'selected' }}>Select a Section</option>
+                                    @foreach($sections as $section)
+                                        <option value="{{ $section->id }}" {{ old('section_id', $sectionId ?? null) == $section->id ? 'selected' : '' }}>
+                                            {{ $section->title }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('section_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-4">
@@ -58,6 +71,8 @@
                                 <select name="type" id="type" class="form-select @error('type') is-invalid @enderror" required onchange="toggleLessonTypeFields()">
                                     <option value="article" {{ old('type') == 'article' ? 'selected' : '' }}>Article</option>
                                     <option value="video" {{ old('type') == 'video' ? 'selected' : '' }}>Video</option>
+                                    <option value="document" {{ old('type') == 'document' ? 'selected' : '' }}>Document</option>
+                                    <option value="homework" {{ old('type') == 'homework' ? 'selected' : '' }}>Homework / Assignment</option>
                                     <option value="quiz" {{ old('type') == 'quiz' ? 'selected' : '' }}>Quiz</option>
                                 </select>
                                 @error('type')
@@ -83,9 +98,23 @@
                                 @enderror
                             </div>
 
-                            <!-- Content Text Area -->
+                            <!-- Homework Attachment Section (Admin Instruction File) -->
+                            <div class="col-md-12 type-field field-homework" style="display: none;">
+                                <div class="alert alert-info py-2 mb-2">
+                                    <i class="fa-solid fa-circle-info me-1"></i>
+                                    Students will be prompted to submit their file (Excel, Word, PDF, PowerPoint) when viewing this lesson.
+                                </div>
+                                <label for="homework_file" class="form-label fw-bold">Homework Reference/Template File (Optional)</label>
+                                <input type="file" name="homework_file" id="homework_file" class="form-control @error('homework_file') is-invalid @enderror" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                                <small class="text-muted">Allowed formats for initial download: PDF, Word, Excel, PowerPoint</small>
+                                @error('homework_file')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Content Text Area / Instructions -->
                             <div class="col-md-12 type-field field-content" style="display: none;">
-                                <label for="content" class="form-label fw-bold">Lesson Content / Instructions</label>
+                                <label for="content" id="content-label" class="form-label fw-bold">Lesson Content / Instructions</label>
                                 <textarea name="content" id="content" rows="5" class="form-control @error('content') is-invalid @enderror" placeholder="Enter full body text or instructions...">{{ old('content') }}</textarea>
                                 @error('content')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -122,6 +151,7 @@ let questionCount = 0;
 
 function toggleLessonTypeFields() {
     const type = document.getElementById('type').value;
+    const contentLabel = document.getElementById('content-label');
 
     // Hide all dynamic field containers
     document.querySelectorAll('.type-field').forEach(el => el.style.display = 'none');
@@ -130,11 +160,18 @@ function toggleLessonTypeFields() {
     if (type === 'video') {
         document.querySelector('.field-video').style.display = 'block';
         document.querySelector('.field-content').style.display = 'block';
+        contentLabel.textContent = 'Lesson Instructions / Notes';
     } else if (type === 'document') {
         document.querySelector('.field-document').style.display = 'block';
         document.querySelector('.field-content').style.display = 'block';
+        contentLabel.textContent = 'Document Description / Notes';
     } else if (type === 'article') {
         document.querySelector('.field-content').style.display = 'block';
+        contentLabel.textContent = 'Lesson Content';
+    } else if (type === 'homework') {
+        document.querySelector('.field-homework').style.display = 'block';
+        document.querySelector('.field-content').style.display = 'block';
+        contentLabel.textContent = 'Homework Task Instructions';
     } else if (type === 'quiz') {
         document.querySelector('.field-quiz').style.display = 'block';
     }

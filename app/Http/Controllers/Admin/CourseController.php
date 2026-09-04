@@ -37,8 +37,8 @@ class CourseController extends Controller
     public function create(): View
     {
         $categories = Category::orderBy('name')->get();
-
-        return view('dashboard.courses.create', compact('categories'));
+        $admins = Admin::all();
+        return view('dashboard.courses.create', compact('categories', 'admins'));
     }
 
     /**
@@ -47,14 +47,16 @@ class CourseController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'title'              => 'required|string|max:255',
-            'code'               => 'required|string|max:50|unique:courses,code',
-            'category_id' => 'required|exists:categories,id', // Fixed table name
-            'price'              => 'nullable|numeric|min:0',
-            'hour'               => 'required|integer|min:1',
-            'desc'               => 'nullable|string',
-            'member_price'       => 'nullable|numeric|min:0|lte:price',
-            'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'title'       => 'required|string|max:255',
+            'code'        => 'required|string|max:50|unique:courses,code',
+            'category_id' => 'required|exists:categories,id',
+            'price'       => 'nullable|numeric|min:0',
+            'hour'        => 'required|integer|min:1',
+            'desc'        => 'nullable|string',
+            'member_price'=> 'nullable|numeric|min:0|lte:price',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'admin_ids'   => 'nullable|array',
+            'admin_ids.*' => 'exists:admins,id',
         ]);
 
         $validated['price'] = $validated['price'] ?? 0;
@@ -64,71 +66,88 @@ class CourseController extends Controller
             $validated['image'] = $request->file('image')->store('courses', 'public');
         }
 
-        Course::create($validated);
+        // Assign created instance to $course variable
+        $course = Course::create($validated);
+
+        // Sync admin relationships to admin_course table
+        if ($request->has('admin_ids')) {
+            $course->admins()->sync($request->admin_ids);
+        }
 
         return redirect()->route('admin.courses.index')
-                         ->with('success', 'Course created successfully!');
+                        ->with('success', 'Course created successfully!');
     }
 
     /**
      * Show the form for editing the specified course.
      */
     public function edit(Course $course): View
-    {
-        $categories = Category::orderBy('name')->get(); // Fixed Model
-        $instructors = Instructor::orderBy('name')->get();
+{
+    $categories = Category::orderBy('name')->get();
+    $instructors = Instructor::orderBy('name')->get();
+    $admins = Admin::orderBy('name')->get();
+    
+    // Get array of assigned admin IDs for populating selected values in Blade
+    $selectedAdminIds = $course->admins->pluck('id')->toArray();
 
-        // Eager load assigned instructor IDs for pre-selection in view
-        $course->load('instructors');
+    // Eager load assigned instructor IDs for pre-selection in view
+    $course->load('instructors');
 
-        return view('dashboard.courses.edit', compact('course', 'categories', 'instructors'));
-    }
+    // FIX: Added 'admins' to compact array
+    return view('dashboard.courses.edit', compact('course', 'categories', 'instructors', 'admins', 'selectedAdminIds'));
+}
 
-    /**
-     * Update the specified course in storage.
-     */
-    public function update(Request $request, Course $course): RedirectResponse
-    {
-        $validated = $request->validate([
-            'title'              => 'required|string|max:255',
-            'code'               => 'required|string|max:50|unique:courses,code,' . $course->id,
-            'course_category_id' => 'required|exists:categories,id', // Fixed table name
-            'instructor_ids'     => 'nullable|array',
-            'instructor_ids.*'   => 'exists:instructors,id',
-            'price'              => 'nullable|numeric|min:0',
-            'hour'               => 'required|integer|min:1',
-            'desc'               => 'nullable|string',
-            'member_price'       => 'nullable|numeric|min:0|lte:price',
-            'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
+/**
+ * Update the specified course in storage.
+ */
+public function update(Request $request, Course $course): RedirectResponse
+{
+    $validated = $request->validate([
+        'title'              => 'required|string|max:255',
+        'code'               => 'required|string|max:50|unique:courses,code,' . $course->id,
+        'course_category_id' => 'required|exists:categories,id',
+        'instructor_ids'     => 'nullable|array',
+        'instructor_ids.*'   => 'exists:instructors,id',
+        'admin_ids'          => 'nullable|array',          // ADDED validation
+        'admin_ids.*'        => 'exists:admins,id',        // ADDED validation
+        'price'              => 'nullable|numeric|min:0',
+        'hour'               => 'required|integer|min:1',
+        'desc'               => 'nullable|string',
+        'member_price'       => 'nullable|numeric|min:0|lte:price',
+        'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+    ]);
 
-        // Map form input 'course_category_id' to database column 'category_id'
-        $validated['category_id'] = $validated['course_category_id'];
-        unset($validated['course_category_id']);
+    // Map form input 'course_category_id' to database column 'category_id'
+    $validated['category_id'] = $validated['course_category_id'];
+    unset($validated['course_category_id']);
 
-        $validated['price'] = $validated['price'] ?? 0;
+    $validated['price'] = $validated['price'] ?? 0;
 
-        // Handle Image Upload
-        if ($request->hasFile('image')) {
-            if ($course->image && Storage::disk('public')->exists($course->image)) {
-                Storage::disk('public')->delete($course->image);
-            }
-            $validated['image'] = $request->file('image')->store('courses', 'public');
+    // Handle Image Upload
+    if ($request->hasFile('image')) {
+        if ($course->image && Storage::disk('public')->exists($course->image)) {
+            Storage::disk('public')->delete($course->image);
         }
-
-        // Extract instructor IDs before updating course attributes
-        $instructorIds = $validated['instructor_ids'] ?? [];
-        unset($validated['instructor_ids']);
-
-        // Update main course attributes
-        $course->update($validated);
-
-        // Sync pivot table relations (attaches new ones, removes unselected ones)
-        $course->instructors()->sync($instructorIds);
-
-        return redirect()->route('admin.courses.index')
-                        ->with('success', 'Course updated successfully!');
+        $validated['image'] = $request->file('image')->store('courses', 'public');
     }
+
+    // Extract pivot relations before updating model attributes
+    $instructorIds = $validated['instructor_ids'] ?? [];
+    unset($validated['instructor_ids']);
+
+    $adminIds = $validated['admin_ids'] ?? [];
+    unset($validated['admin_ids']);
+
+    // Update main course attributes
+    $course->update($validated);
+
+    // Sync pivot table relations
+    $course->instructors()->sync($instructorIds);
+    $course->admins()->sync($adminIds); // ADDED sync for admin_course table
+
+    return redirect()->route('admin.courses.index')
+                     ->with('success', 'Course updated successfully!');
+}
 
     /**
      * Remove the specified course from storage.
@@ -144,5 +163,29 @@ class CourseController extends Controller
 
         return redirect()->route('admin.courses.index')
                          ->with('success', 'Course deleted successfully!');
+    }
+
+    public function students(Request $request, Course $course)
+    {
+        $query = $course->students(); // Assumes a students() belongsToMany relationship on your Course model
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $students = $query->paginate(10);
+
+        return view('dashboard.courses.students', compact('course', 'students'));
+    }
+
+    public function removeStudent(Course $course, User $student)
+    {
+        $course->students()->detach($student->id);
+
+        return back()->with('success', 'Student unenrolled successfully.');
     }
 }

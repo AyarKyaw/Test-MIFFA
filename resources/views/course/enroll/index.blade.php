@@ -52,133 +52,129 @@
                         <form action="{{ route('enroll.store', $course->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            <!-- Full Name -->
+                            <!-- Full Name Field -->
+                            @php
+                                $userName = auth()->user()?->name ?? old('name');
+                                $isNamePresent = !empty(auth()->user()?->name);
+                            @endphp
+
                             <div class="mb-3">
-                                <label for="name" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                <label for="name" class="form-label fw-semibold">
+                                    Full Name 
+                                    @if(!$isNamePresent)
+                                        <span class="text-danger">*</span>
+                                    @endif
+                                </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-user"></i></span>
+                                    <span class="input-group-text {{ $isNamePresent ? 'bg-light' : 'bg-white' }} border-end-0 text-muted">
+                                        <i class="fas fa-user"></i>
+                                    </span>
                                     <input type="text" 
-                                           class="form-control border-start-0 ps-0 @error('name') is-invalid @enderror" 
-                                           id="name" 
-                                           name="name" 
-                                           value="{{ old('name') }}" 
-                                           placeholder="Enter your full name"
-                                           required>
+                                        class="form-control border-start-0 ps-0 {{ $isNamePresent ? 'bg-light text-muted' : '' }} @error('name') is-invalid @enderror" 
+                                        id="name" 
+                                        name="name" 
+                                        value="{{ $userName }}" 
+                                        placeholder="Enter your full name" 
+                                        {{ $isNamePresent ? 'readonly' : 'required' }}>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                @if($isNamePresent)
+                                    <div class="form-text text-muted small"><i class="fas fa-lock me-1"></i> Pre-filled from your registered account.</div>
+                                @endif
                             </div>
 
-                            <!-- Email Address -->
-                            <div class="mb-3">
-                                <label for="email" class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" 
-                                           class="form-control border-start-0 ps-0 @error('email') is-invalid @enderror" 
-                                           id="email" 
-                                           name="email" 
-                                           value="{{ old('email') }}" 
-                                           placeholder="name@example.com"
-                                           required>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <!-- Password -->
-                            <div class="mb-3">
-                                <label for="password" class="form-label fw-semibold">Account Password <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-key"></i></span>
-                                    <input type="password" 
-                                           class="form-control border-start-0 ps-0 @error('password') is-invalid @enderror" 
-                                           id="password" 
-                                           name="password" 
-                                           placeholder="Create a password (min. 8 characters)"
-                                           required>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <!-- Phone Number -->
-                            <div class="mb-3">
-                                <label for="phone" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-phone"></i></span>
-                                    <input type="tel" 
-                                           class="form-control border-start-0 ps-0 @error('phone') is-invalid @enderror" 
-                                           id="phone" 
-                                           name="phone" 
-                                           value="{{ old('phone') }}" 
-                                           placeholder="09123456789" 
-                                           required>
-                                    @error('phone')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <!-- Gender & Membership Status -->
+                            <!-- Phone Number & Viber Number -->
                             <div class="row g-3 mb-3">
+                                <!-- Phone Field -->
                                 <div class="col-md-6">
-                                    <label for="gender" class="form-label fw-semibold">Gender <span class="text-danger">*</span></label>
+                                    <label for="phone" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-venus-mars"></i></span>
-                                        <select class="form-select border-start-0 ps-0 @error('gender') is-invalid @enderror" id="gender" name="gender" required>
-                                            <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Select Gender</option>
-                                            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
-                                            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
-                                            <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
-                                        </select>
-                                        @error('gender')
+                                        <span class="input-group-text bg-white border-end-0 text-muted fw-semibold">09</span>
+                                        <input type="tel" 
+                                            class="form-control border-start-0 ps-0 @error('phone') is-invalid @enderror" 
+                                            id="phone" 
+                                            name="phone" 
+                                            inputmode="numeric"
+                                            value="{{ old('phone') }}" 
+                                            placeholder="123456789" 
+                                            maxlength="9"
+                                            pattern="[0-9]{7,9}"
+                                            title="Please enter a valid phone number (7 to 9 digits after 09)"
+                                            required>
+                                        @error('phone')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
 
+                                <!-- Viber Field -->
                                 <div class="col-md-6">
-                                    <label for="membership_status" class="form-label fw-semibold">MIFFA Membership <span class="text-danger">*</span></label>
+                                    <label for="viber_phone" class="form-label fw-semibold">Viber Phone Number <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-id-card"></i></span>
-                                        <select class="form-select border-start-0 ps-0 @error('membership_status') is-invalid @enderror" id="membership_status" name="membership_status" required>
-                                            <option value="" disabled {{ old('membership_status') ? '' : 'selected' }}>Select Status</option>
-                                            <option value="member" {{ old('membership_status') == 'member' ? 'selected' : '' }}>Member</option>
-                                            <option value="non-member" {{ old('membership_status') == 'non-member' ? 'selected' : '' }}>Non-Member</option>
-                                        </select>
-                                        @error('membership_status')
+                                        <span class="input-group-text bg-white border-end-0 text-muted fw-semibold">09</span>
+                                        <input type="tel" 
+                                            class="form-control border-start-0 ps-0 @error('viber_phone') is-invalid @enderror" 
+                                            id="viber_phone" 
+                                            name="viber_phone" 
+                                            inputmode="numeric"
+                                            value="{{ old('viber_phone') }}" 
+                                            placeholder="123456789" 
+                                            maxlength="9"
+                                            pattern="[0-9]{7,9}"
+                                            title="Please enter a valid Viber number (7 to 9 digits after 09)"
+                                            required>
+                                        @error('viber_phone')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Formatted Myanmar NRC Input -->
+                            <!-- Gender -->
+                            <div class="mb-3">
+                                <label for="gender" class="form-label fw-semibold">Gender <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-venus-mars"></i></span>
+                                    <select class="form-select border-start-0 ps-0 @error('gender') is-invalid @enderror" id="gender" name="gender" required>
+                                        <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Select Gender</option>
+                                        <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                                        <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
+                                        <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
+                                    </select>
+                                    @error('gender')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Formatted Myanmar NRC Input (Burmese UI) -->
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">NRC / Identity Number <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white text-muted"><i class="fas fa-address-card"></i></span>
                                     
+                                    @php
+                                        $burmeseDigits = ['၁','၂','၃','၄','၅','၆','၇','၈','၉','၁၀','၁၁','၁၂','၁၃','၁၄'];
+                                    @endphp
                                     <select class="form-select @error('nrc_state') is-invalid @enderror" id="nrc_state" name="nrc_state" style="max-width: 90px;" required>
-                                        <option value="" disabled {{ old('nrc_state') ? '' : 'selected' }}>State</option>
+                                        <option value="" disabled {{ old('nrc_state') ? '' : 'selected' }}></option>
                                         @for ($i = 1; $i <= 14; $i++)
-                                            <option value="{{ $i }}" {{ old('nrc_state') == $i ? 'selected' : '' }}>{{ $i }}/</option>
+                                            <option value="{{ $i }}" {{ old('nrc_state') == $i ? 'selected' : '' }}>{{ $burmeseDigits[$i-1] }}/</option>
                                         @endfor
                                     </select>
 
                                     <select class="form-select @error('nrc_district') is-invalid @enderror" id="nrc_district" name="nrc_district" required>
-                                        <option value="" disabled selected>District</option>
+                                        <option value="" disabled selected></option>
                                     </select>
 
                                     <select class="form-select @error('nrc_type') is-invalid @enderror" id="nrc_type" name="nrc_type" style="max-width: 100px;" required>
-                                        <option value="(N)" {{ old('nrc_type', '(N)') == '(N)' ? 'selected' : '' }}>(N)</option>
-                                        <option value="(P)" {{ old('nrc_type') == '(P)' ? 'selected' : '' }}>(P)</option>
-                                        <option value="(E)" {{ old('nrc_type') == '(E)' ? 'selected' : '' }}>(E)</option>
-                                        <option value="(NRA)" {{ old('nrc_type') == '(NRA)' ? 'selected' : '' }}>(NRA)</option>
+                                        <option value="" disabled {{ old('nrc_type') ? '' : 'selected' }}></option>
+                                        <option value="(N)" {{ old('nrc_type') == '(N)' ? 'selected' : '' }}>(နိုင်)</option>
+                                        <option value="(P)" {{ old('nrc_type') == '(P)' ? 'selected' : '' }}>(ပြု)</option>
+                                        <option value="(E)" {{ old('nrc_type') == '(E)' ? 'selected' : '' }}>(ဧ)</option>
+                                        <option value="(NRA)" {{ old('nrc_type') == '(NRA)' ? 'selected' : '' }}>(ဧည)</option>
                                     </select>
 
                                     <input type="text" 
@@ -186,14 +182,15 @@
                                            id="nrc_number" 
                                            name="nrc_number" 
                                            value="{{ old('nrc_number') }}" 
-                                           placeholder="123456" 
+                                           placeholder="၁၂၃၄၅၆" 
                                            maxlength="6"
+                                           inputmode="numeric"
                                            pattern="[0-9]{6}"
                                            required>
                                 </div>
                                 @if($errors->has('nrc_state') || $errors->has('nrc_district') || $errors->has('nrc_type') || $errors->has('nrc_number'))
                                     <div class="text-danger small mt-1">
-                                        Please provide a valid NRC format (e.g. 12/YAGANA(N)123456).
+                                        Please provide a valid NRC format (e.g. ၁၂/ဗဟန(နိုင်)၁၂၃၄၅၆).
                                     </div>
                                 @endif
                             </div>
@@ -251,6 +248,42 @@
                                     @enderror
                                 </div>
                                 <div class="form-text">Upload a clear passport-style photo (JPEG, PNG / max 2MB).</div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Membership Status & Member Code Section -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="membership_status" class="form-label fw-semibold">MIFFA Membership <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-id-card"></i></span>
+                                        <select class="form-select border-start-0 ps-0 @error('membership_status') is-invalid @enderror" id="membership_status" name="membership_status" required>
+                                            <option value="" disabled {{ old('membership_status') ? '' : 'selected' }}>Select Status</option>
+                                            <option value="member" {{ old('membership_status') == 'member' ? 'selected' : '' }}>Member</option>
+                                            <option value="non-member" {{ old('membership_status') == 'non-member' ? 'selected' : '' }}>Non-Member</option>
+                                        </select>
+                                        @error('membership_status')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6" id="member_code_wrapper" style="{{ old('membership_status') == 'member' ? '' : 'display: none;' }}">
+                                    <label for="member_code" class="form-label fw-semibold">MIFFA Member Code <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-hashtag"></i></span>
+                                        <input type="text" 
+                                               class="form-control border-start-0 ps-0 @error('member_code') is-invalid @enderror" 
+                                               id="member_code" 
+                                               name="member_code" 
+                                               value="{{ old('member_code') }}" 
+                                               placeholder="e.g. M-12345">
+                                        @error('member_code')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Submit Button -->
@@ -320,6 +353,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // NRC Townships Mapping
     const stateSelect = document.getElementById('nrc_state');
     const districtSelect = document.getElementById('nrc_district');
     
@@ -344,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const oldDistrict = "{{ old('nrc_district') }}";
 
     function populateDistricts(selectedState, preselectDistrict = '') {
-        districtSelect.innerHTML = '<option value="" disabled selected>District</option>';
+        districtSelect.innerHTML = '<option value="" disabled selected>မြို့နယ်</option>';
 
         if (selectedState && districtOptions[selectedState]) {
             districtOptions[selectedState].forEach(function (district) {
@@ -369,26 +403,58 @@ document.addEventListener('DOMContentLoaded', function () {
         stateSelect.value = oldState;
         populateDistricts(oldState, oldDistrict);
     }
-});
-document.addEventListener('DOMContentLoaded', function () {
-        const membershipSelect = document.getElementById('membership_status');
-        const priceDisplay = document.getElementById('course_price_display');
 
-        const memberPrice = {{ $course->member_price ?? $course->price ?? 0 }};
-        const nonMemberPrice = {{ $course->non_member_price ?? $course->price ?? 0 }};
+    // Membership Status & Dynamic Pricing
+    const membershipSelect = document.getElementById('membership_status');
+    const memberCodeWrapper = document.getElementById('member_code_wrapper');
+    const memberCodeInput = document.getElementById('member_code');
+    const priceDisplay = document.getElementById('course_price_display');
 
-        function formatPrice(amount) {
-            if (amount <= 0) return 'Free';
-            return new Intl.NumberFormat().format(amount) + ' MMK';
-        }
+    const memberPrice = {{ $course->member_price ?? $course->price ?? 0 }};
+    const nonMemberPrice = {{ $course->non_member_price ?? $course->price ?? 0 }};
 
-        membershipSelect.addEventListener('change', function () {
-            if (this.value === 'member') {
-                priceDisplay.textContent = formatPrice(memberPrice);
-            } else if (this.value === 'non-member') {
+    function formatPrice(amount) {
+        if (amount <= 0) return 'Free';
+        return new Intl.NumberFormat().format(amount) + ' MMK';
+    }
+
+    function toggleMemberCodeVisibility(status) {
+        if (status === 'member') {
+            memberCodeWrapper.style.display = 'block';
+            memberCodeInput.setAttribute('required', 'required');
+            priceDisplay.textContent = formatPrice(memberPrice);
+        } else {
+            memberCodeWrapper.style.display = 'none';
+            memberCodeInput.removeAttribute('required');
+            memberCodeInput.value = '';
+            if (status === 'non-member') {
                 priceDisplay.textContent = formatPrice(nonMemberPrice);
             }
+        }
+    }
+
+    membershipSelect.addEventListener('change', function () {
+        toggleMemberCodeVisibility(this.value);
+    });
+
+    if (membershipSelect.value) {
+        toggleMemberCodeVisibility(membershipSelect.value);
+    }
+
+    // Phone & Numeric Input Sanitization listeners
+    const numericInputs = document.querySelectorAll('#phone, #viber_phone, #nrc_number');
+
+    numericInputs.forEach(input => {
+        input.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        input.addEventListener('paste', function (evt) {
+            evt.preventDefault();
+            let pasteData = (evt.clipboardData || window.clipboardData).getData('text');
+            this.value = pasteData.replace(/[^0-9]/g, '').slice(0, this.maxLength || pasteData.length);
         });
     });
+});
 </script>
 @endsection

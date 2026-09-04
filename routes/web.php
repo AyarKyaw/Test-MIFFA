@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\StudentController;
-
+use App\Http\Controllers\DashboardController;
 // Course Category Controllers
 use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryController;
 use App\Http\Controllers\CourseCategoryController as FrontendCourseCategoryController;
@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\InstructorController;
+use App\Http\Controllers\Admin\AdminManagementController;
 
 use App\Http\Controllers\HomeController;
 
@@ -48,7 +49,9 @@ Route::get('/courses', [FrontendCourseController::class, 'index'])->name('course
 Route::get('/courses/{id}', [FrontendCourseController::class, 'show'])->name('courses.show');
 Route::get('/course/categories', [FrontendCourseCategoryController::class, 'index'])->name('course-categories.index');
 
-// Guest / Authentication Routes
+Route::post('/google-one-tap', [AuthController::class, 'handleGoogleOneTap'])->name('google.onetap');
+
+// Guest / Authentication Routes (Students / Frontend Users)
 Route::middleware('guest')->group(function () {
     Route::get('/register', function () {
         return view('register');
@@ -60,10 +63,25 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.perform');
 });
 
+// Admin Authentication Guest Routes
+Route::middleware('guest:admin')->group(function () {
+    Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
+    Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.perform');
+});
+
 // Auth Routes (Public/Shared endpoints)
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::post('/auth/google/one-tap', [AuthController::class, 'handleGoogleOneTap'])->name('auth.google.onetap');
+Route::get('/account/confirm/{payload}', [AuthController::class, 'confirmAccount'])
+    ->name('account.confirm')
+    ->middleware('signed');
 
+Route::post('/account/resend', [AuthController::class, 'resendConfirmation'])
+    ->name('account.resend')
+    ->middleware('throttle:3,1');
+
+Route::get('/account/check-status', [AuthController::class, 'checkVerificationStatus'])
+->name('account.check-status');
 /*
 |--------------------------------------------------------------------------
 | Email Verification Routes
@@ -88,130 +106,65 @@ Route::middleware('auth')->group(function () {
     })->middleware('throttle:6,1')->name('verification.send');
 });
 
-
-// Enrollment Routes
-    Route::get('/enroll/{course}', [EnrollmentController::class, 'index'])->name('enroll.index');
-    Route::post('/enroll/{id}', [EnrollmentController::class, 'store'])->name('enroll.store');
+// Public Enrollment Routes
+Route::get('/enroll/{course}', [EnrollmentController::class, 'index'])->name('enroll.index');
+Route::post('/enroll/{id}', [EnrollmentController::class, 'store'])->name('enroll.store');
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes (Requires Auth & Email Verification)
+| Student / Classroom Routes (Requires Auth & Email Verification)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
-
-    // Admin / Dashboard Routes
-    Route::get('/dashboard', function () {
-        return view('dashboard.index');
-    })->name('dashboard');
-
-    Route::resource('/dashboard/students', StudentController::class)->names('admin.students');
-
-    // Admin Lessons Routes
-    Route::resource('/dashboard/lessons', LessonController::class)->names('admin.lessons');
-    Route::get('/dashboard/lessons/{lesson}/questions', [LessonController::class, 'getQuestions'])->name('lessons.questions');
-
-    // Admin Resource Routes for Categories and Courses
-    Route::resource('/dashboard/course-categories', AdminCourseCategoryController::class)
-        ->names('admin.course-categories');
-    Route::resource('/dashboard/categories', AdminCategoryController::class)
-        ->names('admin.categories');
-    Route::resource('/dashboard/courses', AdminCourseController::class)
-        ->names('admin.courses');
-
-    Route::resource('instructors', InstructorController::class)->names('admin.instructors');
-
-        
     // Payment Routes
     Route::get('/payment/qr/{course}', [PaymentController::class, 'showQr'])->name('payment.qr');
     Route::post('/payment/confirm/{course}', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
-    
-    // Learning / Classroom Routes
+    Route::get('/student-dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
+    // Learning & Classroom Routes
     Route::get('/my-courses', [FrontendCourseController::class, 'myCourses'])->name('courses.my');
     Route::get('/courses/{course}/learn/{lesson?}', [FrontendCourseController::class, 'classroom'])->name('courses.learn');
     Route::post('/courses/{course}/lessons/{lesson}/submit', [FrontendCourseController::class, 'submitQuiz'])->name('courses.lessons.submit');
-    Route::get('/courses/{course}/units', [FrontendCourseController::class, 'units'])
-        ->name('courses.units');
-    Route::resource('units', UnitController::class)->names('admin.units');
-    Route::resource('sections', SectionController::class)->names('admin.sections');
+    Route::get('/courses/{course}/units', [FrontendCourseController::class, 'units'])->name('courses.units');
+
+    Route::post('/courses/{course}/lessons/{lesson}/homework', [FrontendCourseController::class, 'submitHomework'])->name('courses.homework.submit');
 
     // Lesson Progress / Completion Route
     Route::post('/lessons/{lesson}/complete', [FrontendCourseController::class, 'markComplete'])->name('lessons.complete');
 });
 
-Route::get('/debug-storage', function () {
-    $targetFile = 'course-categories/0SoMZjSza3XhqzRmREd9lNPioDJaLvWePBH18fmd.jpg';
+/*
+|--------------------------------------------------------------------------
+| Protected Admin Routes (Requires Admin Verification, Prefixed with /dashboard)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('admin')->prefix('dashboard')->group(function () {
+
+    // Admin Dashboard Home (/dashboard)
+    Route::get('/', function () {
+        return view('dashboard.index');
+    })->name('dashboard');
+
+    // Admin Logout (/dashboard/logout)
+    Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
+
+    // Admin Resource Management (/dashboard/students, /dashboard/instructors, etc.)
+    Route::resource('students', StudentController::class)->names('admin.students');
+    Route::resource('instructors', InstructorController::class)->names('admin.instructors');
+    Route::resource('admins', AdminManagementController::class)->names('admin.admins');
     
-    $storagePath = storage_path('app/public/' . $targetFile);
-    $publicPath = public_path('storage/' . $targetFile);
-    $symlinkTarget = public_path('storage');
+    // Admin Courses & Categories
+    Route::resource('course-categories', AdminCourseCategoryController::class)->names('admin.course-categories');
+    Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
+    Route::resource('courses', AdminCourseController::class)->names('admin.courses');
+    
+    Route::get('courses/{course}/students', [AdminCourseController::class, 'students'])->name('admin.courses.students');
+    Route::delete('courses/{course}/students/{student}', [AdminCourseController::class, 'removeStudent'])->name('admin.courses.students.remove');
 
-    return response()->json([
-        'php_user' => exec('whoami'),
-        'symlink' => [
-            'exists' => file_exists($symlinkTarget),
-            'is_link' => is_link($symlinkTarget),
-            'link_target' => is_link($symlinkTarget) ? readlink($symlinkTarget) : null,
-        ],
-        'actual_file_in_storage' => [
-            'path' => $storagePath,
-            'exists' => file_exists($storagePath),
-            'readable' => is_readable($storagePath),
-            'permissions' => file_exists($storagePath) ? substr(sprintf('%o', fileperms($storagePath)), -4) : null,
-            'owner_id' => file_exists($storagePath) ? fileowner($storagePath) : null,
-        ],
-        'file_via_public_symlink' => [
-            'path' => $publicPath,
-            'exists' => file_exists($publicPath),
-            'readable' => is_readable($publicPath),
-        ],
-    ]);
+    // Curriculum Management (Lessons, Units, Sections)
+    Route::resource('lessons', LessonController::class)->names('admin.lessons');
+    Route::get('lessons/{lesson}/questions', [LessonController::class, 'getQuestions'])->name('lessons.questions');
+    Route::resource('units', UnitController::class)->names('admin.units');
+    Route::resource('sections', SectionController::class)->names('admin.sections');
+    Route::get('/lessons/{lesson}/submissions', [LessonController::class, 'submissions'])->name('admin.lessons.submissions');
+    Route::put('/lesson-user/{pivotId}/update', [LessonController::class, 'updateSubmission'])->name('admin.lesson-user.update');
 });
-
-// Route::get('/account/confirm/{payload}', function (Request $request, $payload) {
-//     if (! $request->hasValidSignature()) {
-//         Log::warning('ACCOUNT CONFIRM: Invalid or expired signature clicked.');
-//         abort(403, 'This confirmation link is invalid or has expired.');
-//     }
-
-//     try {
-//         $data = decrypt($payload);
-//         Log::info('ACCOUNT CONFIRM: Decrypted payload successfully', ['email' => $data['email'] ?? null]);
-
-//         // 1. Create User in DB if not created yet
-//         $user = User::where('email', $data['email'])->first();
-//         if (! $user) {
-//             $user = User::create([
-//                 'name'              => $data['name'],
-//                 'email'             => $data['email'],
-//                 'password'          => $data['password'],
-//                 'google_id'         => $data['google_id'] ?? null,
-//                 'email_verified_at' => now(),
-//             ]);
-//             Log::info('ACCOUNT CONFIRM: New user created in DB', ['user_id' => $user->id]);
-//         } else {
-//             Log::info('ACCOUNT CONFIRM: User already existed in DB', ['user_id' => $user->id]);
-//         }
-
-//         // 2. Set Cache Flag for the polling tab
-//         $cacheKey = 'confirmed_email_' . md5($data['email']);
-//         Cache::put($cacheKey, $user->id, now()->addMinutes(10));
-//         Log::info('ACCOUNT CONFIRM: Cache flag written', ['cache_key' => $cacheKey, 'user_id' => $user->id]);
-
-//         // 3. Authenticate current browser session
-//         Auth::login($user, true);
-//         $request->session()->regenerate();
-//         session()->forget('pending_registration');
-
-//         return redirect('/')->with('success', 'Account confirmed! Welcome to MIFFA.');
-
-//     } catch (\Exception $e) {
-//         Log::error('ACCOUNT CONFIRM ERROR: ' . $e->getMessage());
-//         return redirect()->route('register')->withErrors(['email' => 'Confirmation failed.']);
-//     }
-// })->name('account.confirm');
-
-// Route::post('/account/check-status', [AuthController::class, 'checkVerificationStatus'])->name('account.check-status');
-
-// // Route to resend link from verify-email page
-// Route::post('/account/resend-confirmation', [AuthController::class, 'resendConfirmation'])->name('account.resend');

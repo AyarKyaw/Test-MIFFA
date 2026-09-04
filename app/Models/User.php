@@ -50,7 +50,15 @@ class User extends Authenticatable
     public function lessons()
     {
         return $this->belongsToMany(Lesson::class, 'lesson_user')
-                    ->withPivot('course_id', 'is_completed', 'progress_percent', 'quiz_score', 'completed_at')
+                    ->withPivot(
+                        'course_id', 
+                        'is_completed', 
+                        'progress_percent', 
+                        'quiz_score', 
+                        'completed_at',
+                        'homework_file_path',
+                        'submitted_at'
+                    )
                     ->withTimestamps();
     }
 

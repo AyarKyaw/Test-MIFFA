@@ -430,7 +430,7 @@
 
     <!-- Start Testimonial
     ============================================= -->
-    <div class="testimonial-style-two-area default-padding">
+    <!-- <div class="testimonial-style-two-area default-padding">
         <div class="container">
             <div class="row">
                 <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
@@ -445,9 +445,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="testimonial-style-two-carousel swiper">
-                        <!-- Additional required wrapper -->
                         <div class="swiper-wrapper">
-                            <!-- Single Item -->
+               
                             <div class="swiper-slide">
                                 <div class="testimonial-style-two">
                                     <div class="top-info">
@@ -483,8 +482,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Single Item -->
-                            <!-- Single Item -->
+                
                             <div class="swiper-slide">
                                 <div class="testimonial-style-two">
                                     <div class="top-info">
@@ -520,8 +518,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Single Item -->
-                             <!-- Single Item -->
+                      
                             <div class="swiper-slide">
                                 <div class="testimonial-style-two">
                                     <div class="top-info">
@@ -557,8 +554,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Single Item -->
-                             <!-- Single Item -->
+             
                             <div class="swiper-slide">
                                 <div class="testimonial-style-two">
                                     <div class="top-info">
@@ -594,8 +590,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Single Item -->
-                             <!-- Single Item -->
+              
                             <div class="swiper-slide">
                                 <div class="testimonial-style-two">
                                     <div class="top-info">
@@ -631,18 +626,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Single Item -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- End Testimonial -->
 
     <!-- Start Blog 
     ============================================= -->
-    <div class="blog-area home-blog-style-two bg-gray-gradient-secondary default-padding bottom-less">
+    <!-- <div class="blog-area home-blog-style-two bg-gray-gradient-secondary default-padding bottom-less">
         <div class="container">
             <div class="row">
                 <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
@@ -655,7 +649,6 @@
         </div>
         <div class="container">
             <div class="row d-flex align-items-stretch">
-                <!-- Single Item -->
                 <div class="col-xl-4 col-md-6 col-lg-6 mb-30 d-flex">
                     <div class="home-blog-style-two-item wow fadeInUp d-flex flex-column w-100">
                         <div class="thumb">
@@ -678,9 +671,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Single Item -->
 
-                <!-- Single Item -->
                 <div class="col-xl-4 col-md-6 col-lg-6 mb-30 d-flex">
                     <div class="home-blog-style-two-item wow fadeInUp d-flex flex-column w-100" data-wow-delay="200ms">
                         <div class="thumb">
@@ -703,9 +694,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Single Item -->
-
-                <!-- Single Item -->
+        
                 <div class="col-xl-4 col-md-6 col-lg-6 mb-30 d-flex">
                     <div class="home-blog-style-two-item wow fadeInUp d-flex flex-column w-100" data-wow-delay="400ms">
                         <div class="thumb">
@@ -728,15 +717,14 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Single Item -->
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- End Blog -->
 
     <!-- Start Newsletter 
     ============================================= -->
-    <div class="newsletter-area default-padding-bottom bg-gray-gradient-secondary">
+    <!-- <div class="newsletter-area default-padding-bottom bg-gray-gradient-secondary">
         <div class="container">
             <div class="newsletter-style-one-items bg-theme text-center bg-cover" style="background-image: url(assets/img/shape/banner-8.jpg);">
                 <div class="shape">
@@ -759,6 +747,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- End Newsletter -->
 @endsection

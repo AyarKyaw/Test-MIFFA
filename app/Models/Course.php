@@ -86,4 +86,10 @@ class Course extends Model
 
         return (int) round(($completedCount / $totalLessons) * 100);
     }
+
+    public function admins()
+    {
+        return $this->belongsToMany(Admin::class, 'admin_course')
+                    ->withTimestamps();
+    }
 }
