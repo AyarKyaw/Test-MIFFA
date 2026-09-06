@@ -31,6 +31,7 @@
       display: none !important;
   }
 </style>
+@stack('styles')
   </head>
   <body class="theme-2026"><a class="visually-hidden-focusable skip-link" href="#main-content">Skip to main content</a>
     <div class="page-wrapper">
@@ -169,5 +170,6 @@
     <script src="{{ asset('assets/js/bootstrap5-init.js') }}"></script>
     <script src="{{ asset('assets/js/main-vanilla.js') }}"></script>
     <script src="{{ asset('assets/js/modern-plugins.js') }}"></script>
+    @stack('scripts')
   </body>
 </html>

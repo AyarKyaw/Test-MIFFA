@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Instructor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class InstructorController extends Controller
 {
@@ -32,12 +33,15 @@ class InstructorController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'  => 'required|string|max:255',
-            'bio'   => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'name'          => 'required|string|max:255',
+            'bio'           => 'nullable|string',
+            'cropped_image' => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('cropped_image')) {
+            $validated['image'] = $this->saveBase64Image($request->input('cropped_image'));
+        } elseif ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('instructors', 'public');
         }
 
@@ -61,16 +65,21 @@ class InstructorController extends Controller
     public function update(Request $request, Instructor $instructor)
     {
         $validated = $request->validate([
-            'name'  => 'required|string|max:255',
-            'bio'   => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'name'          => 'required|string|max:255',
+            'bio'           => 'nullable|string',
+            'cropped_image' => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
+        if ($request->filled('cropped_image')) {
             // Delete old image if exists
-            if ($instructor->image && Storage::disk('public')->exists($instructor->image)) {
-                Storage::disk('public')->delete($instructor->image);
-            }
+            $this->deleteInstructorImage($instructor->image);
+
+            $validated['image'] = $this->saveBase64Image($request->input('cropped_image'));
+        } elseif ($request->hasFile('image')) {
+            // Delete old image if exists
+            $this->deleteInstructorImage($instructor->image);
+
             $validated['image'] = $request->file('image')->store('instructors', 'public');
         }
 
@@ -85,13 +94,45 @@ class InstructorController extends Controller
      */
     public function destroy(Instructor $instructor)
     {
-        if ($instructor->image && Storage::disk('public')->exists($instructor->image)) {
-            Storage::disk('public')->delete($instructor->image);
-        }
+        $this->deleteInstructorImage($instructor->image);
 
         $instructor->delete();
 
         return redirect()->route('admin.instructors.index')
             ->with('success', 'Instructor deleted successfully.');
+    }
+
+    /**
+     * Helper to process and store base64 cropped images.
+     */
+    private function saveBase64Image(string $base64Data): string
+    {
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
+            $data = substr($base64Data, strpos($base64Data, ',') + 1);
+            $type = strtolower($type[1]); // jpg, png, etc.
+
+            if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png', 'webp'])) {
+                $type = 'jpg';
+            }
+
+            $data = base64_decode($data);
+            $filename = 'instructors/' . Str::random(40) . '.' . $type;
+
+            Storage::disk('public')->put($filename, $data);
+
+            return $filename;
+        }
+
+        return '';
+    }
+
+    /**
+     * Helper to safely remove images from storage.
+     */
+    private function deleteInstructorImage(?string $path): void
+    {
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }
