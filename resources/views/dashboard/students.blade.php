@@ -93,7 +93,7 @@
                                         <td>
                                             <div class="fw-bold text-dark">{{ $user->name }}</div>
                                             <small class="text-muted d-block"><a class="block-email" href="mailto:{{ $user->email }}">{{ $user->email }}</a></small>
-                                            <small class="text-muted"><i class="fa-solid fa-phone me-1"></i>{{ $user->phone ?? $user->studentProfile->phone ?? 'N/A' }}</small>
+                                            <small class="text-muted"><i class="fa-solid fa-phone me-1"></i>{{  $user->studentProfile->phone ?? 'N/A' }}</small>
                                             @if($user->google_id)
                                                 <span class="badge bg-light text-dark border ms-1" style="font-size: 9px;">Google</span>
                                             @endif
@@ -218,7 +218,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label text-muted small mb-1">Phone Number</label>
-                            <div class="fw-semibold text-dark">{{ $user->phone ?? $user->studentProfile->phone ?? 'N/A' }}</div>
+                            <div class="fw-semibold text-dark">{{ $user->studentProfile->phone ?? 'N/A' }}</div>
                         </div>
 
                         <div class="col-md-6">

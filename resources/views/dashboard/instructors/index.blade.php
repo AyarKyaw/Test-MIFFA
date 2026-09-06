@@ -52,6 +52,7 @@
                                     </th>
                                     <th>Image</th>
                                     <th>Name</th>
+                                    <th>Bio</th>
                                     <th>Created Date</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
@@ -81,6 +82,11 @@
                                         <td>
                                             <span class="fw-bold text-dark">{{ $instructor->name }}</span>
                                         </td>
+                                        <td>
+                                            <span class="text-muted" title="{{ $instructor->bio }}">
+                                                {{ Str::limit($instructor->bio ?? '—', 50) }}
+                                            </span>
+                                        </td>
                                         <td>{{ $instructor->created_at ? $instructor->created_at->format('M d, Y H:i') : 'N/A' }}</td>
                                         <td>
                                             <div class="table-data-feature justify-content-end gap-1">
@@ -100,7 +106,7 @@
                                     <tr class="spacer"></tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">
+                                        <td colspan="6" class="text-center py-4 text-muted">
                                             No instructors found.
                                         </td>
                                     </tr>

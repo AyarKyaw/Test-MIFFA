@@ -60,7 +60,7 @@
 </nav>
 </header>
 <aside class="menu-sidebar" id="main-sidebar">
-  <div class="logo"><a class="logo-link" href="index.html" aria-label="CoolAdmin home"><span class="logo-mark" aria-hidden="true">C</span><span class="logo-text">CoolAdmin</span></a>
+  <div class="logo"><a class="logo-link" href="/dashboard/admins" aria-label="CoolAdmin home"><span class="logo-mark" aria-hidden="true">M</span><span class="logo-text">MIFFA</span></a>
   <button class="sidebar-close js-sidebar-toggle" type="button" aria-label="Close navigation"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
 </div>
 <div class="menu-sidebar__content js-scrollbar1">

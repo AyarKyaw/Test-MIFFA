@@ -27,6 +27,14 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="bio" class="form-label fw-bold">Bio / Biography</label>
+                                <textarea name="bio" id="bio" rows="4" class="form-control @error('bio') is-invalid @enderror" placeholder="Enter instructor background, qualification, or summary...">{{ old('bio', $instructor->bio) }}</textarea>
+                                @error('bio')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label fw-bold d-block">Current Image</label>
                                 @if($instructor->image)
                                     <div class="mb-2">

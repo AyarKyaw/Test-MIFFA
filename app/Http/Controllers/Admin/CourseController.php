@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Category;
+use App\Models\Admin;
 use App\Models\Instructor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

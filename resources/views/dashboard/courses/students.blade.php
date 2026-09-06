@@ -105,7 +105,7 @@
                                             <span class="text-muted">{{ $student->email }}</span>
                                         </td>
                                         <td>
-                                            <span>{{ $student->phone ?? 'N/A' }}</span>
+                                            <span>{{ $student->studentProfile->phone ?? 'N/A' }}</span>
                                         </td>
                                         <td>
                                             {{ $student->pivot->created_at ? \Carbon\Carbon::parse($student->pivot->created_at)->format('M d, Y') : ($student->created_at ? $student->created_at->format('M d, Y') : 'N/A') }}
@@ -124,9 +124,11 @@
                                         </td>
                                         <td>
                                             <div class="table-data-feature justify-content-end gap-1">
-                                                <a href="{{ route('admin.students.show', $student->id) }}" class="item" data-bs-toggle="tooltip" title="View Profile">
-                                                    <i class="fa-solid fa-eye text-primary"></i>
-                                                </a>
+                                                <!-- Open Quick Modal -->
+                                                <button type="button" class="item" data-bs-toggle="modal" data-bs-target="#studentModal-{{ $student->id }}" data-toggle="modal" data-target="#studentModal-{{ $student->id }}" title="Quick Details">
+                                                    <i class="fa-solid fa-address-card text-info"></i>
+                                                </button>
+                                                <!-- Unenroll Form -->
                                                 <form action="{{ route('admin.courses.students.remove', ['course' => $course->id, 'student' => $student->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to unenroll this student?');" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
@@ -161,4 +163,116 @@
         </div>
     </div>
 </main>
+
+<!-- Student Profile Modals -->
+@foreach ($students as $student)
+    <div class="modal fade" id="studentModal-{{ $student->id }}" tabindex="-1" aria-labelledby="studentModalLabel-{{ $student->id }}" aria-hidden="true" style="z-index: 1065;">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="z-index: 1070;">
+            <div class="modal-content border-0">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="studentModalLabel-{{ $student->id }}">
+                        Student Profile Details
+                    </h5>
+                    <button type="button" class="btn-close close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="d-none">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <!-- Standard Profile Header -->
+                    <div class="mb-4">
+                        <h3 class="mb-1 text-dark fw-bold">{{ $student->name }}</h3>
+                        <p class="text-muted mb-2">{{ $student->email }}</p>
+                        <div class="d-flex align-items-center gap-2">
+                            @if($student->studentProfile)
+                                <span class="badge {{ $student->studentProfile->membership_status === 'member' ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ ucfirst($student->studentProfile->membership_status) }}
+                                </span>
+                            @endif
+                            @if($student->google_id)
+                                <span class="badge bg-light text-dark border ms-1">Google Auth</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <hr class="my-4" style="opacity: 0.15;">
+
+                    <!-- Profile Details Grid -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Passport Photo</label>
+                            <div>
+                                @if($student->studentProfile && $student->studentProfile->passport_photo)
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#photoFullscreenModal-{{ $student->id }}" data-toggle="modal" data-target="#photoFullscreenModal-{{ $student->id }}" class="d-inline-block position-relative group">
+                                        <img src="{{ Storage::url($student->studentProfile->passport_photo) }}" class="rounded border object-fit-cover shadow-sm" width="80" height="100" alt="Passport Photo" style="cursor: pointer; transition: transform 0.2s;">
+                                    </a>
+                                    <small class="text-muted d-block mt-1" style="font-size: 11px;"><i class="fa-solid fa-expand me-1"></i>Click image to expand</small>
+                                @else
+                                    <div class="fw-semibold text-muted">N/A</div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Gender</label>
+                            <div class="fw-semibold text-dark">{{ ucfirst($student->gender ?? $student->studentProfile->gender ?? 'N/A') }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Phone Number</label>
+                            <div class="fw-semibold text-dark">{{ $student->studentProfile->phone ?? 'N/A' }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">NRC / Identity Number</label>
+                            <div class="fw-semibold text-dark">{{ $student->studentProfile->nrc_number ?? 'N/A' }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Company / Organization</label>
+                            <div class="fw-semibold text-dark">{{ $student->studentProfile->company ?? 'N/A' }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Position / Job Title</label>
+                            <div class="fw-semibold text-dark">{{ $student->studentProfile->job_title ?? 'N/A' }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Registered Date</label>
+                            <div class="fw-semibold text-dark">{{ $student->created_at ? $student->created_at->format('M d, Y H:i A') : 'N/A' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Passport Photo Modal -->
+    @if($student->studentProfile && $student->studentProfile->passport_photo)
+        <div class="modal fade" id="photoFullscreenModal-{{ $student->id }}" tabindex="-1" aria-labelledby="photoFullscreenLabel-{{ $student->id }}" aria-hidden="true" style="z-index: 1085;">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen-md-down modal-xl" style="z-index: 1090;">
+                <div class="modal-content bg-dark border-0">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <span class="text-white-50 small">{{ $student->name }} - Passport Photo</span>
+                        <button type="button" class="btn-close btn-close-white close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="d-none">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center p-4 d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+                        <img src="{{ Storage::url($student->studentProfile->passport_photo) }}" class="img-fluid rounded shadow-lg" style="max-height: 80vh; object-fit: contain;" alt="Passport Photo Fullscreen">
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0 justify-content-center">
+                        <button type="button" class="btn btn-outline-light btn-sm px-4" data-bs-dismiss="modal" data-dismiss="modal">Close Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+@endforeach
 @endsection

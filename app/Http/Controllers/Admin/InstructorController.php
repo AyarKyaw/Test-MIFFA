@@ -33,6 +33,7 @@ class InstructorController extends Controller
     {
         $validated = $request->validate([
             'name'  => 'required|string|max:255',
+            'bio'   => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
@@ -61,6 +62,7 @@ class InstructorController extends Controller
     {
         $validated = $request->validate([
             'name'  => 'required|string|max:255',
+            'bio'   => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 

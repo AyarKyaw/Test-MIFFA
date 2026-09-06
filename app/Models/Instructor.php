@@ -13,6 +13,7 @@ class Instructor extends Model
     protected $fillable = [
         'name',
         'image',
+        'bio',
     ];
 
     // Optional: Relationship to courses if an instructor has many courses

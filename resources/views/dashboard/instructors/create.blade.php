@@ -25,6 +25,14 @@
                                 @enderror
                             </div>
 
+                            <div class="mb-3">
+                                <label for="bio" class="form-label fw-bold">Bio / Biography</label>
+                                <textarea name="bio" id="bio" rows="4" class="form-control @error('bio') is-invalid @enderror" placeholder="Enter instructor background, qualification, or summary...">{{ old('bio') }}</textarea>
+                                @error('bio')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="mb-4">
                                 <label for="image" class="form-label fw-bold">Profile Image</label>
                                 <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">

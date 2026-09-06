@@ -26,9 +26,12 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\SectionController;
-use App\Http\Controllers\Admin\InstructorController;
-use App\Http\Controllers\Admin\AdminManagementController;
 
+// Instructor Controllers (Admin vs Frontend)
+use App\Http\Controllers\Admin\InstructorController as AdminInstructorController;
+use App\Http\Controllers\InstructorController as FrontendInstructorController;
+
+use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\HomeController;
 
 /*
@@ -48,6 +51,10 @@ Route::get('/about', function () {
 Route::get('/courses', [FrontendCourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{id}', [FrontendCourseController::class, 'show'])->name('courses.show');
 Route::get('/course/categories', [FrontendCourseCategoryController::class, 'index'])->name('course-categories.index');
+
+// Frontend Instructors (Public browsing)
+Route::get('/instructors', [FrontendInstructorController::class, 'index'])->name('instructors.index');
+Route::get('/instructors/{id}', [FrontendInstructorController::class, 'show'])->name('instructors.show');
 
 Route::post('/google-one-tap', [AuthController::class, 'handleGoogleOneTap'])->name('google.onetap');
 
@@ -81,7 +88,8 @@ Route::post('/account/resend', [AuthController::class, 'resendConfirmation'])
     ->middleware('throttle:3,1');
 
 Route::get('/account/check-status', [AuthController::class, 'checkVerificationStatus'])
-->name('account.check-status');
+    ->name('account.check-status');
+
 /*
 |--------------------------------------------------------------------------
 | Email Verification Routes
@@ -120,6 +128,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/payment/qr/{course}', [PaymentController::class, 'showQr'])->name('payment.qr');
     Route::post('/payment/confirm/{course}', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
     Route::get('/student-dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
+    
     // Learning & Classroom Routes
     Route::get('/my-courses', [FrontendCourseController::class, 'myCourses'])->name('courses.my');
     Route::get('/courses/{course}/learn/{lesson?}', [FrontendCourseController::class, 'classroom'])->name('courses.learn');
@@ -149,7 +158,7 @@ Route::middleware('admin')->prefix('dashboard')->group(function () {
 
     // Admin Resource Management (/dashboard/students, /dashboard/instructors, etc.)
     Route::resource('students', StudentController::class)->names('admin.students');
-    Route::resource('instructors', InstructorController::class)->names('admin.instructors');
+    Route::resource('instructors', AdminInstructorController::class)->names('admin.instructors');
     Route::resource('admins', AdminManagementController::class)->names('admin.admins');
     
     // Admin Courses & Categories

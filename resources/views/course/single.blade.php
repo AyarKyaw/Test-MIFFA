@@ -42,14 +42,14 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="course-single-meta">
-                            <!-- Instructor / Author -->
-                           <div class="item author">
+                           <!-- Instructor / Author -->
+<div class="item author">
     <div class="desc">
-        <h4>{{ Str::plural('Instructor', count($course->instructors)) }}</h4>
+        <h4>{{ Str::plural('Instructor', $course->instructors->count()) }}</h4>
         @forelse ($course->instructors as $instructor)
-            <a href="#">{{ $instructor->name }}</a>{{ !$loop->last ? ', ' : '' }}
+            <a href="{{ route('instructors.show', $instructor->id) }}">{{ $instructor->name }}</a>{{ !$loop->last ? ', ' : '' }}
         @empty
-            <a href="#">MIFFA Instructor</a>
+            <span>MIFFA Instructor</span>
         @endforelse
     </div>
 </div>
