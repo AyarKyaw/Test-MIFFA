@@ -25,8 +25,21 @@
     <link href="{{ asset('assets/css/helper.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/unit-test.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-
     @stack('styles')
+    <style>
+        a.alumni-btn{
+            background-color: #05d5b3;
+            color: #fff;
+            border-radius: 20px;
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+        }
+
+        a.alumni-btn:hover {
+            background-color: #04b89b !important;
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -143,19 +156,6 @@
                                 <a href="{{ url('/') }}">Home</a>
                             </li>
 
-                            <!-- <li>
-                                <a href="{{ url('/about') }}">About Us</a>
-                            </li> -->
-
-                            <!-- <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Academic Programs</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{{ url('/course/categories') }}">Diploma Programs</a></li>
-                                    <li><a href="{{ url('/course/categories') }}">Short Courses</a></li>
-                                    <li><a href="{{ url('/course/categories') }}">Online Modules</a></li>
-                                </ul>
-                            </li> -->
-
                             <li class="dropdown megamenu-fw megamenu-style-four" style="right: 0 !important;">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Courses</a>
                                 <ul class="dropdown-menu megamenu-content" role="menu">
@@ -177,18 +177,18 @@
                                 </ul>
                             </li>
 
-                            <!-- <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Media & Events</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Latest News</a></li>
-                                    <li><a href="#">Events & Workshops</a></li>
-                                    <li><a href="#">Photo Gallery</a></li>
-                                </ul>
-                            </li> -->
-
-                            <!-- <li>
-                                <a href="#">Contact Us</a>
-                            </li> -->
+                            <!-- Join Alumni Navigation Link -->
+                            <li>
+                                @if(auth('alumni')->check())
+                                    <a class="alumni-btn" href="{{ Route::has('alumni.dashboard') ? route('alumni.dashboard') : url('/alumni/dashboard') }}">
+                                        Alumni Portal
+                                    </a>
+                                @else
+                                    <a class="alumni-btn" href="{{ Route::has('alumni.join') ? route('alumni.join') : url('/alumni/join') }}">
+                                        Join Alumni
+                                    </a>
+                                @endif
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -229,6 +229,7 @@
                             <ul>
                                 <li><a href="{{ url('/about') }}">About Us</a></li>
                                 <li><a href="{{ url('/course/categories') }}">Courses</a></li>
+                                <li><a href="{{ Route::has('alumni.join') ? route('alumni.join') : url('/alumni/join') }}">Join Alumni</a></li>
                             </ul>
                         </div>
                     </div>

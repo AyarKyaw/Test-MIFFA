@@ -34,6 +34,8 @@ use App\Http\Controllers\InstructorController as FrontendInstructorController;
 use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\HomeController;
 
+use App\Http\Controllers\AlumniController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,6 +47,39 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::get('/about', function () {
     return view('about-us');
+});
+
+Route::prefix('alumni')->name('alumni.')->group(function () {
+
+    // Public QR Verification Route (accessible to everyone)
+    Route::get('/verify/{register_no}', [AlumniController::class, 'verify'])
+        ->name('verify');
+
+    // Guest Routes
+    Route::middleware('guest:alumni')->group(function () {
+        Route::get('/join', [AlumniController::class, 'showJoinForm'])->name('join');
+        Route::post('/join', [AlumniController::class, 'store'])->name('store');
+
+        Route::get('/login', [AlumniController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AlumniController::class, 'login'])->name('login.submit');
+
+        // Signed verification route for pending registration
+        Route::get('/verify-pending/{payload}', [AlumniController::class, 'verifyPendingEmail'])
+            ->name('verify.pending');
+
+        // Optional polling route for real-time status check
+        Route::get('/check-verification-status', [AlumniController::class, 'checkVerificationStatus'])
+            ->name('check.status');
+
+        Route::post('/resend-verification', [AlumniController::class, 'resendVerificationEmail'])
+            ->name('verification.send');
+    });
+
+    // Authenticated Alumni Routes
+    Route::middleware('auth:alumni')->group(function () {
+        Route::get('/dashboard', [AlumniController::class, 'dashboard'])->name('dashboard');
+        Route::post('/logout', [AlumniController::class, 'logout'])->name('logout');
+    });
 });
 
 // Frontend Courses & Categories (Public browsing)
