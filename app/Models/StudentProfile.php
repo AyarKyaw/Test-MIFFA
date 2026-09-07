@@ -26,4 +26,11 @@ class StudentProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function coursePayments()
+    {
+        return $this->hasMany(CoursePayment::class, 'student_id');
+    }
+
+    
 }

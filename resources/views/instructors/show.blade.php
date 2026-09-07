@@ -59,12 +59,12 @@
                                 <span class="d-block text-muted small">Total Students</span>
                                 <span class="h6 mb-0 fw-bold">{{ number_format($instructor->students_count ?? 0) }}</span>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <span class="d-block text-muted small">Rating</span>
                                 <span class="h6 mb-0 fw-bold text-warning">
                                     <i class="fas fa-star"></i> {{ number_format($instructor->rating ?? 4.9, 1) }}
                                 </span>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

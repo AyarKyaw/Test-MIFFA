@@ -86,7 +86,6 @@ class AlumniController extends Controller
             abort(401, 'Invalid or expired verification link.');
         }
 
-        // 1. Decrypt payload safely
         try {
             $alumniData = decrypt($payload);
         } catch (\Exception $e) {
@@ -94,37 +93,40 @@ class AlumniController extends Controller
                 ->withErrors(['email' => 'Invalid or expired confirmation link.']);
         }
 
-        // 2. Prevent duplicate creation if link clicked twice
         $existingAlumni = Alumni::where('email', $alumniData['email'])->first();
 
         if ($existingAlumni) {
+            // If they already exist but haven't paid, send them to payment instead of dashboard
+            if ($existingAlumni->status === 'pending_payment') {
+                Auth::guard('alumni')->login($existingAlumni, true);
+                return redirect()->route('alumni.payment.checkout')
+                    ->with('message', 'Please complete your membership payment to activate your account.');
+            }
+
             Auth::guard('alumni')->login($existingAlumni, true);
             return redirect()->route('alumni.dashboard')
                 ->with('success', 'Account already verified! Welcome back.');
         }
 
-        // 3. Create Alumni in Database
+        // 3. Create Alumni in Database with pending payment status
         $alumni = Alumni::create([
             'name'              => $alumniData['name'],
             'email'             => $alumniData['email'],
             'course_id'         => $alumniData['course_id'],
-            'password'          => $alumniData['password'], // Pre-hashed in store action
+            'password'          => $alumniData['password'],
             'image'             => $alumniData['image'],
-            'status'            => 'active',
+            'status'            => 'inactive', // <--- Changed from 'active'
             'email_verified_at' => now(),
         ]);
 
-        // 4. Cache confirmation for polling check across browser tabs
-        $cacheKey = 'confirmed_alumni_email_' . md5($alumniData['email']);
-        Cache::put($cacheKey, $alumni->id, now()->addMinutes(10));
-
-        // 5. Authenticate alumni & clear pending session
+        // 4. Authenticate alumni temporarily so they can complete payment
         Auth::guard('alumni')->login($alumni, true);
         $request->session()->regenerate();
         session()->forget('pending_alumni_registration');
 
-        return redirect()->route('alumni.dashboard')
-            ->with('success', 'Email verified and account created successfully! Welcome!');
+        // 5. Redirect to payment checkout page instead of dashboard
+        return redirect()->route('alumni.payment.checkout')
+            ->with('success', 'Email verified! Please complete your payment to unlock your alumni account.');
     }
 
     /**
@@ -184,6 +186,12 @@ class AlumniController extends Controller
             $remember = $request->has('remember');
             Auth::guard('alumni')->login($alumni, $remember);
             $request->session()->regenerate();
+
+            // If they haven't paid yet, redirect them to checkout instead of the dashboard
+            if ($alumni->status !== 'active') {
+                return redirect()->route('alumni.payment.checkout')
+                    ->with('message', 'Please complete your membership payment to activate your account.');
+            }
 
             return redirect()->intended(route('alumni.dashboard'))->with('success', 'Welcome back!');
         }
@@ -247,6 +255,12 @@ class AlumniController extends Controller
 
         if (!$alumni) {
             return redirect()->route('alumni.login');
+        }
+
+        // If they haven't paid yet (status is inactive), force them to payment checkout
+        if ($alumni->status !== 'active') {
+            return redirect()->route('alumni.payment.checkout')
+                ->with('message', 'Please complete your membership payment to access your dashboard.');
         }
 
         // Eager load course relation

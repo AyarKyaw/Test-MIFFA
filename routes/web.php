@@ -35,6 +35,10 @@ use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\AlumniController;
+use App\Http\Controllers\AlumniPaymentController;
+
+use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
+use App\Http\Controllers\Admin\AlumniPaymentController as AdminAlumniPaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,11 +55,15 @@ Route::get('/about', function () {
 
 Route::prefix('alumni')->name('alumni.')->group(function () {
 
-    // Public QR Verification Route (accessible to everyone)
+    // Public QR Verification Route
     Route::get('/verify/{register_no}', [AlumniController::class, 'verify'])
         ->name('verify');
 
-    // Guest Routes
+    // Signed verification route for pending registration (MUST be outside guest middleware)
+    Route::get('/verify-pending/{payload}', [AlumniController::class, 'verifyPendingEmail'])
+        ->name('verify.pending');
+
+    // Guest Routes (Only for users who are NOT logged in)
     Route::middleware('guest:alumni')->group(function () {
         Route::get('/join', [AlumniController::class, 'showJoinForm'])->name('join');
         Route::post('/join', [AlumniController::class, 'store'])->name('store');
@@ -63,11 +71,6 @@ Route::prefix('alumni')->name('alumni.')->group(function () {
         Route::get('/login', [AlumniController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AlumniController::class, 'login'])->name('login.submit');
 
-        // Signed verification route for pending registration
-        Route::get('/verify-pending/{payload}', [AlumniController::class, 'verifyPendingEmail'])
-            ->name('verify.pending');
-
-        // Optional polling route for real-time status check
         Route::get('/check-verification-status', [AlumniController::class, 'checkVerificationStatus'])
             ->name('check.status');
 
@@ -75,8 +78,10 @@ Route::prefix('alumni')->name('alumni.')->group(function () {
             ->name('verification.send');
     });
 
-    // Authenticated Alumni Routes
+    // Authenticated Alumni Routes (Payment & Dashboard)
     Route::middleware('auth:alumni')->group(function () {
+        Route::get('/payment/checkout', [AlumniPaymentController::class, 'checkout'])->name('payment.checkout');
+        Route::post('/payment/process', [AlumniPaymentController::class, 'process'])->name('payment.process');
         Route::get('/dashboard', [AlumniController::class, 'dashboard'])->name('dashboard');
         Route::post('/logout', [AlumniController::class, 'logout'])->name('logout');
     });
@@ -195,6 +200,14 @@ Route::middleware('admin')->prefix('dashboard')->group(function () {
     Route::resource('students', StudentController::class)->names('admin.students');
     Route::resource('instructors', AdminInstructorController::class)->names('admin.instructors');
     Route::resource('admins', AdminManagementController::class)->names('admin.admins');
+    Route::resource('alumni', AdminAlumniController::class)->names('admin.alumni')->parameters([
+        'alumni' => 'alumni'
+    ]);
+
+    Route::resource('alumni-payments', AdminAlumniPaymentController::class)->only(['index', 'show'])->names([
+    'index' => 'admin.alumni-payments.index',
+    'show' => 'admin.alumni-payments.show',
+]);
     
     // Admin Courses & Categories
     Route::resource('course-categories', AdminCourseCategoryController::class)->names('admin.course-categories');

@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Redirect unauthenticated users based on the request URL pattern
         $middleware->redirectTo(
             guests: function (Request $request) {
+                // This catches /alumni, /alumni/verify-pending/..., /alumni/dashboard, etc.
                 if ($request->is('alumni') || $request->is('alumni/*')) {
                     return route('alumni.login');
                 }

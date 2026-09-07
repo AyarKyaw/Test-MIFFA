@@ -92,4 +92,9 @@ class Course extends Model
         return $this->belongsToMany(Admin::class, 'admin_course')
                     ->withTimestamps();
     }
+
+    public function payments()
+    {
+        return $this->hasMany(CoursePayment::class, 'course_id');
+    }
 }

@@ -19,6 +19,8 @@ class Alumni extends Authenticatable implements MustVerifyEmail
         'course_id',
         'password',
         'image',
+        'status',          
+        'register_no',
         'email_verified_at', // Make sure this column exists in your `alumnis` table migration
     ];
 
@@ -34,6 +36,11 @@ class Alumni extends Authenticatable implements MustVerifyEmail
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(AlumniPayment::class, 'alumni_id');
     }
 
     protected static function boot()
