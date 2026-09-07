@@ -73,7 +73,6 @@
                                     <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
                                         <option value="" disabled>Select account role</option>
                                         <option value="super_admin" {{ old('role', $admin->role) == 'super_admin' ? 'selected' : '' }}>Super Admin (Full Access)</option>
-                                        <option value="course_admin" {{ old('role', $admin->role) == 'course_admin' ? 'selected' : '' }}>Course Admin</option>
                                     </select>
                                     @error('role')
                                         <div class="invalid-feedback">{{ $message }}</div>

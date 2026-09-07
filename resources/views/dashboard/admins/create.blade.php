@@ -72,7 +72,6 @@
                                     <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
                                         <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select account role</option>
                                         <option value="super_admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>Super Admin (Full Access)</option>
-                                        <option value="course_admin" {{ old('role') == 'course_admin' ? 'selected' : '' }}>Course Admin</option>
                                     </select>
                                     @error('role')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -103,23 +102,6 @@
                                            placeholder="••••••••"
                                            required>
                                 </div>
-
-                                <!-- Course Selection Field -->
-                                <div class="col-md-12" id="courses-field-group" style="display: {{ old('role', $admin->role ?? '') === 'course_admin' ? 'block' : 'none' }};">
-                                    <label for="courses" class="form-label fw-semibold text-dark">Assign Courses</label>
-                                    <select class="form-select @error('courses') is-invalid @enderror" id="courses" name="courses[]" multiple style="min-height: 120px;">
-                                        @foreach($courses as $course)
-                                            <option value="{{ $course->id }}" 
-                                                {{ (isset($admin) && $admin->courses->contains($course->id)) || (is_array(old('courses')) && in_array($course->id, old('courses'))) ? 'selected' : '' }}>
-                                                {{ $course->title }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-muted">Hold Ctrl (Cmd on Mac) to select multiple courses.</small>
-                                    @error('courses')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
                             </div>
 
                             <!-- Form Buttons -->
@@ -137,23 +119,4 @@
         </div>
     </div>
 </main>
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const roleSelect = document.getElementById('role');
-        const coursesGroup = document.getElementById('courses-field-group');
-
-        function toggleCoursesField() {
-            if (roleSelect.value === 'course_admin') {
-                coursesGroup.style.display = 'block';
-            } else {
-                coursesGroup.style.display = 'none';
-            }
-        }
-
-        roleSelect.addEventListener('change', toggleCoursesField);
-    });
-</script>
-@endpush
 @endsection
