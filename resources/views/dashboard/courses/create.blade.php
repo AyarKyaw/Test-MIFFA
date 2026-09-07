@@ -90,49 +90,41 @@
                                     @enderror
                                 </div>
 
-                                <!-- Assign Course Admins (Multi-Select) -->
-                                <div class="col-md-6">
-                                    <label for="admin_ids" class="form-label fw-semibold">Assign Course Admins</label>
-                                    <select class="form-select @error('admin_ids') is-invalid @enderror @error('admin_ids.*') is-invalid @enderror" 
-                                            id="admin_ids" 
-                                            name="admin_ids[]" 
-                                            multiple 
-                                            style="min-height: 120px;">
-                                        @foreach($admins as $admin)
-                                            <option value="{{ $admin->id }}" {{ is_array(old('admin_ids')) && in_array($admin->id, old('admin_ids')) ? 'selected' : '' }}>
-                                                {{ $admin->name }} ({{ $admin->email }})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-muted d-block mt-1">Hold Ctrl (Cmd on Mac) to select multiple admins.</small>
-                                    @error('admin_ids')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    @error('admin_ids.*')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
                                 <!-- Assign Instructors (Multi-Select) -->
                                 <div class="col-md-6">
-                                    <label for="instructor_ids" class="form-label fw-semibold">Assign Instructors</label>
-                                    <select class="form-select @error('instructor_ids') is-invalid @enderror @error('instructor_ids.*') is-invalid @enderror" 
-                                            id="instructor_ids" 
-                                            name="instructor_ids[]" 
-                                            multiple 
-                                            style="min-height: 120px;">
-                                        @foreach($instructors as $instructor)
-                                            <option value="{{ $instructor->id }}" {{ is_array(old('instructor_ids')) && in_array($instructor->id, old('instructor_ids')) ? 'selected' : '' }}>
-                                                {{ $instructor->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-muted d-block mt-1">Hold Ctrl (Cmd on Mac) to select multiple instructors.</small>
+                                    <label class="form-label fw-semibold">Assign Instructors</label>
+                                    
+                                    <div class="card p-3 @if($errors->has('instructor_ids') || $errors->has('instructor_ids.*')) border-danger @endif" 
+                                        style="max-height: 220px; overflow-y: auto;">
+                                        
+                                        @php
+                                            $selectedInstructors = old('instructor_ids', isset($course) ? $course->instructors->pluck('id')->toArray() : []);
+                                            $instructorList = $instructors ?? [];
+                                        @endphp
+
+                                        @forelse ($instructorList as $instructor)
+                                            <div class="form-check py-1">
+                                                <input class="form-check-input" 
+                                                    type="checkbox" 
+                                                    name="instructor_ids[]" 
+                                                    value="{{ $instructor->id }}" 
+                                                    id="instructor_{{ $instructor->id }}"
+                                                    {{ in_array($instructor->id, $selectedInstructors) ? 'checked' : '' }}>
+                                                
+                                                <label class="form-check-label w-100 cursor-pointer" for="instructor_{{ $instructor->id }}">
+                                                    <span class="fw-medium text-dark">{{ $instructor->name }}</span>
+                                                </label>
+                                            </div>
+                                        @empty
+                                            <p class="text-muted small mb-0">No instructors available.</p>
+                                        @endforelse
+                                    </div>
+
                                     @error('instructor_ids')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
                                     @error('instructor_ids.*')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
 

@@ -39,7 +39,8 @@ class CourseController extends Controller
     {
         $categories = Category::orderBy('name')->get();
         $admins = Admin::all();
-        return view('dashboard.courses.create', compact('categories', 'admins'));
+        $instructors = Instructor::all();
+        return view('dashboard.courses.create', compact('categories', 'admins', 'instructors'));
     }
 
     /**
@@ -56,8 +57,6 @@ class CourseController extends Controller
             'desc'        => 'nullable|string',
             'member_price'=> 'nullable|numeric|min:0|lte:price',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'admin_ids'   => 'nullable|array',
-            'admin_ids.*' => 'exists:admins,id',
         ]);
 
         $validated['price'] = $validated['price'] ?? 0;
@@ -69,11 +68,6 @@ class CourseController extends Controller
 
         // Assign created instance to $course variable
         $course = Course::create($validated);
-
-        // Sync admin relationships to admin_course table
-        if ($request->has('admin_ids')) {
-            $course->admins()->sync($request->admin_ids);
-        }
 
         return redirect()->route('admin.courses.index')
                         ->with('success', 'Course created successfully!');

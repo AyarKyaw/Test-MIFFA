@@ -78,10 +78,17 @@
         <li><a href="/dashboard/students">View</a></li>
       </ul>
     </li>
-      <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Categories</a>
+    <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Instructor</a>
       <ul class="list-unstyled navbar__sub-list js-sub-list">
-        <li><a href="{{ route('admin.categories.index') }}">View</a></li>
-        <li><a href="{{ route('admin.categories.create') }}">Create</a></li>
+        <li><a href="{{ route('admin.instructors.index') }}">View</a></li>
+        <li><a href="{{ route('admin.instructors.create') }}">Create</a></li>
+      </ul>
+    </li>
+    <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Alumni</a>
+      <ul class="list-unstyled navbar__sub-list js-sub-list">
+        <li><a href="{{ route('admin.alumni.index') }}">View</a></li>
+        <li><a href="{{ route('admin.alumni.create') }}">Create</a></li>
+        <li><a href="{{ route('admin.alumni-payments.index') }}">Payments</a></li>
       </ul>
     </li>
     <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Course Categories</a>
@@ -90,23 +97,16 @@
                 <li><a href="{{ route('admin.course-categories.create') }}">Create</a></li>
               </ul>
             </li>
+      <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Categories</a>
+      <ul class="list-unstyled navbar__sub-list js-sub-list">
+        <li><a href="{{ route('admin.categories.index') }}">View</a></li>
+        <li><a href="{{ route('admin.categories.create') }}">Create</a></li>
+      </ul>
+    </li>
             <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Course</a>
               <ul class="list-unstyled navbar__sub-list js-sub-list">
                 <li><a href="{{ route('admin.courses.index') }}">View</a></li>
                 <li><a href="{{ route('admin.courses.create') }}">Create</a></li>
-              </ul>
-            </li>
-            <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Instructor</a>
-              <ul class="list-unstyled navbar__sub-list js-sub-list">
-                <li><a href="{{ route('admin.instructors.index') }}">View</a></li>
-                <li><a href="{{ route('admin.instructors.create') }}">Create</a></li>
-              </ul>
-            </li>
-            <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Alumni</a>
-              <ul class="list-unstyled navbar__sub-list js-sub-list">
-                <li><a href="{{ route('admin.alumni.index') }}">View</a></li>
-                <li><a href="{{ route('admin.alumni.create') }}">Create</a></li>
-                <li><a href="{{ route('admin.alumni-payments.index') }}">Payments</a></li>
               </ul>
             </li>
             </ul>
