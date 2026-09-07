@@ -2,25 +2,88 @@
 
 @section('title', $instructor->name . ' - Instructor Profile')
 
+@push('styles')
+<style>
+    /* Hero Banner Wrapper - Matched to 24:10 ratio */
+    .instructor-banner {
+        width: 100%;
+        aspect-ratio: 24 / 10;      /* Matches the 1200x500 Cropper export ratio */
+        background-color: #1a1d20;
+        background-size: cover;     /* Fills the container edge-to-edge */
+        background-repeat: no-repeat;
+        background-position: center;
+        position: relative;
+    }
+    
+    .instructor-banner-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%);
+        pointer-events: none;
+    }
+
+    .instructor-profile-header {
+        margin-top: -60px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Avatar Container */
+    .avatar-wrapper {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 4px solid #ffffff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+
+    /* Avatar Image */
+    .avatar-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media (max-width: 767.98px) {
+        .instructor-banner {
+            aspect-ratio: 16 / 9; /* Slightly taller aspect on mobile screens for better visibility */
+        }
+        .instructor-profile-header {
+            margin-top: -40px;
+        }
+        .avatar-wrapper {
+            width: 110px;
+            height: 110px;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="bg-light py-5">
+<div class="bg-light pb-5">
+    <div class="instructor-banner" 
+         style="background-image: url('{{ $instructor->banner_image ? asset('storage/' . $instructor->banner_image) : asset('assets/images/default-banner.png') }}');">
+        <div class="instructor-banner-overlay"></div>
+    </div>
+
     <div class="container">
-        <!-- Instructor Header / Hero Section -->
-        <div class="card border-0 shadow-sm overflow-hidden mb-4">
+        <div class="card border-0 shadow-sm overflow-hidden mb-4 instructor-profile-header">
             <div class="card-body p-4 p-md-5">
                 <div class="row align-items-center g-4">
                     <div class="col-auto">
-                        @if($instructor->image)
-                            <img src="{{ asset('storage/' . $instructor->image) }}" 
-                                 alt="{{ $instructor->name }}" 
-                                 class="rounded-circle img-thumbnail shadow-sm" 
-                                 style="width: 140px; height: 140px; object-fit: cover;">
-                        @else
-                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm" 
-                                 style="width: 140px; height: 140px; font-size: 3rem;">
-                                <i class="fas fa-user"></i>
-                            </div>
-                        @endif
+                        <div class="avatar-wrapper">
+                            @if($instructor->image)
+                                <img src="{{ asset('storage/' . $instructor->image) }}" 
+                                     alt="{{ $instructor->name }}">
+                            @else
+                                <div class="w-100 h-100 bg-secondary text-white d-flex align-items-center justify-content-center" 
+                                     style="font-size: 3rem;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                     <div class="col">
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
@@ -49,7 +112,6 @@
                             </div>
                         </div>
 
-                        <!-- Stats Strip -->
                         <div class="d-flex flex-wrap gap-4 mt-3 pt-3 border-top">
                             <div>
                                 <span class="d-block text-muted small">Courses</span>
@@ -59,12 +121,6 @@
                                 <span class="d-block text-muted small">Total Students</span>
                                 <span class="h6 mb-0 fw-bold">{{ number_format($instructor->students_count ?? 0) }}</span>
                             </div>
-                            <!-- <div>
-                                <span class="d-block text-muted small">Rating</span>
-                                <span class="h6 mb-0 fw-bold text-warning">
-                                    <i class="fas fa-star"></i> {{ number_format($instructor->rating ?? 4.9, 1) }}
-                                </span>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -72,9 +128,7 @@
         </div>
 
         <div class="row g-4">
-            <!-- Left Column: Bio & Qualifications -->
-            <div class="col-lg-8">
-                <!-- Biography Card -->
+            <div class="col-12">
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-4">
                         <h3 class="h5 fw-bold border-bottom pb-3 mb-3">About the Instructor</h3>
@@ -84,7 +138,6 @@
                     </div>
                 </div>
 
-                <!-- Instructor's Courses Section -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
                         <h3 class="h5 fw-bold border-bottom pb-3 mb-4">
@@ -92,12 +145,12 @@
                         </h3>
 
                         @if(isset($instructor->courses) && $instructor->courses->count() > 0)
-                            <div class="row row-cols-1 row-cols-md-2 g-4">
+                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                                 @foreach($instructor->courses as $course)
                                     <div class="col">
                                         <div class="card h-100 border border-light shadow-sm hover-shadow transition">
                                             @if($course->image)
-                                                <img src="{{ asset('storage/' . $course->image) }}" class="card-img-top" alt="{{ $course->title }}" style="height: 160px; object-fit: cover;">
+                                                <img src="{{ asset('storage/' . $course->image) }}" class="card-img-top" alt="{{ $course->title }}" style="height: 180px; object-fit: contain; background-color: #f8f9fa;">
                                             @else
                                                 <div class="bg-secondary text-white text-center py-5 card-img-top">
                                                     <i class="fas fa-book-open fa-2x"></i>
@@ -134,48 +187,6 @@
                                 No active courses available for this instructor at the moment.
                             </div>
                         @endif
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Sidebar Info -->
-            <div class="col-lg-4">
-                <!-- Quick Contact / Info Card -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body p-4">
-                        <h4 class="h6 fw-bold text-uppercase text-muted mb-3">Instructor Overview</h4>
-                        <ul class="list-unstyled mb-0">
-                            <li class="d-flex align-items-center mb-3">
-                                <i class="fas fa-briefcase text-primary me-3 fs-5"></i>
-                                <div>
-                                    <small class="text-muted d-block">Experience</small>
-                                    <span class="fw-medium">{{ $instructor->experience_years ?? '10+' }} Years</span>
-                                </div>
-                            </li>
-                            <li class="d-flex align-items-center mb-3">
-                                <i class="fas fa-graduation-cap text-primary me-3 fs-5"></i>
-                                <div>
-                                    <small class="text-muted d-block">Specialization</small>
-                                    <span class="fw-medium">{{ $instructor->specialization ?? 'Supply Chain & Logistics' }}</span>
-                                </div>
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <i class="fas fa-language text-primary me-3 fs-5"></i>
-                                <div>
-                                    <small class="text-muted d-block">Languages</small>
-                                    <span class="fw-medium">{{ $instructor->languages ?? 'English, Myanmar' }}</span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Action CTA -->
-                <div class="card bg-primary text-white border-0 shadow-sm p-3">
-                    <div class="card-body text-center">
-                        <h4 class="h5 fw-bold mb-2">Have Questions?</h4>
-                        <p class="small text-white-50 mb-3">Reach out to our academic team to learn more about training sessions with {{ $instructor->name }}.</p>
-                        <a href="{{ Route::has('contact') ? route('contact') : 'mailto:' . ($instructor->email ?? 'support@example.com') }}" class="btn btn-light btn-sm text-primary fw-bold w-100">Contact Us</a>
                     </div>
                 </div>
             </div>

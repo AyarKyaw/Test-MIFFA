@@ -24,9 +24,33 @@
         object-fit: cover;
     }
 
-    .img-cropper-container {
-        max-height: 400px;
+    .banner-preview-container {
+        width: 100%;
+        aspect-ratio: 24 / 10;
+        border-radius: 8px;
         overflow: hidden;
+        border: 2px dashed #ced4da;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #1a1d20;
+    }
+
+    .banner-preview-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .img-cropper-container {
+        max-height: 600px;
+        min-height: 380px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #0d0f11;
     }
 </style>
 @endpush
@@ -59,7 +83,7 @@
                 <section class="m-card">
                     <header class="m-card__header">
                         <h2 class="m-card__title">Edit Instructor</h2>
-                        <p class="m-card__subtitle">Update instructor details and profile image</p>
+                        <p class="m-card__subtitle">Update instructor details, profile image, and banner image</p>
                     </header>
 
                     <div class="card-body">
@@ -68,6 +92,7 @@
                             @method('PUT')
 
                             <input type="hidden" name="cropped_image" id="cropped_image">
+                            <input type="hidden" name="cropped_banner_image" id="cropped_banner_image">
 
                             <div class="mb-3">
                                 <label for="name" class="form-label fw-bold">Instructor Name <span class="text-danger">*</span></label>
@@ -85,19 +110,33 @@
                                 @enderror
                             </div>
 
-                            <!-- Profile Image Section -->
-                            <div class="mb-4 text-center">
-                                <label class="form-label d-block text-start fw-bold">Profile Image</label>
-                                
-                                <div class="avatar-preview-container">
-                                    <img id="avatarPreview" src="{{ $instructor->image ? asset('storage/' . $instructor->image) : asset('assets/images/default-avatar.png') }}" alt="{{ $instructor->name }}">
+                            <div class="row">
+                                <!-- Profile Image Section -->
+                                <div class="col-md-6 mb-4 text-center">
+                                    <label class="form-label d-block text-start fw-bold">Profile Image (1:1 Aspect Ratio)</label>
+                                    
+                                    <div class="avatar-preview-container">
+                                        <img id="avatarPreview" src="{{ $instructor->image ? asset('storage/' . $instructor->image) : asset('assets/images/default-avatar.png') }}" alt="{{ $instructor->name }}">
+                                    </div>
+
+                                    <input type="file" id="imageInput" class="form-control rounded-3" accept="image/*">
+                                    <div class="form-text text-start mt-1">Leave blank to keep current profile image.</div>
                                 </div>
 
-                                <input type="file" id="imageInput" class="form-control rounded-3" accept="image/*">
-                                <div class="form-text text-start mt-1">Leave blank to keep the current profile image.</div>
+                                <!-- Banner Image Section -->
+                                <div class="col-md-6 mb-4 text-center">
+                                    <label class="form-label d-block text-start fw-bold">Banner Image (Extended Height)</label>
+                                    
+                                    <div class="banner-preview-container">
+                                        <img id="bannerPreview" src="{{ $instructor->banner_image ? asset('storage/' . $instructor->banner_image) : asset('assets/images/default-banner.png') }}" alt="{{ $instructor->name }} Banner">
+                                    </div>
+
+                                    <input type="file" id="bannerInput" class="form-control rounded-3" accept="image/*">
+                                    <div class="form-text text-start mt-1">Leave blank to keep current banner image.</div>
+                                </div>
                             </div>
 
-                            <div class="d-flex justify-content-end gap-2">
+                            <div class="d-flex justify-content-end gap-2 mt-3">
                                 <a href="{{ route('admin.instructors.index') }}" class="btn btn-secondary">Cancel</a>
                                 <button type="submit" class="au-btn au-btn--green text-decoration-none">Update Instructor</button>
                             </div>
@@ -112,15 +151,15 @@
 
 <!-- Cropper Modal -->
 <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content rounded-4">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">Adjust Profile Picture</h5>
+                <h5 class="modal-title fw-bold" id="cropperModalTitle">Adjust Image</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-0">
                 <div class="img-cropper-container">
-                    <img id="cropperImage" src="" style="max-width: 100%; display: block;">
+                    <img id="cropperImage" src="" style="max-width: 100%; max-height: 580px; display: block;">
                 </div>
             </div>
             <div class="modal-footer">
@@ -137,16 +176,35 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     let cropper;
+    let activeType = null; // 'profile' or 'banner'
+
     const imageInput = document.getElementById('imageInput');
+    const bannerInput = document.getElementById('bannerInput');
     const cropperImage = document.getElementById('cropperImage');
+    
     const avatarPreview = document.getElementById('avatarPreview');
+    const bannerPreview = document.getElementById('bannerPreview');
+    
     const croppedImageInput = document.getElementById('cropped_image');
+    const croppedBannerInput = document.getElementById('cropped_banner_image');
+    
     const cropperModalElement = document.getElementById('cropperModal');
+    const cropperModalTitle = document.getElementById('cropperModalTitle');
     const cropperModal = new bootstrap.Modal(cropperModalElement);
 
     imageInput.addEventListener('change', function (e) {
+        handleFileSelect(e, 'profile', 'Adjust Profile Picture (1:1 Ratio)');
+    });
+
+    bannerInput.addEventListener('change', function (e) {
+        handleFileSelect(e, 'banner', 'Adjust Banner Image');
+    });
+
+    function handleFileSelect(e, type, modalTitle) {
         const files = e.target.files;
         if (files && files.length > 0) {
+            activeType = type;
+            cropperModalTitle.textContent = modalTitle;
             const reader = new FileReader();
             reader.onload = function (event) {
                 cropperImage.src = event.target.result;
@@ -154,15 +212,21 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             reader.readAsDataURL(files[0]);
         }
-    });
+    }
 
     cropperModalElement.addEventListener('shown.bs.modal', function () {
+        const isBanner = activeType === 'banner';
+
         cropper = new Cropper(cropperImage, {
-            aspectRatio: 1,
-            viewMode: 1,
-            autoCropArea: 0.8,
+            aspectRatio: isBanner ? (24 / 10) : 1,
+            viewMode: 1,           // Restricts crop box inside the image boundaries
+            dragMode: 'move',      // Allows user to drag/pan image smoothly within frame
+            autoCropArea: 1,       // Auto-fits crop box to max allowable image area
             responsive: true,
             restore: false,
+            center: true,
+            highlight: false,
+            background: true,
         });
     });
 
@@ -172,19 +236,30 @@ document.addEventListener('DOMContentLoaded', function () {
             cropper = null;
         }
         imageInput.value = '';
+        bannerInput.value = '';
+        activeType = null;
     });
 
     document.getElementById('cropAndSaveBtn').addEventListener('click', function () {
-        if (!cropper) return;
+        if (!cropper || !activeType) return;
 
-        const canvas = cropper.getCroppedCanvas({
-            width: 300,
-            height: 300,
-        });
+        const isBanner = activeType === 'banner';
 
-        const base64Image = canvas.toDataURL('image/jpeg', 0.9);
-        croppedImageInput.value = base64Image;
-        avatarPreview.src = base64Image;
+        let canvasConfig = isBanner 
+            ? { width: 1200, height: 500 } 
+            : { width: 400, height: 400 };
+
+        const canvas = cropper.getCroppedCanvas(canvasConfig);
+        const base64Image = canvas.toDataURL('image/jpeg', 0.92);
+
+        if (activeType === 'profile') {
+            croppedImageInput.value = base64Image;
+            avatarPreview.src = base64Image;
+        } else if (activeType === 'banner') {
+            croppedBannerInput.value = base64Image;
+            bannerPreview.src = base64Image;
+        }
+
         cropperModal.hide();
     });
 });

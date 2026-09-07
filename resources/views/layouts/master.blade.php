@@ -11,7 +11,7 @@
     <title>@yield('title', 'MIFFA')</title>
 
     <!-- ========== Favicon Icon ========== -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/new/logo-light.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/img/icon/miffas.png') }}" type="image/x-icon">
 
     <!-- ========== Font Awesome CDN ========== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -75,13 +75,13 @@
                 <div class="col-lg-7">
                     <ul class="item-flex">
                         <li>
-                            <a href="tel:+959400013099"> 
-                                <img src="{{ asset('assets/img/icon/2.png') }}" alt="Icon"> Phone: +959400013099
+                            <a href="tel:+09268002226"> 
+                                <img src="{{ asset('assets/img/icon/2.png') }}" alt="Icon"> Phone: 09268002226
                             </a>
                         </li>
                         <li>
-                            <a href="mailto:miffa@org.com">
-                                <img src="{{ asset('assets/img/icon/3.png') }}" alt="Icon"> Email: miffa@org.com
+                            <a href="mailto:info@miffa.org">
+                                <img src="{{ asset('assets/img/icon/3.png') }}" alt="Icon"> Email: info@miffa.org
                             </a>
                         </li>
                     </ul>
@@ -150,7 +150,7 @@
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                             <i class="fa fa-times"></i>
                         </button>
-                        
+
                         <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
                             <li>
                                 <a href="{{ url('/') }}">Home</a>
@@ -239,11 +239,11 @@
                             <ul class="contact-list-two">
                                 <li>
                                     <div class="icon"><i class="fas fa-phone-alt"></i></div>
-                                    <div class="info"><h5><a href="tel:+959400013099">+959400013099</a></h5></div>
+                                    <div class="info"><h5><a href="tel:+09268002226">09268002226</a></h5></div>
                                 </li>
                                 <li>
                                     <div class="icon"><i class="fas fa-envelope"></i></div>
-                                    <div class="info"><h5><a href="mailto:miffa@org.com">miffa@org.com</a></h5></div>
+                                    <div class="info"><h5><a href="mailto:info@miffa.org">info@miffa.org</a></h5></div>
                                 </li>
                             </ul>
                         </div>
@@ -271,7 +271,7 @@
         <!-- End Footer Bottom -->
     </footer>
     <!-- End Footer -->
-    
+
     <!-- ========== Scripts ========== -->
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>

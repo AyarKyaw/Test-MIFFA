@@ -93,8 +93,8 @@ Route::get('/courses/{id}', [FrontendCourseController::class, 'show'])->name('co
 Route::get('/course/categories', [FrontendCourseCategoryController::class, 'index'])->name('course-categories.index');
 
 // Frontend Instructors (Public browsing)
-Route::get('/instructors', [FrontendInstructorController::class, 'index'])->name('instructors.index');
-Route::get('/instructors/{id}', [FrontendInstructorController::class, 'show'])->name('instructors.show');
+Route::get('/teachers', [FrontendInstructorController::class, 'index'])->name('instructors.index');
+Route::get('/teachers/{id}', [FrontendInstructorController::class, 'show'])->name('instructors.show');
 
 Route::post('/google-one-tap', [AuthController::class, 'handleGoogleOneTap'])->name('google.onetap');
 

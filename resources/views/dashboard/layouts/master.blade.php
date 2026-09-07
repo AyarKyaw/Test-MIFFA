@@ -22,6 +22,7 @@
     <link href="{{ asset('assets/vendor/css-hamburgers/hamburgers.min.css') }}" rel="stylesheet" media="all"/>
     <link href="{{ asset('assets/css/theme.css') }}" rel="stylesheet" media="all"/>
     <link href="{{ asset('assets/css/theme-2026.css') }}" rel="stylesheet" media="all"/>
+    <link rel="shortcut icon" href="{{ asset('assets/img/icon/miffas.png') }}" type="image/x-icon">
 <style>
   /* Hide theme switcher float menu / toggle panel */
   .theme-switcher, 
@@ -78,7 +79,7 @@
         <li><a href="/dashboard/students">View</a></li>
       </ul>
     </li>
-    <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Instructor</a>
+    <li class="has-sub"><a class="js-arrow" href="#"><i class="fa-solid fa-user-gear"></i>Teachers</a>
       <ul class="list-unstyled navbar__sub-list js-sub-list">
         <li><a href="{{ route('admin.instructors.index') }}">View</a></li>
         <li><a href="{{ route('admin.instructors.create') }}">Create</a></li>
