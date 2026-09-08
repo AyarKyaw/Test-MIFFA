@@ -155,7 +155,10 @@
                             <li>
                                 <a href="{{ url('/') }}">Home</a>
                             </li>
-
+                            <li>
+                                <a href="{{ url('/teachers') }}">Teachers</a>
+                            </li>
+                            
                             <li class="dropdown megamenu-fw megamenu-style-four" style="right: 0 !important;">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Courses</a>
                                 <ul class="dropdown-menu megamenu-content" role="menu">
@@ -167,7 +170,7 @@
                                                     <ul class="menu-col">
                                                         <li><a href="{{ url('/course/categories') }}">All Courses</a></li>
                                                         @auth
-                                                            <li><a href="{{ url('/my-courses') }}">My Enrolled Courses</a></li>
+                                                        <li><a href="{{ url('/my-courses') }}">My Enrolled Courses</a></li>
                                                         @endauth
                                                     </ul>
                                                 </div>
@@ -176,7 +179,7 @@
                                     </li>
                                 </ul>
                             </li>
-
+                            
                             <!-- Join Alumni Navigation Link -->
                             <li>
                                 @if(auth('alumni')->check())
@@ -229,6 +232,7 @@
                             <ul>
                                 <li><a href="{{ url('/about') }}">About Us</a></li>
                                 <li><a href="{{ url('/course/categories') }}">Courses</a></li>
+                                <li><a href="{{ url('/teachers') }}">Teachers</a></li>
                                 <li><a href="{{ Route::has('alumni.join') ? route('alumni.join') : url('/alumni/join') }}">Join Alumni</a></li>
                             </ul>
                         </div>
