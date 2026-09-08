@@ -50,6 +50,7 @@
 <section class="py-5 bg-light-subtle">
     <div class="container py-3">
         @if($instructors->count() > 0)
+
             <!-- Teachers Grid -->
             <div class="row g-4">
                 @foreach($instructors as $instructor)
@@ -123,10 +124,33 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
-            <div class="mt-5 d-flex justify-content-center">
-                {{ $instructors->links() }}
+            <!-- Bottom Previous / Next Controls -->
+            <div class="mt-5 d-flex justify-content-center align-items-center gap-3">
+                @if($instructors->onFirstPage())
+                    <button class="btn btn-outline-secondary rounded-pill px-4 fw-semibold opacity-50" disabled>
+                        <i class="fas fa-arrow-left me-2"></i> Previous
+                    </button>
+                @else
+                    <a href="{{ $instructors->appends(request()->query())->previousPageUrl() }}" class="btn btn-outline-primary rounded-pill px-4 fw-semibold shadow-sm">
+                        <i class="fas fa-arrow-left me-2"></i> Previous
+                    </a>
+                @endif
+
+                <span class="text-muted small px-2">
+                    Page <strong class="text-dark">{{ $instructors->currentPage() }}</strong> of <strong class="text-dark">{{ $instructors->lastPage() }}</strong>
+                </span>
+
+                @if($instructors->hasMorePages())
+                    <a href="{{ $instructors->appends(request()->query())->nextPageUrl() }}" class="btn btn-outline-primary rounded-pill px-4 fw-semibold shadow-sm">
+                        Next <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                @else
+                    <button class="btn btn-outline-secondary rounded-pill px-4 fw-semibold opacity-50" disabled>
+                        Next <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                @endif
             </div>
+
         @else
             <!-- Empty State -->
             <div class="text-center py-5 my-4 bg-white rounded-4 border shadow-sm p-5 col-md-8 mx-auto">
