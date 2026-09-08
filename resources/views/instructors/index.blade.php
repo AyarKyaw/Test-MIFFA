@@ -76,7 +76,7 @@
                                 <!-- Teacher Identity -->
                                 <h4 class="fw-bold text-dark mb-1 teacher-name">{{ $instructor->name }}</h4>
                                 <p class="text-primary fw-semibold small mb-3 text-uppercase tracking-wider">
-                                    {{ $instructor->title ?? $instructor->designation ?? 'Logistics Instructor' }}
+                                    {{ $instructor->title ?? $instructor->designation ?? 'Teacher' }}
                                 </p>
 
                                 <!-- Specialization Badges -->

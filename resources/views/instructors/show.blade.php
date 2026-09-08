@@ -90,7 +90,7 @@
                             <div>
                                 <h1 class="h2 fw-bold mb-1">{{ $instructor->name }}</h1>
                                 <p class="text-primary fw-medium mb-2">
-                                    {{ $instructor->title ?? 'Senior Instructor' }}
+                                    {{ $instructor->title ?? 'Teacher' }}
                                 </p>
                             </div>
                             <div class="d-flex gap-2">
@@ -131,9 +131,9 @@
             <div class="col-12">
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-4">
-                        <h3 class="h5 fw-bold border-bottom pb-3 mb-3">About the Instructor</h3>
+                        <h3 class="h5 fw-bold border-bottom pb-3 mb-3">About the Teacher</h3>
                         <div class="text-secondary lh-base" style="white-space: pre-line;">
-                            {{ $instructor->bio ?? 'No biography details available for this instructor.' }}
+                            {{ $instructor->bio ?? 'No biography details available for this Teacher.' }}
                         </div>
                     </div>
                 </div>

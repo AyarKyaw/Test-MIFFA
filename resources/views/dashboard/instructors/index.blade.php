@@ -1,17 +1,17 @@
 @extends('dashboard.layouts.master')
 
-@section('title', 'Instructors - MIFFA')
+@section('title', 'Teachers - MIFFA')
 
 @section('content')
 <main class="main-content" id="main-content">
     <div class="section__content section__content--p30">
         <div class="row row-tight" style="margin-top: 16px;">
             <div class="col-md-12">
-                <section class="m-card" aria-labelledby="instructors-title">
+                <section class="m-card" aria-labelledby="teachers-title">
                     <header class="m-card__header d-flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="m-card__title" id="instructors-title">Instructors</h2>
-                            <p class="m-card__subtitle">Manage instructor profiles and avatars</p>
+                            <h2 class="m-card__title" id="teachers-title">Teachers</h2>
+                            <p class="m-card__subtitle">Manage teacher profiles and avatars</p>
                         </div>
                     </header>
 
@@ -24,19 +24,44 @@
                     @endif
 
                     <div class="table-data__tool">
-                        <div class="table-data__tool-left">
+                        <div class="table-data__tool-left d-flex align-items-center gap-3">
                             <form action="{{ route('admin.instructors.index') }}" method="GET" class="d-flex gap-2">
                                 <div class="select-wrapper">
                                     <select class="form-select" name="filter" onchange="this.form.submit()">
-                                        <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>All Instructors</option>
+                                        <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>All Teachers</option>
                                         <option value="latest" {{ request('filter') == 'latest' ? 'selected' : '' }}>Latest First</option>
                                     </select>
                                 </div>
                             </form>
+
+                            <!-- Top Previous / Next Navigation Controls -->
+                            @if(method_exists($instructors, 'hasPages') && $instructors->hasPages())
+                                <div class="btn-group" role="group" aria-label="Page navigation">
+                                    @if($instructors->onFirstPage())
+                                        <button class="btn btn-outline-secondary btn-sm disabled" disabled>
+                                            <i class="fa-solid fa-chevron-left me-1"></i> Previous
+                                        </button>
+                                    @else
+                                        <a href="{{ $instructors->appends(request()->query())->previousPageUrl() }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fa-solid fa-chevron-left me-1"></i> Previous
+                                        </a>
+                                    @endif
+
+                                    @if($instructors->hasMorePages())
+                                        <a href="{{ $instructors->appends(request()->query())->nextPageUrl() }}" class="btn btn-outline-primary btn-sm">
+                                            Next <i class="fa-solid fa-chevron-right ms-1"></i>
+                                        </a>
+                                    @else
+                                        <button class="btn btn-outline-secondary btn-sm disabled" disabled>
+                                            Next <i class="fa-solid fa-chevron-right ms-1"></i>
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                         <div class="table-data__tool-right d-flex gap-2">
                             <a href="{{ route('admin.instructors.create') }}" class="au-btn au-btn--green au-btn--small text-decoration-none d-inline-flex align-items-center gap-1">
-                                <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Instructor
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Teacher
                             </a>
                         </div>
                     </div>
@@ -93,7 +118,7 @@
                                                 <a href="{{ route('admin.instructors.edit', $instructor->id) }}" class="item" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
-                                                <form action="{{ route('admin.instructors.destroy', $instructor->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this instructor?');" class="d-inline">
+                                                <form action="{{ route('admin.instructors.destroy', $instructor->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this teacher?');" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="item" type="submit" data-bs-toggle="tooltip" title="Delete">
@@ -107,7 +132,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center py-4 text-muted">
-                                            No instructors found.
+                                            No teachers found.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -115,10 +140,38 @@
                         </table>
                     </div>
 
-                    <!-- Pagination Links -->
-                    @if(method_exists($instructors, 'links'))
-                        <div class="mt-3 d-flex justify-content-end">
-                            {{ $instructors->appends(request()->query())->links() }}
+                    <!-- Bottom Navigation with Previous / Next Controls and Links -->
+                    @if(method_exists($instructors, 'hasPages') && $instructors->hasPages())
+                        <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                            <div class="text-muted small">
+                                Showing <span class="fw-bold">{{ $instructors->firstItem() }}</span> to <span class="fw-bold">{{ $instructors->lastItem() }}</span> of <span class="fw-bold">{{ $instructors->total() }}</span> entries
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                @if($instructors->onFirstPage())
+                                    <button class="btn btn-outline-secondary btn-sm disabled" disabled>
+                                        <i class="fa-solid fa-arrow-left me-1"></i> Previous
+                                    </button>
+                                @else
+                                    <a href="{{ $instructors->appends(request()->query())->previousPageUrl() }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fa-solid fa-arrow-left me-1"></i> Previous
+                                    </a>
+                                @endif
+
+                                <span class="text-muted small px-2">
+                                    Page {{ $instructors->currentPage() }} of {{ $instructors->lastPage() }}
+                                </span>
+
+                                @if($instructors->hasMorePages())
+                                    <a href="{{ $instructors->appends(request()->query())->nextPageUrl() }}" class="btn btn-outline-primary btn-sm">
+                                        Next <i class="fa-solid fa-arrow-right ms-1"></i>
+                                    </a>
+                                @else
+                                    <button class="btn btn-outline-secondary btn-sm disabled" disabled>
+                                        Next <i class="fa-solid fa-arrow-right ms-1"></i>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     @endif
 
