@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', $instructor->name . ' - Instructor Profile')
+@section('title', $instructor->name . ' - Teacher Profile')
 
 @push('styles')
 <style>
@@ -184,7 +184,7 @@
                         @else
                             <div class="text-center py-4 text-muted">
                                 <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
-                                No active courses available for this instructor at the moment.
+                                No active courses available for this teacher at the moment.
                             </div>
                         @endif
                     </div>

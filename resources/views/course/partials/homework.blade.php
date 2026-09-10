@@ -62,7 +62,7 @@
 
             @if($feedback)
                 <div class="bg-white p-3 rounded-3 border">
-                    <span class="fw-semibold text-dark d-block mb-1"><i class="fas fa-comment-dots me-2 text-info"></i>Instructor Feedback:</span>
+                    <span class="fw-semibold text-dark d-block mb-1"><i class="fas fa-comment-dots me-2 text-info"></i>Teacher Feedback:</span>
                     <p class="text-secondary mb-0 text-break">{{ $feedback }}</p>
                 </div>
             @endif

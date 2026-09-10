@@ -45,11 +45,11 @@
                            <!-- Instructor / Author -->
 <div class="item author">
     <div class="desc">
-        <h4>{{ Str::plural('Instructor', $course->instructors->count()) }}</h4>
+        <h4>{{ Str::plural('Teacher', $course->instructors->count()) }}</h4>
         @forelse ($course->instructors as $instructor)
             <a href="{{ route('instructors.show', $instructor->id) }}">{{ $instructor->name }}</a>{{ !$loop->last ? ', ' : '' }}
         @empty
-            <span>MIFFA Instructor</span>
+            <span>MIFFA Teacher</span>
         @endforelse
     </div>
 </div>

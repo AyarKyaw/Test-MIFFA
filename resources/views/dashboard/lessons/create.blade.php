@@ -121,11 +121,29 @@
                                 @enderror
                             </div>
 
-                            <!-- Quiz Questions Section -->
+                            <!-- Quiz Settings & Questions Section -->
                             <div class="col-md-12 type-field field-quiz" style="display: none;">
                                 <hr class="my-3">
+                                
+                                <!-- Max Questions Config for Quiz -->
+                                <div class="card bg-light border-0 mb-4">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold text-dark mb-2"><i class="fa-solid fa-sliders me-2 text-primary"></i>Quiz Configuration</h5>
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <label for="max_questions" class="form-label fw-bold">Max Questions Per Attempt <span class="text-danger">*</span></label>
+                                                <input type="number" name="max_questions" id="max_questions" class="form-control @error('max_questions') is-invalid @enderror" value="{{ old('max_questions', 5) }}" min="1">
+                                                <small class="text-muted">The number of random questions shown to students during a single quiz attempt.</small>
+                                                @error('max_questions')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 class="fw-bold mb-0">Quiz Questions</h4>
+                                    <h4 class="fw-bold mb-0">Quiz Questions Pool</h4>
                                     <button type="button" class="btn btn-outline-success btn-sm" onclick="addQuestionBlock()">
                                         <i class="fa-solid fa-plus me-1"></i> Add Question
                                     </button>
@@ -185,13 +203,10 @@ function addQuestionBlock(data = null) {
     const qType = data ? (data.type || 'multiple_choice') : 'multiple_choice';
     const hint = data ? (data.hint || '') : '';
     const correctOpt = data ? parseInt(data.correct_option || 0) : 0;
-    const isCorrect = data ? (data.is_correct || '1') : '1';
+    const isCorrect = data ? (data.is_correct !== undefined ? data.is_correct : '1') : '1';
 
     const options = data && data.options ? data.options : ['', '', '', ''];
-    const optionFeedbacks = data && data.option_feedbacks ? data.option_feedbacks : ['', '', '', ''];
-
-    const trueFeedback = data ? (data.true_feedback || '') : '';
-    const falseFeedback = data ? (data.false_feedback || '') : '';
+    const optionFeedbacks = data && (data.option_feedbacks || data.feedback) ? (data.option_feedbacks || data.feedback) : ['', '', '', ''];
 
     const qHtml = `
         <div class="card border p-3 question-card bg-light" id="question-${qIndex}">
@@ -221,44 +236,35 @@ function addQuestionBlock(data = null) {
                     <input type="text" name="questions[${qIndex}][hint]" class="form-control form-control-sm" value="${escapeHtml(hint)}" placeholder="Clue offered before answering">
                 </div>
 
+                <!-- Multiple Choice Options & Feedback Block -->
                 <div class="col-12 q-options-block-${qIndex}" style="${qType === 'boolean' ? 'display:none;' : ''}">
                     <label class="form-label small fw-bold">Options & Specific Feedback (Select radio for correct answer):</label>
-                    
+
                     ${[0, 1, 2, 3].map(i => `
                         <div class="border rounded p-2 mb-2 bg-white">
                             <div class="input-group mb-1">
                                 <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" name="questions[${qIndex}][correct_option]" value="${i}" ${correctOpt === i ? 'checked' : ''}>
+                                    <input class="form-check-input mt-0" type="radio" name="questions[${qIndex}][correct_option]" value="${i}" ${correctOpt === i ? 'checked' : ''} ${qType === 'boolean' ? 'disabled' : ''}>
                                 </div>
-                                <input type="text" name="questions[${qIndex}][options][${i}]" class="form-control fw-semibold" value="${escapeHtml(options[i] || '')}" placeholder="Option ${i + 1}">
+                                <input type="text" name="questions[${qIndex}][options][${i}]" class="form-control fw-semibold" value="${escapeHtml(options[i] || '')}" placeholder="Option ${i + 1}" ${qType === 'boolean' ? 'disabled' : ''}>
                             </div>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-light text-secondary">
                                     <i class="fa-solid fa-comment-dots me-1"></i> Option Feedback
                                 </span>
-                                <input type="text" name="questions[${qIndex}][option_feedbacks][${i}]" class="form-control" value="${escapeHtml(optionFeedbacks[i] || '')}" placeholder="Why this option is right or wrong">
+                                <input type="text" name="questions[${qIndex}][option_feedbacks][${i}]" class="form-control" value="${escapeHtml(optionFeedbacks[i] || '')}" placeholder="Why this option is right or wrong" ${qType === 'boolean' ? 'disabled' : ''}>
                             </div>
                         </div>
                     `).join('')}
                 </div>
 
+                <!-- Boolean (True / False) Selection Block -->
                 <div class="col-12 q-boolean-block-${qIndex}" style="${qType === 'boolean' ? '' : 'display:none;'}">
                     <label class="form-label small fw-bold">Correct Answer:</label>
-                    <select name="questions[${qIndex}][is_correct]" class="form-select mb-2">
+                    <select name="questions[${qIndex}][is_correct]" class="form-select" ${qType !== 'boolean' ? 'disabled' : ''}>
                         <option value="1" ${isCorrect == '1' ? 'selected' : ''}>True</option>
                         <option value="0" ${isCorrect == '0' ? 'selected' : ''}>False</option>
                     </select>
-
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Feedback if True is selected:</label>
-                            <input type="text" name="questions[${qIndex}][true_feedback]" class="form-control form-control-sm" value="${escapeHtml(trueFeedback)}" placeholder="Explanation when student selects True">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Feedback if False is selected:</label>
-                            <input type="text" name="questions[${qIndex}][false_feedback]" class="form-control form-control-sm" value="${escapeHtml(falseFeedback)}" placeholder="Explanation when student selects False">
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -274,12 +280,24 @@ function removeQuestionBlock(qIndex) {
 function toggleQuestionType(qIndex, type) {
     const optBlock = document.querySelector(`.q-options-block-${qIndex}`);
     const boolBlock = document.querySelector(`.q-boolean-block-${qIndex}`);
+    
+    const optInputs = optBlock.querySelectorAll('input');
+    const boolSelect = boolBlock.querySelector('select');
+
     if (type === 'boolean') {
         optBlock.style.display = 'none';
         boolBlock.style.display = 'block';
+        
+        // Disable option inputs so they don't send empty values to backend
+        optInputs.forEach(input => input.disabled = true);
+        boolSelect.disabled = false;
     } else {
         optBlock.style.display = 'block';
         boolBlock.style.display = 'none';
+        
+        // Re-enable option inputs for multiple choice
+        optInputs.forEach(input => input.disabled = false);
+        boolSelect.disabled = true;
     }
 }
 

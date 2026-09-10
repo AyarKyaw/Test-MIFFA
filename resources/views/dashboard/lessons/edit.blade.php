@@ -85,6 +85,34 @@
                                 @enderror
                             </div>
 
+                            <!-- Max Questions Per Quiz Attempt Field -->
+                            <div class="col-md-12 type-field field-quiz" style="display: none;">
+                                <div class="bg-light border rounded p-3 mb-2">
+                                    <label for="max_questions" class="form-label fw-bold mb-1">
+                                        <i class="fa-solid fa-list-check text-primary me-1"></i> Questions Per Quiz Attempt
+                                    </label>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <input type="number" 
+                                                   name="max_questions" 
+                                                   id="max_questions" 
+                                                   class="form-control @error('max_questions') is-invalid @enderror" 
+                                                   value="{{ old('max_questions', $lesson->max_questions ?? 5) }}" 
+                                                   min="1" 
+                                                   placeholder="e.g. 5">
+                                            @error('max_questions')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-8">
+                                            <small class="text-muted">
+                                                The maximum number of questions randomly presented to a student during each quiz attempt.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Video Section -->
                             <div class="col-md-12 type-field field-video" style="display: none;">
                                 <label for="video_url" class="form-label fw-bold">Video URL</label>
@@ -191,25 +219,81 @@ function toggleLessonTypeFields() {
         document.querySelector('.field-content').style.display = 'block';
         contentLabel.textContent = 'Homework Task Instructions';
     } else if (type === 'quiz') {
-        document.querySelector('.field-quiz').style.display = 'block';
+        document.querySelectorAll('.field-quiz').forEach(el => el.style.display = 'block');
     }
 }
 
+/**
+ * Safely extracts string value from plain strings, numbers, or DB model objects
+ */
+function extractStringValue(val, key = '') {
+    if (val === null || val === undefined) return '';
+    if (typeof val === 'string' || typeof val === 'number') return String(val);
+    if (typeof val === 'object') {
+        if (key && val[key] !== undefined) return String(val[key]);
+        return String(val.question_text || val.option_text || val.text || val.title || val.feedback || Object.values(val)[0] || '');
+    }
+    return '';
+}
+
 function addQuestionBlock(data = null) {
+    console.log('[DEBUG] Incoming Question Data:', data);
+
     const container = document.getElementById('questions-container');
     const qIndex = questionCount++;
 
-    const text = data ? (data.text || '') : '';
+    // Safe extraction for text
+    const rawText = data ? (data.question_text !== undefined ? data.question_text : data.text) : '';
+    const text = extractStringValue(rawText, 'question_text');
+
     const qType = data ? (data.type || 'multiple_choice') : 'multiple_choice';
-    const hint = data ? (data.hint || '') : '';
-    const correctOpt = data ? parseInt(data.correct_option || 0) : 0;
-    const isCorrect = data ? (data.is_correct !== undefined ? data.is_correct : '1') : '1';
+    const hint = extractStringValue(data ? data.hint : '');
 
-    const options = data && data.options ? data.options : ['', '', '', ''];
-    const optionFeedbacks = data && data.option_feedbacks ? data.option_feedbacks : ['', '', '', ''];
+    // Normalize raw options list from DB relationship or old input array
+    let rawOptions = data && data.options ? data.options : [];
+    if (typeof rawOptions === 'object' && !Array.isArray(rawOptions)) {
+        rawOptions = Object.values(rawOptions);
+    }
 
-    const trueFeedback = data ? (data.true_feedback || '') : '';
-    const falseFeedback = data ? (data.false_feedback || '') : '';
+    // Determine correct option index and map text/feedback arrays
+    let correctOpt = 0;
+    const options = [0, 1, 2, 3].map(i => {
+        const item = rawOptions[i];
+        if (!item) return '';
+        
+        // If option is a DB model (object containing 'is_correct' and 'option_text')
+        if (typeof item === 'object' && item !== null) {
+            if (item.is_correct == 1 || item.is_correct === true) {
+                correctOpt = i;
+            }
+            return extractStringValue(item.option_text || item.text);
+        }
+        return extractStringValue(item);
+    });
+
+    // Handle correct_option if explicitly set via old() input
+    if (data && data.correct_option !== undefined) {
+        correctOpt = parseInt(data.correct_option);
+    }
+
+    const isCorrect = data ? (data.is_correct !== undefined ? data.is_correct : (correctOpt > 0 ? '1' : '0')) : '1';
+
+    // Normalize raw option feedbacks
+    let rawFeedbacks = data && (data.option_feedbacks || data.feedback) ? (data.option_feedbacks || data.feedback) : [];
+    if (typeof rawFeedbacks === 'object' && !Array.isArray(rawFeedbacks)) {
+        rawFeedbacks = Object.values(rawFeedbacks);
+    }
+
+    const optionFeedbacks = [0, 1, 2, 3].map(i => {
+        const optItem = rawOptions[i];
+        const fbItem = rawFeedbacks[i];
+
+        // First check if feedback is attached directly on option model
+        if (optItem && typeof optItem === 'object' && optItem.feedback) {
+            return extractStringValue(optItem.feedback);
+        }
+        return extractStringValue(fbItem);
+    });
 
     const qHtml = `
         <div class="card border p-3 question-card bg-light" id="question-${qIndex}">
@@ -239,44 +323,35 @@ function addQuestionBlock(data = null) {
                     <input type="text" name="questions[${qIndex}][hint]" class="form-control form-control-sm" value="${escapeHtml(hint)}" placeholder="Clue offered before answering">
                 </div>
 
+                <!-- Multiple Choice Options & Feedback Block -->
                 <div class="col-12 q-options-block-${qIndex}" style="${qType === 'boolean' ? 'display:none;' : ''}">
                     <label class="form-label small fw-bold">Options & Specific Feedback (Select radio for correct answer):</label>
-                    
+
                     ${[0, 1, 2, 3].map(i => `
                         <div class="border rounded p-2 mb-2 bg-white">
                             <div class="input-group mb-1">
                                 <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" name="questions[${qIndex}][correct_option]" value="${i}" ${correctOpt === i ? 'checked' : ''}>
+                                    <input class="form-check-input mt-0" type="radio" name="questions[${qIndex}][correct_option]" value="${i}" ${correctOpt === i ? 'checked' : ''} ${qType === 'boolean' ? 'disabled' : ''}>
                                 </div>
-                                <input type="text" name="questions[${qIndex}][options][${i}]" class="form-control fw-semibold" value="${escapeHtml(options[i] || '')}" placeholder="Option ${i + 1}">
+                                <input type="text" name="questions[${qIndex}][options][${i}]" class="form-control fw-semibold" value="${escapeHtml(options[i])}" placeholder="Option ${i + 1}" ${qType === 'boolean' ? 'disabled' : ''}>
                             </div>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-light text-secondary">
                                     <i class="fa-solid fa-comment-dots me-1"></i> Option Feedback
                                 </span>
-                                <input type="text" name="questions[${qIndex}][option_feedbacks][${i}]" class="form-control" value="${escapeHtml(optionFeedbacks[i] || '')}" placeholder="Why this option is right or wrong">
+                                <input type="text" name="questions[${qIndex}][option_feedbacks][${i}]" class="form-control" value="${escapeHtml(optionFeedbacks[i])}" placeholder="Why this option is right or wrong" ${qType === 'boolean' ? 'disabled' : ''}>
                             </div>
                         </div>
                     `).join('')}
                 </div>
 
+                <!-- Boolean (True / False) Selection Block -->
                 <div class="col-12 q-boolean-block-${qIndex}" style="${qType === 'boolean' ? '' : 'display:none;'}">
                     <label class="form-label small fw-bold">Correct Answer:</label>
-                    <select name="questions[${qIndex}][is_correct]" class="form-select mb-2">
+                    <select name="questions[${qIndex}][is_correct]" class="form-select" ${qType !== 'boolean' ? 'disabled' : ''}>
                         <option value="1" ${isCorrect == '1' ? 'selected' : ''}>True</option>
                         <option value="0" ${isCorrect == '0' ? 'selected' : ''}>False</option>
                     </select>
-
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Feedback if True is selected:</label>
-                            <input type="text" name="questions[${qIndex}][true_feedback]" class="form-control form-control-sm" value="${escapeHtml(trueFeedback)}" placeholder="Explanation when student selects True">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Feedback if False is selected:</label>
-                            <input type="text" name="questions[${qIndex}][false_feedback]" class="form-control form-control-sm" value="${escapeHtml(falseFeedback)}" placeholder="Explanation when student selects False">
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -292,12 +367,22 @@ function removeQuestionBlock(qIndex) {
 function toggleQuestionType(qIndex, type) {
     const optBlock = document.querySelector(`.q-options-block-${qIndex}`);
     const boolBlock = document.querySelector(`.q-boolean-block-${qIndex}`);
+    
+    const optInputs = optBlock.querySelectorAll('input');
+    const boolSelect = boolBlock.querySelector('select');
+
     if (type === 'boolean') {
         optBlock.style.display = 'none';
         boolBlock.style.display = 'block';
+        
+        optInputs.forEach(input => input.disabled = true);
+        boolSelect.disabled = false;
     } else {
         optBlock.style.display = 'block';
         boolBlock.style.display = 'none';
+        
+        optInputs.forEach(input => input.disabled = false);
+        boolSelect.disabled = true;
     }
 }
 
@@ -314,14 +399,17 @@ function escapeHtml(str) {
 document.addEventListener('DOMContentLoaded', () => {
     toggleLessonTypeFields();
 
-    // Priority 1: Check validation old input. Priority 2: Fallback to database existing questions.
     const oldQuestions = @json(old('questions', null));
     const dbQuestions = @json($lesson->questions ?? []);
 
-    const questionsToLoad = oldQuestions !== null ? Object.values(oldQuestions) : dbQuestions;
+    console.log('[DEBUG] Old Input Questions:', oldQuestions);
+    console.log('[DEBUG] DB Questions:', dbQuestions);
 
-    if (questionsToLoad && questionsToLoad.length > 0) {
-        questionsToLoad.forEach(qData => {
+    let rawList = oldQuestions !== null ? oldQuestions : dbQuestions;
+
+    if (rawList) {
+        const questionList = Array.isArray(rawList) ? rawList : Object.values(rawList);
+        questionList.forEach(qData => {
             addQuestionBlock(qData);
         });
     }

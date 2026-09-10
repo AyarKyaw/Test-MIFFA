@@ -44,9 +44,8 @@
                 </a>
                 <div class="h-4 w-px bg-slate-800"></div>
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-xs shadow-lg shadow-blue-500/20">
-                        MIFFA
-                    </div>
+                    <!-- Top Nav Logo -->
+                    <img src="{{ asset('assets/img/icon/miffas.png') }}" alt="MIFFA Logo" class="h-9 w-auto object-contain">
                     <span class="font-bold tracking-tight text-white text-sm">Alumni Portal</span>
                 </div>
             </div>
@@ -134,9 +133,8 @@
                         <!-- Card Header -->
                         <div class="flex items-center justify-between pb-6 border-b border-slate-200/80 relative z-10">
                             <div class="flex items-center gap-3.5">
-                                <div class="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-sm shadow-md">
-                                    MIFFA
-                                </div>
+                                <!-- Digital Pass MIFFA Logo -->
+                                <img src="{{ asset('assets/img/icon/miffas.png') }}" alt="MIFFA Logo" class="h-12 w-auto object-contain">
                                 <div>
                                     <h2 class="text-base font-extrabold text-slate-900 tracking-wider uppercase leading-normal">
                                         MIFFA Education Alumni
@@ -200,17 +198,17 @@
                     </div>
 
                     <!-- Card Footer Banner -->
-                    <div class="bg-slate-900 px-8 py-3.5 flex items-center justify-between text-white relative z-10">
-                        <div class="text-[11px] text-slate-400 font-medium space-y-0.5">
+                    <div class="bg-slate-900 px-8 py-4 flex items-center justify-between text-white relative z-10">
+                        <div class="text-xs text-slate-400 font-medium space-y-1">
                             <p class="leading-normal">www.miffa.org.mm</p>
                             <p class="leading-normal">www.myanmarlogisticsinstitute.com</p>
                         </div>
                         
-                        <!-- Dynamic Verification QR Code -->
-                        <div class="bg-white p-1 rounded-lg shadow-sm">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode(route('alumni.verify', $alumni->register_no ?? 'MEA-' . str_pad($alumni->id, 6, '0', STR_PAD_LEFT))) }}" 
+                        <!-- Bigger Dynamic Verification QR Code -->
+                        <div class="bg-white p-1.5 rounded-xl shadow-md flex items-center justify-center">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode(route('alumni.verify', $alumni->register_no ?? 'MEA-' . str_pad($alumni->id, 6, '0', STR_PAD_LEFT))) }}" 
                                  alt="QR Code Verification" 
-                                 class="w-10 h-10">
+                                 class="w-20 h-20">
                         </div>
                     </div>
 

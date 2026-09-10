@@ -39,160 +39,169 @@ class LessonController extends Controller
         return view('dashboard.lessons.create', compact('sections', 'sectionId'));
     }
 
-   public function store(Request $request)
-{
-    $validated = $request->validate([
-        'course_id'                           => 'nullable|exists:courses,id',
-        'section_id'                          => 'nullable|exists:sections,id',
-        'title'                               => 'required|string|max:255',
-        'type'                                => 'required|string|in:video,article,document,homework,quiz',
-        'video_url'                           => 'nullable|url|max:255',
-        'content'                             => 'nullable|string',
-        'document_file'                       => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
-        'homework_file'                       => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:20480',
-        'order'                               => 'nullable|integer',
-        'questions'                           => 'nullable|array',
-        'questions.*.text'                    => 'required_if:type,quiz|nullable|string',
-        'questions.*.question_text'           => 'nullable|string',
-        'questions.*.type'                    => 'required_if:type,quiz|nullable|in:multiple_choice,boolean',
-        'questions.*.is_correct'              => 'nullable',
-        'questions.*.correct_option'          => 'nullable',
-        'questions.*.hint'                    => 'nullable|string',
-        'questions.*.explanation'             => 'nullable|string',
-        'questions.*.options'                 => 'nullable|array',
-        'questions.*.option_feedbacks'        => 'nullable|array',
-        'questions.*.boolean_feedback'        => 'nullable|array',
-        'questions.*.boolean_feedback.true'   => 'nullable|string',
-        'questions.*.boolean_feedback.false'  => 'nullable|string',
-        'questions.*.true_feedback'           => 'nullable|string',
-        'questions.*.false_feedback'          => 'nullable|string',
-    ]);
-
-    // Safely retrieve course_id from request or fallback
-    $courseId = $request->input('course_id');
-    $sectionId = $request->input('section_id');
-
-    if (!$sectionId && $courseId) {
-        $section = Section::whereHas('unit', function ($query) use ($courseId) {
-            $query->where('course_id', $courseId);
-        })->first();
-
-        if (!$section) {
-            $unit = Unit::where('course_id', $courseId)->first();
-
-            if (!$unit) {
-                $unit = Unit::create([
-                    'course_id' => $courseId,
-                    'title'     => 'General Unit',
-                    'order'     => 1,
-                ]);
-            }
-
-            $section = Section::create([
-                'unit_id' => $unit->id,
-                'title'   => 'General Section',
-                'order'   => 1,
-            ]);
-        }
-
-        $sectionId = $section->id;
-    }
-
-    $validated['section_id'] = $sectionId;
-    $validated['order'] = $validated['order'] ?? 1;
-
-    if ($request->hasFile('document_file')) {
-        $validated['document_path'] = $request->file('document_file')->store('lessons/documents', 'public');
-    }
-
-    if ($request->hasFile('homework_file')) {
-        $validated['homework_path'] = $request->file('homework_file')->store('lessons/homeworks', 'public');
-    }
-
-    try {
-        DB::beginTransaction();
-
-        $lesson = Lesson::create([
-            'section_id'    => $validated['section_id'],
-            'title'         => $validated['title'],
-            'type'          => $validated['type'],
-            'video_url'     => $validated['video_url'] ?? null,
-            'content'       => $validated['content'] ?? null,
-            'document_path' => $validated['document_path'] ?? ($validated['homework_path'] ?? null),
-            'order'         => $validated['order'],
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'course_id'                           => 'nullable|exists:courses,id',
+            'section_id'                          => 'nullable|exists:sections,id',
+            'title'                               => 'required|string|max:255',
+            'type'                                => 'required|string|in:video,article,document,homework,quiz',
+            'video_url'                           => 'nullable|url|max:255',
+            'content'                             => 'nullable|string',
+            'document_file'                       => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+            'homework_file'                       => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:20480',
+            'order'                               => 'nullable|integer',
+            'max_questions'                       => 'nullable|integer|min:1',
+            'questions'                           => 'nullable|array',
+            'questions.*.text'                    => 'required_if:type,quiz|nullable|string',
+            'questions.*.question_text'           => 'nullable|string',
+            'questions.*.type'                    => 'required_if:type,quiz|nullable|in:multiple_choice,boolean',
+            'questions.*.is_correct'              => 'nullable',
+            'questions.*.correct_option'          => 'nullable',
+            'questions.*.hint'                    => 'nullable|string',
+            'questions.*.explanation'             => 'nullable|string',
+            'questions.*.options'                 => 'nullable|array',
+            'questions.*.option_feedbacks'        => 'nullable|array',
+            'questions.*.boolean_feedback'        => 'nullable|array',
+            'questions.*.boolean_feedback.true'   => 'nullable|string',
+            'questions.*.boolean_feedback.false'  => 'nullable|string',
+            'questions.*.true_feedback'           => 'nullable|string',
+            'questions.*.false_feedback'          => 'nullable|string',
         ]);
 
-        if ($lesson->type === 'quiz' && !empty($request->input('questions'))) {
-            foreach ($request->input('questions') as $qData) {
-                $questionText = $qData['text'] ?? ($qData['question_text'] ?? null);
-                
-                // Skip empty question blocks
-                if (empty($questionText)) {
-                    continue;
+        // Safely retrieve course_id from request or fallback
+        $courseId = $request->input('course_id');
+        $sectionId = $request->input('section_id');
+
+        if (!$sectionId && $courseId) {
+            $section = Section::whereHas('unit', function ($query) use ($courseId) {
+                $query->where('course_id', $courseId);
+            })->first();
+
+            if (!$section) {
+                $unit = Unit::where('course_id', $courseId)->first();
+
+                if (!$unit) {
+                    $unit = Unit::create([
+                        'course_id' => $courseId,
+                        'title'     => 'General Unit',
+                        'order'     => 1,
+                    ]);
                 }
 
-                $questionType = $qData['type'] ?? 'multiple_choice';
-                $isCorrectBool = filter_var($qData['is_correct'] ?? false, FILTER_VALIDATE_BOOLEAN);
-
-                $question = $lesson->questions()->create([
-                    'question_text' => $questionText,
-                    'type'          => $questionType,
-                    'is_correct'    => $questionType === 'boolean' ? $isCorrectBool : false,
-                    'hint'          => $qData['hint'] ?? null,
-                    'explanation'   => $qData['explanation'] ?? null,
+                $section = Section::create([
+                    'unit_id' => $unit->id,
+                    'title'   => 'General Section',
+                    'order'   => 1,
                 ]);
-
-                if ($questionType === 'multiple_choice' && isset($qData['options']) && is_array($qData['options'])) {
-                    $selectedCorrectIndex = $qData['correct_option'] ?? 0;
-
-                    foreach ($qData['options'] as $optIndex => $optData) {
-                        $optText = is_array($optData) ? ($optData['text'] ?? '') : $optData;
-                        $optFeedback = is_array($optData) 
-                            ? ($optData['feedback'] ?? null) 
-                            : ($qData['option_feedbacks'][$optIndex] ?? null);
-
-                        if (!empty(trim((string)$optText))) {
-                            $question->options()->create([
-                                'option_text' => $optText,
-                                'is_correct'  => ((string)$optIndex === (string)$selectedCorrectIndex),
-                                'feedback'    => $optFeedback,
-                            ]);
-                        }
-                    }
-                } elseif ($questionType === 'boolean') {
-                    $question->options()->create([
-                        'option_text' => 'True',
-                        'is_correct'  => $isCorrectBool,
-                        'feedback'    => $qData['boolean_feedback']['true'] ?? ($qData['true_feedback'] ?? null),
-                    ]);
-
-                    $question->options()->create([
-                        'option_text' => 'False',
-                        'is_correct'  => !$isCorrectBool,
-                        'feedback'    => $qData['boolean_feedback']['false'] ?? ($qData['false_feedback'] ?? null),
-                    ]);
-                }
             }
+
+            $sectionId = $section->id;
         }
 
-        DB::commit();
+        $validated['section_id'] = $sectionId;
+        $validated['order'] = $validated['order'] ?? 1;
 
-        return redirect()->route('admin.lessons.index', array_filter(['section_id' => $sectionId]))
-                         ->with('success', 'Lesson created successfully.');
+        if ($request->hasFile('document_file')) {
+            $validated['document_path'] = $request->file('document_file')->store('lessons/documents', 'public');
+        }
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->withInput()->withErrors(['error' => 'Failed to store lesson: ' . $e->getMessage()]);
+        if ($request->hasFile('homework_file')) {
+            $validated['homework_path'] = $request->file('homework_file')->store('lessons/homeworks', 'public');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $lesson = Lesson::create([
+                'section_id'    => $validated['section_id'],
+                'title'         => $validated['title'],
+                'type'          => $validated['type'],
+                'video_url'     => $validated['video_url'] ?? null,
+                'content'       => $validated['content'] ?? null,
+                'document_path' => $validated['document_path'] ?? ($validated['homework_path'] ?? null),
+                'order'         => $validated['order'],
+                'max_questions' => $validated['max_questions'] ?? null,
+            ]);
+
+            if ($lesson->type === 'quiz' && !empty($request->input('questions'))) {
+                foreach ($request->input('questions') as $qData) {
+                    $questionText = $qData['text'] ?? ($qData['question_text'] ?? null);
+
+                    // Skip empty question blocks
+                    if (empty($questionText)) {
+                        continue;
+                    }
+
+                    $questionType = $qData['type'] ?? 'multiple_choice';
+                    $isCorrectBool = filter_var($qData['is_correct'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+                    $question = $lesson->questions()->create([
+                        'question_text' => $questionText,
+                        'type'          => $questionType,
+                        'is_correct'    => $questionType === 'boolean' ? $isCorrectBool : false,
+                        'hint'          => $qData['hint'] ?? null,
+                        'explanation'   => $qData['explanation'] ?? null,
+                    ]);
+
+                    if ($questionType === 'multiple_choice' && isset($qData['options']) && is_array($qData['options'])) {
+                        $selectedCorrectIndex = $qData['correct_option'] ?? 0;
+
+                        foreach ($qData['options'] as $optIndex => $optData) {
+                            $optText = is_array($optData) ? ($optData['text'] ?? '') : $optData;
+                            $optFeedback = is_array($optData) 
+                                ? ($optData['feedback'] ?? null) 
+                                : ($qData['option_feedbacks'][$optIndex] ?? null);
+
+                            if (!empty(trim((string)$optText))) {
+                                $question->options()->create([
+                                    'option_text' => $optText,
+                                    'is_correct'  => ((string)$optIndex === (string)$selectedCorrectIndex),
+                                    'feedback'    => $optFeedback,
+                                ]);
+                            }
+                        }
+                    } elseif ($questionType === 'boolean') {
+                        $question->options()->create([
+                            'option_text' => 'True',
+                            'is_correct'  => $isCorrectBool,
+                            'feedback'    => $qData['boolean_feedback']['true'] ?? ($qData['true_feedback'] ?? null),
+                        ]);
+
+                        $question->options()->create([
+                            'option_text' => 'False',
+                            'is_correct'  => !$isCorrectBool,
+                            'feedback'    => $qData['boolean_feedback']['false'] ?? ($qData['false_feedback'] ?? null),
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.lessons.index', array_filter(['section_id' => $sectionId]))
+                             ->with('success', 'Lesson created successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->withErrors(['error' => 'Failed to store lesson: ' . $e->getMessage()]);
+        }
     }
-}
 
     public function getQuestions(Lesson $lesson)
     {
         $lesson->load(['questions.options']);
 
+        $questionsQuery = $lesson->questions;
+
+        if ($lesson->max_questions) {
+            $questionsQuery = $questionsQuery->take($lesson->max_questions);
+        }
+
         return response()->json([
-            'lesson_title' => $lesson->title,
-            'questions' => $lesson->questions->map(function ($q) {
+            'lesson_title'  => $lesson->title,
+            'max_questions' => $lesson->max_questions,
+            'questions'     => $questionsQuery->map(function ($q) {
                 return [
                     'id'          => $q->id,
                     'text'        => $q->question ?? $q->title ?? $q->question_text,
@@ -224,25 +233,29 @@ class LessonController extends Controller
     public function update(Request $request, Lesson $lesson)
     {
         $validated = $request->validate([
-            'section_id'                        => 'required|exists:sections,id',
-            'title'                             => 'required|string|max:255',
-            'type'                              => 'required|in:video,document,article,quiz',
-            'order'                             => 'required|integer|min:0',
-            'video_url'                         => 'nullable|required_if:type,video|url|max:255',
-            'content'                           => 'nullable|string',
-            'document_file'                     => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
-            'questions'                         => 'nullable|array',
-            'questions.*.text'                  => 'required_if:type,quiz|string',
-            'questions.*.type'                  => 'required_if:type,quiz|in:multiple_choice,boolean',
-            'questions.*.hint'                  => 'nullable|string',
-            'questions.*.explanation'           => 'nullable|string',
-            'questions.*.options'               => 'nullable|array',
-            'questions.*.options.*'             => 'nullable|array',
-            'questions.*.options.*.text'        => 'nullable|string',
-            'questions.*.options.*.feedback'    => 'nullable|string',
-            'questions.*.boolean_feedback'      => 'nullable|array',
-            'questions.*.boolean_feedback.true' => 'nullable|string',
-            'questions.*.boolean_feedback.false'=> 'nullable|string',
+            'section_id'                     => 'required|exists:sections,id',
+            'title'                          => 'required|string|max:255',
+            'type'                           => 'required|in:video,document,article,homework,quiz',
+            'order'                          => 'required|integer|min:0',
+            'max_questions'                  => 'nullable|integer|min:1',
+            'video_url'                      => 'nullable|required_if:type,video|url|max:255',
+            'content'                        => 'nullable|string',
+            'document_file'                  => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:20480',
+            'homework_file'                  => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:20480',
+            
+            // Questions
+            'questions'                      => 'nullable|array',
+            'questions.*.text'               => 'required_if:type,quiz|string',
+            'questions.*.type'               => 'required_if:type,quiz|in:multiple_choice,boolean',
+            'questions.*.hint'               => 'nullable|string',
+            'questions.*.correct_option'     => 'nullable|integer',
+            'questions.*.is_correct'         => 'nullable|in:0,1',
+            
+            // Options and Option Feedbacks (Multiple choice only)
+            'questions.*.options'            => 'nullable|array',
+            'questions.*.options.*'          => 'nullable|string',
+            'questions.*.option_feedbacks'   => 'nullable|array',
+            'questions.*.option_feedbacks.*' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($request, $lesson, $validated) {
@@ -260,6 +273,7 @@ class LessonController extends Controller
                 'title'         => $validated['title'],
                 'type'          => $validated['type'],
                 'order'         => $validated['order'],
+                'max_questions' => $validated['max_questions'] ?? null,
                 'video_url'     => $validated['video_url'],
                 'content'       => $validated['content'] ?? null,
                 'document_path' => $validated['document_path'] ?? $lesson->document_path,
@@ -364,7 +378,7 @@ class LessonController extends Controller
             DB::commit();
 
             return redirect()->route('admin.lessons.index', array_filter(['section_id' => $sectionId]))
-                            ->with('success', 'Lesson deleted successfully.');
+                             ->with('success', 'Lesson deleted successfully.');
 
         } catch (\Exception $e) {
             DB::rollBack();

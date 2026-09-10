@@ -17,7 +17,7 @@
                     Learn from Industry Leaders
                 </h1>
                 <p class="lead text-secondary mb-4 mx-auto style-lead">
-                    Gain practical insights from experienced logistics professionals and accredited instructors dedicated to advancing your freight forwarding career.
+                    Gain practical insights from experienced logistics professionals and accredited teachers dedicated to advancing your freight forwarding career.
                 </p>
 
                 <!-- Premium Floating Search Bar -->
@@ -158,7 +158,7 @@
                     <i class="fas fa-user-slash fs-2"></i>
                 </div>
                 <h4 class="fw-bold text-dark">No Teachers Found</h4>
-                <p class="text-muted col-md-8 mx-auto mb-4">We couldn't find any instructors matching your search criteria. Try refining your keywords.</p>
+                <p class="text-muted col-md-8 mx-auto mb-4">We couldn't find any teachers matching your search criteria. Try refining your keywords.</p>
                 @if(request('search'))
                     <a href="{{ route('instructors.index') }}" class="btn btn-primary rounded-pill px-4 fw-semibold">
                         <i class="fas fa-undo me-1"></i> Clear Search

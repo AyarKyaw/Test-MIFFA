@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                             <ul class="list-style-two">
-                                <li>Best Instructor & Best Programs</li>
+                                <li>Best Teacher & Best Programs</li>
                                 <li>100% ISO Certified Guaranteed</li>
                                 <li>Continuous Support </li>
                             </ul>
@@ -154,7 +154,7 @@
             <div class="row">
                 <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
                     <div class="site-heading text-center">
-                        <h4 class="sub-title">Professional Instructor</h4>
+                        <h4 class="sub-title">Professional Teacher</h4>
                         <h2 class="title split-text">Meet the talented advisor form our institute</h2>
                     </div>
                 </div>
@@ -244,7 +244,7 @@
                                     </p>
                                 </li>
                             </ul>
-                            <a href="contact-us.html" class="btn-style-two"><span>Become a instructor</span> <i class="fas fa-long-arrow-right"></i></a>
+                            <a href="contact-us.html" class="btn-style-two"><span>Become a teacher</span> <i class="fas fa-long-arrow-right"></i></a>
                         </div>
                      </div>
                     <!-- End Single item -->
@@ -367,7 +367,7 @@
                         </div>
                         <div class="info">
                             <span>Join us today</span>
-                            <h2>Become an expert Instructor</h2>
+                            <h2>Become an expert Teacher</h2>
                             <p>
                                 Learn at your own pace, move the between multiple courses.
                             </p>

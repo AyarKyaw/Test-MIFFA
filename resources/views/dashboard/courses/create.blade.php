@@ -90,9 +90,50 @@
                                     @enderror
                                 </div>
 
-                                <!-- Assign Instructors (Multi-Select) -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Assign Instructors</label>
+                                <!-- Side-by-Side Pricing Row -->
+                                <div class="col-md-12">
+                                    <div class="row g-3">
+                                        <!-- Standard Price -->
+                                        <div class="col-md-6">
+                                            <label for="price" class="form-label fw-semibold">Standard Price (Non-Member)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">MMK</span>
+                                                <input type="number" 
+                                                       step="0.01" 
+                                                       class="form-control @error('price') is-invalid @enderror" 
+                                                       id="price" 
+                                                       name="price" 
+                                                       value="{{ old('price') }}" 
+                                                       placeholder="150000.00">
+                                            </div>
+                                            @error('price')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <!-- Member Price -->
+                                        <div class="col-md-6">
+                                            <label for="member_price" class="form-label fw-semibold">Member Price</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">MMK</span>
+                                                <input type="number" 
+                                                       step="0.01" 
+                                                       class="form-control @error('member_price') is-invalid @enderror" 
+                                                       id="member_price" 
+                                                       name="member_price" 
+                                                       value="{{ old('member_price') }}" 
+                                                       placeholder="120000.00">
+                                            </div>
+                                            @error('member_price')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Assign Teachers (Multi-Select) -->
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Assign Teachers</label>
                                     
                                     <div class="card p-3 @if($errors->has('instructor_ids') || $errors->has('instructor_ids.*')) border-danger @endif" 
                                         style="max-height: 220px; overflow-y: auto;">
@@ -116,7 +157,7 @@
                                                 </label>
                                             </div>
                                         @empty
-                                            <p class="text-muted small mb-0">No instructors available.</p>
+                                            <p class="text-muted small mb-0">No teachers available.</p>
                                         @endforelse
                                     </div>
 
@@ -125,42 +166,6 @@
                                     @enderror
                                     @error('instructor_ids.*')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Standard Price -->
-                                <div class="col-md-6">
-                                    <label for="price" class="form-label fw-semibold">Standard Price (Non-Member)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">MMK</span>
-                                        <input type="number" 
-                                               step="0.01" 
-                                               class="form-control @error('price') is-invalid @enderror" 
-                                               id="price" 
-                                               name="price" 
-                                               value="{{ old('price') }}" 
-                                               placeholder="150000.00">
-                                    </div>
-                                    @error('price')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Member Price -->
-                                <div class="col-md-6">
-                                    <label for="member_price" class="form-label fw-semibold">Member Price</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">MMK</span>
-                                        <input type="number" 
-                                               step="0.01" 
-                                               class="form-control @error('member_price') is-invalid @enderror" 
-                                               id="member_price" 
-                                               name="member_price" 
-                                               value="{{ old('member_price') }}" 
-                                               placeholder="120000.00">
-                                    </div>
-                                    @error('member_price')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
 
@@ -213,7 +218,7 @@
 </main>
 @endsection
 
-@push('scripts')
+@push('scripts') 
 <script>
 function previewCourseImage(event) {
     const input = event.target;

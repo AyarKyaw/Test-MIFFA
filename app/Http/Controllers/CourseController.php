@@ -144,9 +144,12 @@ class CourseController extends Controller
             $sessionKey = "quiz_questions_{$user->id}_{$currentLesson->id}";
 
             if (!session()->has($sessionKey)) {
+                // Determine limit: use $lesson->max_questions if set, otherwise default to constant
+                $limit = $currentLesson->max_questions ?? self::QUIZ_QUESTION_LIMIT;
+
                 $selectedIds = \App\Models\Question::where('lesson_id', $currentLesson->id)
                     ->inRandomOrder()
-                    ->limit(self::QUIZ_QUESTION_LIMIT)
+                    ->limit($limit)
                     ->pluck('id')
                     ->toArray();
 
@@ -256,7 +259,10 @@ class CourseController extends Controller
         $progress = session()->get($progressKey, ['correct_count' => 0, 'results' => []]);
         $sessionQuestionIds = session()->get($questionsKey, []);
 
-        $targetQuestionCount = count($sessionQuestionIds) > 0 ? count($sessionQuestionIds) : self::QUIZ_QUESTION_LIMIT;
+        // Resolve target total: precedence -> Session count -> lesson->max_questions -> constant
+        $targetQuestionCount = count($sessionQuestionIds) > 0 
+            ? count($sessionQuestionIds) 
+            : ($lesson->max_questions ?? self::QUIZ_QUESTION_LIMIT);
 
         $progress['results'][$question->id] = [
             'submitted' => $submittedAnswer,
@@ -311,7 +317,7 @@ class CourseController extends Controller
 
         return response()->json([
             'is_correct'   => $isCorrect,
-            'feedback'     => $feedback, // Returned option feedback to JavaScript
+            'feedback'     => $feedback,
             'explanation'  => $question->explanation ?? null,
             'is_completed' => $isCompleted,
             'summary'      => $summary,

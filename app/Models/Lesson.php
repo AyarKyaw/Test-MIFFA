@@ -12,6 +12,7 @@ class Lesson extends Model
     protected $fillable = [
         'section_id',
         'title',
+        'max_questions',
         'type',
         'video_url',
         'content',

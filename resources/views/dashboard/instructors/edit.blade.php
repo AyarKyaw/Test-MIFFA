@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.master')
 
-@section('title', 'Edit Instructor - MIFFA')
+@section('title', 'Edit Teacher - MIFFA')
 
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
@@ -82,8 +82,8 @@
 
                 <section class="m-card">
                     <header class="m-card__header">
-                        <h2 class="m-card__title">Edit Instructor</h2>
-                        <p class="m-card__subtitle">Update instructor details, profile image, and banner image</p>
+                        <h2 class="m-card__title">Edit Teacher</h2>
+                        <p class="m-card__subtitle">Update teacher details, profile image, and banner image</p>
                     </header>
 
                     <div class="card-body">
@@ -95,7 +95,7 @@
                             <input type="hidden" name="cropped_banner_image" id="cropped_banner_image">
 
                             <div class="mb-3">
-                                <label for="name" class="form-label fw-bold">Instructor Name <span class="text-danger">*</span></label>
+                                <label for="name" class="form-label fw-bold">Teacher Name <span class="text-danger">*</span></label>
                                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $instructor->name) }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -104,7 +104,7 @@
 
                             <div class="mb-3">
                                 <label for="bio" class="form-label fw-bold">Bio / Biography</label>
-                                <textarea name="bio" id="bio" rows="4" class="form-control @error('bio') is-invalid @enderror" placeholder="Enter instructor background, qualification, or summary...">{{ old('bio', $instructor->bio) }}</textarea>
+                                <textarea name="bio" id="bio" rows="4" class="form-control @error('bio') is-invalid @enderror" placeholder="Enter teacher background, qualification, or summary...">{{ old('bio', $instructor->bio) }}</textarea>
                                 @error('bio')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -138,7 +138,7 @@
 
                             <div class="d-flex justify-content-end gap-2 mt-3">
                                 <a href="{{ route('admin.instructors.index') }}" class="btn btn-secondary">Cancel</a>
-                                <button type="submit" class="au-btn au-btn--green text-decoration-none">Update Instructor</button>
+                                <button type="submit" class="au-btn au-btn--green text-decoration-none">Update Teacher</button>
                             </div>
                         </form>
                     </div>

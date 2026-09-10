@@ -23,32 +23,69 @@
         background-color: #f8d7da !important;
         color: #842029;
     }
+
+    /* Force Radio Input to remain a perfect circle */
+    .quiz-radio {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+        min-width: 1.25rem !important;
+        min-height: 1.25rem !important;
+        max-width: 1.25rem !important;
+        max-height: 1.25rem !important;
+        border-radius: 50% !important;
+        flex-shrink: 0 !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+
+    button.btn {
+        padding-left: 20px !important;
+    }
 </style>
 @endpush
 
 <div class="p-4 p-md-5">
+
+    @php
+        // Rely directly on $questions prepared by CourseController::classroom()
+        // Fall back to $lesson->questions if $questions is empty
+        $quizQuestions = (isset($questions) && $questions->isNotEmpty()) 
+            ? $questions 
+            : $lesson->questions;
+
+        $totalQuestions = $quizQuestions->count();
+    @endphp
+
+    <!-- Initial "Start Quiz" Cover Screen -->
+    <div id="quizStartCard" class="text-center py-4">
+        <div class="mb-3 text-primary">
+            <i class="fas fa-file-signature fa-4x"></i>
+        </div>
+        <h3 class="fw-bold mt-3">Ready to test your knowledge?</h3>
+        <p class="fs-6 text-muted mb-4">
+            This quiz contains <strong>{{ $totalQuestions }}</strong> {{ Str::plural('question', $totalQuestions) }}.
+        </p>
+        <button type="button" id="startQuizBtn" class="btn btn-primary btn-lg rounded-3 px-5 py-2">
+            <i class="fas fa-play me-2"></i> Start Quiz
+        </button>
+    </div>
+
     <!-- Final Quiz Completion State -->
     <div id="quizCompletedCard" class="text-center py-4" style="display: none;">
         <div class="mb-3" id="resultIcon"></div>
         <h3 class="fw-bold mt-3" id="resultTitle"></h3>
         <p class="fs-5 text-muted mb-4" id="resultScore"></p>
         <div id="quizCompletedActions">
-            <a href="{{ route('courses.learn', [$course->id, $lesson->id]) }}" class="btn btn-outline-primary rounded-3 px-4">
+            <button onclick="window.location.reload()" class="btn btn-outline-primary rounded-3 px-4">
                 <i class="fas fa-redo me-1"></i> Retake Quiz
-            </a>
+            </button>
         </div>
     </div>
 
-    @php
-        $quizQuestions = $questions ?? $lesson->questions;
-        $totalQuestions = $quizQuestions->count();
-    @endphp
-
-    <!-- Active Quiz Form -->
-    <form id="quizForm" action="{{ route('courses.lessons.submit', [$course->id, $lesson->id]) }}" method="POST">
+    <!-- Active Quiz Form (Initially hidden until Start is clicked) -->
+    <form id="quizForm" action="{{ route('courses.lessons.submit', [$course->id, $lesson->id]) }}" method="POST" style="display: none;">
         @csrf
         @forelse($quizQuestions as $qIndex => $question)
-            <div class="quiz-step" data-step="{{ $qIndex }}" data-question-id="{{ $question->id }}" style="{{ $qIndex !== 0 ? 'display: none;' : '' }}">
+            <div class="quiz-step" data-step="{{ $qIndex }}" data-question-id="{{ $question->id }}" style="display: none;">
                 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
@@ -122,8 +159,25 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const quizStartCard = document.getElementById('quizStartCard');
+    const startQuizBtn = document.getElementById('startQuizBtn');
     const quizForm = document.getElementById('quizForm');
+
     if (!quizForm) return;
+
+    // Start Quiz Action
+    if (startQuizBtn) {
+        startQuizBtn.addEventListener('click', function () {
+            quizStartCard.style.display = 'none';
+            quizForm.style.display = 'block';
+
+            // Reveal step 0 (First Question)
+            const firstStep = quizForm.querySelector('.quiz-step[data-step="0"]');
+            if (firstStep) {
+                firstStep.style.display = 'block';
+            }
+        });
+    }
 
     // Toggle Hint Box Visibility
     quizForm.addEventListener('click', function (e) {
@@ -236,13 +290,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 feedbackBox.style.display = 'block';
 
-                // Transform button state based on quiz completion
+                // Transform button state based on quiz completion status returned by backend
                 actionBtn.removeAttribute('disabled');
                 if (data.is_completed) {
                     actionBtn.setAttribute('data-state', 'finish');
                     actionBtn.className = 'btn btn-success px-4 rounded-3 action-btn';
                     actionBtn.innerHTML = 'Finish & See Results';
-                    actionBtn.dataset.summary = JSON.stringify(data.summary);
+                    actionBtn.dataset.summary = JSON.stringify(data.summary || {});
                 } else {
                     actionBtn.setAttribute('data-state', 'next');
                     actionBtn.className = 'btn btn-primary px-4 rounded-3 action-btn';
@@ -265,7 +319,13 @@ document.addEventListener('DOMContentLoaded', function () {
         } 
         // STEP STATE C: Show final summary card
         else if (currentState === 'finish') {
-            const summary = JSON.parse(actionBtn.dataset.summary || '{}');
+            let summary = {};
+            try {
+                summary = JSON.parse(actionBtn.dataset.summary || '{}');
+            } catch (err) {
+                console.error('Error parsing quiz summary:', err);
+            }
+
             quizForm.style.display = 'none';
 
             const card = document.getElementById('quizCompletedCard');
@@ -285,9 +345,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         <button onclick="window.location.reload()" class="btn btn-success rounded-3 px-4">
                             <i class="fas fa-arrow-right me-1"></i> Continue Course
                         </button>
-                        <a href="${window.location.href}" class="btn btn-outline-secondary rounded-3 px-3">
+                        <button onclick="window.location.reload()" class="btn btn-outline-secondary rounded-3 px-3">
                             <i class="fas fa-redo me-1"></i> Retake
-                        </a>
+                        </button>
                     </div>
                 `;
             } else {
@@ -297,9 +357,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 score.innerHTML = `You scored <strong>${summary.score_percentage}%</strong> (${summary.correct_count} out of ${summary.total_questions} correct). You need 70% to pass.`;
                 
                 actionsArea.innerHTML = `
-                    <a href="${window.location.href}" class="btn btn-outline-primary rounded-3 px-4">
+                    <button onclick="window.location.reload()" class="btn btn-outline-primary rounded-3 px-4">
                         <i class="fas fa-redo me-1"></i> Retake Quiz
-                    </a>
+                    </button>
                 `;
             }
 

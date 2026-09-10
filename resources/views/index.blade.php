@@ -34,7 +34,7 @@
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star-half-alt"></i>
                                     </div>
-                                    <h4>Instructor Rating</h4>
+                                    <h4>Teacher Rating</h4>
                                 </div>
                             </div>
                         </div>
@@ -410,7 +410,7 @@
                         <div class="live-instructor wow fadeInRight" data-wow-delay="300ms">
                             <img src="assets/img/advisor/teacher-1.png" alt="Image Not Found">
                             <div class="info">
-                                <h4><strong>Instructor: </strong> Amaul Joey</h4>
+                                <h4><strong>Teacher: </strong> Amaul Joey</h4>
                                 <ul>
                                     <li><strong>Course Taken</strong> 28</li>
                                     <li><strong>Average Rating</strong> <span><i class="fas fa-star"></i> 4.9</span></li>

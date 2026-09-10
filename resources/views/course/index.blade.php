@@ -32,6 +32,11 @@
                         <ul class="nav nav-tabs category-tabs wow fadeInUp" id="myTab" role="tablist">
                             @forelse($categories as $category)
                                 <li class="nav-item" role="presentation">
+                                    @php
+                                        $bgImage = $category->icon_path ?? $category->image ?? $category->icon ?? null;
+                                        $bgUrl = $bgImage ? asset($bgImage) : asset('assets/img/icon/29.png');
+                                    @endphp
+                                    
                                     <button class="nav-link {{ $loop->first ? 'active' : '' }}" 
                                             id="tabs_{{ $category->id }}" 
                                             data-bs-toggle="tab" 
@@ -39,9 +44,10 @@
                                             type="button" 
                                             role="tab" 
                                             aria-controls="tab_{{ $category->id }}" 
-                                            aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-                                        <img src="{{ asset($category->icon_path ?? $category->icon ?? 'assets/img/icon/29.png') }}" alt="{{ $category->name }}">
-                                        <strong>{{ $category->name }}</strong>
+                                            aria-selected="{{ $loop->first ? 'true' : 'false' }}"
+                                            style="background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url('{{ $bgUrl }}'); background-size: cover; background-position: center; border-radius: 8px; color: #ffffff !important;">
+                                        
+                                        <strong class="w-100 text-center py-2" style="position: relative; z-index: 2;">{{ $category->name }}</strong>
                                     </button>
                                 </li>
                             @empty
