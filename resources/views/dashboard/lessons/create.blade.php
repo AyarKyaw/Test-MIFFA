@@ -11,7 +11,7 @@
                     <header class="m-card__header d-flex justify-content-between align-items-center">
                         <div>
                             <h2 class="m-card__title">Create New Lesson</h2>
-                            <p class="m-card__subtitle">Add video, text, document, homework, or quiz content</p>
+                            <p class="m-card__subtitle">Add video, text, homework, or quiz content</p>
                         </div>
                         <a href="{{ route('admin.lessons.index', array_filter(['section_id' => $sectionId ?? request('section_id')])) }}" class="btn btn-outline-secondary btn-sm">
                             <i class="fa-solid fa-arrow-left me-1"></i> Back to Lessons
@@ -71,7 +71,6 @@
                                 <select name="type" id="type" class="form-select @error('type') is-invalid @enderror" required onchange="toggleLessonTypeFields()">
                                     <option value="article" {{ old('type') == 'article' ? 'selected' : '' }}>Article</option>
                                     <option value="video" {{ old('type') == 'video' ? 'selected' : '' }}>Video</option>
-                                    <option value="document" {{ old('type') == 'document' ? 'selected' : '' }}>Document</option>
                                     <option value="homework" {{ old('type') == 'homework' ? 'selected' : '' }}>Homework / Assignment</option>
                                     <option value="quiz" {{ old('type') == 'quiz' ? 'selected' : '' }}>Quiz</option>
                                 </select>
@@ -104,9 +103,9 @@
                                     <i class="fa-solid fa-circle-info me-1"></i>
                                     Students will be prompted to submit their file (Excel, Word, PDF, PowerPoint) when viewing this lesson.
                                 </div>
-                                <label for="homework_file" class="form-label fw-bold">Homework Reference/Template File (Optional)</label>
+                                <!-- <label for="homework_file" class="form-label fw-bold">Homework Reference/Template File (Optional)</label>
                                 <input type="file" name="homework_file" id="homework_file" class="form-control @error('homework_file') is-invalid @enderror" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
-                                <small class="text-muted">Allowed formats for initial download: PDF, Word, Excel, PowerPoint</small>
+                                <small class="text-muted">Allowed formats for initial download: PDF, Word, Excel, PowerPoint</small> -->
                                 @error('homework_file')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
