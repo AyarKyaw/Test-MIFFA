@@ -1,7 +1,105 @@
 @extends('layouts.master')
 
 @section('title', 'Home - MIFFA')
+@push('styles')
+<style>
+    /* Force Swiper slides to stretch equal heights */
+    .course-inner-carousel .swiper-slide {
+        height: auto;
+        display: flex;
+    }
 
+    /* Course Card Uniform Container */
+    .course-style-one-item.style-two {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Fixed Image Container & Aspect Ratio */
+    .course-style-one-item.style-two .thumb {
+        width: 100%;
+        height: 220px; /* Fixed height for course thumbnail */
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Crop and Cover Image without Distortion */
+    .course-style-one-item.style-two .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+    }
+
+    /* Uniform Info Content Area */
+    .course-style-one-item.style-two .info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* Restrict Long Titles gracefully */
+    .course-style-one-item.style-two .info h4 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Truncate title after 2 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 2.8em; /* Keeps layout aligned if title is 1 line */
+    }
+
+    /* Align Bottom Meta Row */
+    .course-style-one-item.style-two .course-bottom-meta {
+        margin-top: auto;
+    }
+    /* Force Swiper slides to equal height */
+    .category-style-two-carousel .swiper-slide {
+        height: auto;
+        display: flex;
+    }
+
+    /* Card Box Uniformity */
+    .category-style-two-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        min-height: 280px; /* Adjust min-height as needed */
+    }
+
+    .category-style-two-item > a {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        width: 100%;
+    }
+
+    /* Fixed Image Container & Aspect Ratio */
+    .category-style-two-item .thumb {
+        width: 100%;
+        height: 180px; /* Fixed height for image area */
+        overflow: hidden;
+        border-radius: 8px; /* Optional rounded corners */
+        position: relative;
+    }
+
+    /* Force Image to Crop and Cover exact dimensions */
+    .category-style-two-item .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Crops image cleanly without distortion */
+        object-position: center;
+        display: block;
+    }
+</style>
+@endpush
 @section('content')
     
     <!-- Start Banner Area 
@@ -69,13 +167,13 @@
                             <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="{{ $index * 100 }}ms">
-                                    <a href="{{ url('/course/categories') }}">
+                                    <a href="{{ url('/courses?category=' . ($category->courseCategory->slug ?? $category->courseCategory->id)) }}">
                                         <div class="info">
                                             <h4>{{ $category->name }}</h4>
                                             <span>{{ $category->courses_count ?? 0 }} Courses</span>
                                         </div>
                                         <div class="thumb">
-                                            <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('assets/img/category/' . (($index % 4) + 1) . '.jpg') }}" alt="{{ $category->name }}">
+                                            <img src="{{ $category->icon_path }}" alt="{{ $category->name }}">
                                         </div>
                                     </a>
                                 </div>
@@ -87,7 +185,7 @@
                             <!-- Single Item -->
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp">
-                                    <a href="{{ url('/course/categories') }}">
+                                    <a href="{{ url('/courses?category=' . ($courseCategory->slug ?? $courseCategory->id)) }}">
                                         <div class="info">
                                             <h4>Freight <strong>Forwarding</strong></h4>
                                             <span>12 Courses</span>
@@ -381,7 +479,7 @@
                 <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
                     <div class="site-heading text-light text-center">
                         <h4 class="sub-title">Live Class</h4>
-                        <h2 class="title split-text">Interactive LIVE and Self-Paced Courses</h2>
+                        <h2 class="title split-text">Environment Social and Governance</h2>
                     </div>
                 </div>
             </div>
@@ -408,15 +506,15 @@
                     <div class="live-course-items">
                         <img class="wow fadeInUp" src="assets/img/thumb/banner-1.jpg" alt="Image Not Found">
                         <div class="live-instructor wow fadeInRight" data-wow-delay="300ms">
-                            <img src="assets/img/advisor/teacher-1.png" alt="Image Not Found">
+                            <img src="https://lms.itplus.net.mm/storage/courses/nl7S9hYpQp0TtKMilqfjjgk1oc9MrmYRN1VoftD8.jpg" alt="Image Not Found">
                             <div class="info">
-                                <h4><strong>Teacher: </strong> Amaul Joey</h4>
-                                <ul>
+                                <h4><strong>Environment Social and Governance</strong></h4>
+                                <!-- <ul>
                                     <li><strong>Course Taken</strong> 28</li>
                                     <li><strong>Average Rating</strong> <span><i class="fas fa-star"></i> 4.9</span></li>
                                     <li><strong>Online Students</strong> 30k</li>
-                                </ul>
-                                <a href="course-single.html" class="btn-style-two mt-30">
+                                </ul> -->
+                                <a href="https://lms.itplus.net.mm/courses/2" class="btn-style-two mt-30">
                                     <span>Join Now</span> <i class="fas fa-long-arrow-right"></i>
                                 </a>
                             </div>
