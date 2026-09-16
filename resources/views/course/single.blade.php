@@ -31,9 +31,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="course-details-thumb">
-                        <img src="{{ $course->image ? asset('storage/' . $course->image) : asset('assets/img/courses/13.jpg') }}" alt="{{ $course->title }}">
-                    </div>
                 </div>
             </div>
         </div>

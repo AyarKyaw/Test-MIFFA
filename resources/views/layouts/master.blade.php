@@ -39,6 +39,32 @@
             background-color: #04b89b !important;
             color: #ffffff !important;
         }
+        .miffa-banner {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+}
+
+.miffa-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.65) 0%,
+        rgba(0, 0, 0, 0.30) 50%,
+        rgba(0, 0, 0, 0.10) 100%
+    );
+    z-index: 1;
+}
+
+.miffa-banner img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
     </style>
 </head>
 <body>
@@ -202,6 +228,12 @@
         <!-- End Navigation -->
     </header>
     <!-- End Header -->
+
+    <!-- Start Banner -->
+    <div class="miffa-banner">
+        <img src="{{ asset('assets/img/courses/banner.jpg') }}" alt="MIFFA Banner">
+    </div>
+    <!-- End Banner -->
 
     {{-- Main View Content --}}
     <main>
