@@ -115,7 +115,7 @@
                             <p>
                                 Expand your knowledge and open doors to exciting careers with our online education platform.
                             </p>
-                            <a class="btn btn-md btn-gradient animation" href="course-filter-list-sidebar.html">Explore Course</a>
+                            <a class="btn btn-md btn-gradient animation" href="/course/categories">Explore Course</a>
                         </div>
                     </div>
                     <div class="col-lg-5">
@@ -402,7 +402,7 @@
                                     <h4>Happy Students</h4>
                                 </div>
                             </div>
-                            <a class="btn btn-md btn-gradient animation" href="contact-us.html">Get Started</a>
+                            <a class="btn btn-md btn-gradient animation" href="#">Get Started</a>
                         </div>
                     </div>
                 </div>
@@ -436,7 +436,7 @@
                                             <div class="info">
                                                 <h4>Coding Certificate</h4>
                                                 <span>Total Awarded 450</span>
-                                                <a class="btn circle btn-theme animation" href="course-single.html">View Programs</a>
+                                                <a class="btn circle btn-theme animation" href="#">View Programs</a>
                                             </div>
                                         </div>
                                     </div>
@@ -450,7 +450,7 @@
                                             <div class="info">
                                                 <h4>Design Certificate</h4>
                                                 <span>Total Awarded 350</span>
-                                                <a class="btn circle btn-theme animation" href="course-single.html">View Programs</a>
+                                                <a class="btn circle btn-theme animation" href="#">View Programs</a>
                                             </div>
                                         </div>
                                     </div>
