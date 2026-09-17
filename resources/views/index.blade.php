@@ -81,23 +81,21 @@
         width: 100%;
     }
 
-    /* Fixed Image Container & Aspect Ratio */
-    .category-style-two-item .thumb {
-        width: 100%;
-        height: 180px; /* Fixed height for image area */
-        overflow: hidden;
-        border-radius: 8px; /* Optional rounded corners */
-        position: relative;
-    }
+/* Same image area for every category */
+.category-style-two-item .thumb {
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+}
 
-    /* Force Image to Crop and Cover exact dimensions */
-    .category-style-two-item .thumb img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Crops image cleanly without distortion */
-        object-position: center;
-        display: block;
-    }
+/* Same visual size for every image */
+.category-style-two-item .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
 </style>
 @endpush
 @section('content')
