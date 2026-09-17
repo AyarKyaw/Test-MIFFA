@@ -43,20 +43,25 @@ class CourseController extends Controller
         return view('dashboard.courses.create', compact('categories', 'admins', 'instructors'));
     }
 
+
     /**
      * Store a newly created course in storage.
      */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'title'       => 'required|string|max:255',
-            'code'        => 'required|string|max:50|unique:courses,code',
-            'category_id' => 'required|exists:categories,id',
-            'price'       => 'nullable|numeric|min:0',
-            'hour'        => 'required|integer|min:1',
-            'desc'        => 'nullable|string',
-            'member_price'=> 'nullable|numeric|min:0|lte:price',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'title'              => 'required|string|max:255',
+            'code'               => 'required|string|max:50|unique:courses,code',
+            'category_id'        => 'required|exists:categories,id',
+            'instructor_ids'     => 'nullable|array',
+            'instructor_ids.*'   => 'exists:instructors,id',
+            'admin_ids'          => 'nullable|array',
+            'admin_ids.*'        => 'exists:admins,id',
+            'price'              => 'nullable|numeric|min:0',
+            'hour'               => 'required|integer|min:1',
+            'desc'               => 'nullable|string',
+            'member_price'       => 'nullable|numeric|min:0|lte:price',
+            'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $validated['price'] = $validated['price'] ?? 0;
@@ -66,8 +71,19 @@ class CourseController extends Controller
             $validated['image'] = $request->file('image')->store('courses', 'public');
         }
 
-        // Assign created instance to $course variable
+        // Extract pivot relations before creating the course
+        $instructorIds = $validated['instructor_ids'] ?? [];
+        unset($validated['instructor_ids']);
+
+        $adminIds = $validated['admin_ids'] ?? [];
+        unset($validated['admin_ids']);
+
+        // Create main course
         $course = Course::create($validated);
+
+        // Sync pivot table relations
+        $course->instructors()->sync($instructorIds);
+        $course->admins()->sync($adminIds);
 
         return redirect()->route('admin.courses.index')
                         ->with('success', 'Course created successfully!');
