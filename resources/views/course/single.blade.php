@@ -1,7 +1,80 @@
 @extends('layouts.master')
 
 @section('title', ($course->title ?? 'Course Details') . ' - MIFFA')
+@push('styles')
+<style>
+    .course-single-meta .teachers-item {
+    width: 100%;
+}
 
+.course-single-meta .teachers-header {
+    margin-bottom: 20px;
+}
+
+.course-single-meta .teachers-header h4 {
+    margin: 0;
+}
+
+/* Teacher grid */
+.course-single-meta .teachers-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 30px;
+}
+
+/* Teacher */
+.course-single-meta .author-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    text-decoration: none;
+}
+
+/* Profile image */
+.course-single-meta .author-profile .thumb {
+    width: 55px;
+    height: 55px;
+    min-width: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.course-single-meta .author-profile .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Name */
+.course-single-meta .author-profile .desc {
+    min-width: 0;
+}
+
+.course-single-meta .author-profile .desc span {
+    display: block;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+    .course-single-meta .teachers-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile */
+@media (max-width: 575px) {
+    .course-single-meta .teachers-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+@endpush
 @section('content')
     <!-- Start Breadcrumb 
     ============================================= -->
@@ -38,18 +111,63 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="course-single-meta">
-                           <!-- Instructor / Author -->
-<div class="item author">
-    <div class="desc">
-        <h4>{{ Str::plural('Teacher', $course->instructors->count()) }}</h4>
+<div class="course-single-meta">
+
+    <div class="item author teachers-item">
+
+    <!-- <div class="teachers-header">
+        <h4>
+            {{ Str::plural('Teacher', $course->instructors->count()) }}
+        </h4>
+    </div> -->
+
+    <div class="teachers-list">
+
         @forelse ($course->instructors as $instructor)
-            <a href="{{ route('instructors.show', $instructor->id) }}">{{ $instructor->name }}</a>{{ !$loop->last ? ', ' : '' }}
+
+            <a href="{{ route('instructors.show', $instructor->id) }}"
+               class="author-profile">
+
+                <div class="thumb">
+                    <img
+                        src="{{ $instructor->image
+                            ? asset('storage/' . $instructor->image)
+                            : asset('assets/img/team/default.jpg') }}"
+                        alt="{{ $instructor->name }}"
+                    >
+                </div>
+
+                <div class="desc">
+                    <span>{{ $instructor->name }}</span>
+                </div>
+
+            </a>
+
         @empty
-            <span>MIFFA Teacher</span>
+
+            <div class="author-profile">
+
+                <div class="thumb">
+                    <img
+                        src="{{ asset('assets/img/team/default.jpg') }}"
+                        alt="MIFFA Teacher"
+                    >
+                </div>
+
+                <div class="desc">
+                    <span>MIFFA Teacher</span>
+                </div>
+
+            </div>
+
         @endforelse
+
     </div>
+
 </div>
+
+</div>
+
 
                             <!-- Category -->
                             <div class="item category">
