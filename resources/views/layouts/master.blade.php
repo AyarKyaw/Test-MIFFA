@@ -230,9 +230,9 @@
     <!-- End Header -->
 
     <!-- Start Banner -->
-    <div class="miffa-banner">
-        <img src="{{ asset('assets/img/courses/banner.jpg') }}" alt="MIFFA Banner">
-    </div>
+    <!-- <div class="miffa-banner">
+        <img src="{{ asset('assets/img/courses/hero_banner.jpg') }}" alt="MIFFA Banner">
+    </div> -->
     <!-- End Banner -->
 
     {{-- Main View Content --}}
