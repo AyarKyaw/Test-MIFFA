@@ -57,8 +57,8 @@
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden teacher-card position-relative bg-white">
                             
-                            <!-- Mini Hero Banner Canvas inside Card -->
-                            <div class="card-banner-bg" style="background-image: url('{{ $instructor->banner_image ? Storage::url($instructor->banner_image) : asset('assets/images/default-banner.png') }}');">
+                            <!-- Mini Hero Banner Canvas inside Card - Always using default banner image -->
+                            <div class="card-banner-bg" style="background-image: url('{{ asset('assets/img/courses/example.png') }}');">
                                 <div class="card-banner-overlay"></div>
                             </div>
 

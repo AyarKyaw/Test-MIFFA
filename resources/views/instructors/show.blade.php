@@ -63,8 +63,9 @@
 
 @section('content')
 <div class="bg-light pb-5">
+    <!-- Always using default banner image -->
     <div class="instructor-banner" 
-         style="background-image: url('{{ $instructor->banner_image ? asset('storage/' . $instructor->banner_image) : asset('assets/images/default-banner.png') }}');">
+         style="background-image: url('{{ asset('assets/img/courses/example.png') }}');">
         <div class="instructor-banner-overlay"></div>
     </div>
 

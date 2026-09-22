@@ -33,26 +33,17 @@ class InstructorController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'                 => 'required|string|max:255',
-            'bio'                  => 'nullable|string',
-            'cropped_image'        => 'nullable|string',
-            'cropped_banner_image' => 'nullable|string',
-            'image'                => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'banner_image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'name'          => 'required|string|max:255',
+            'bio'           => 'nullable|string',
+            'cropped_image' => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // 1. Process Profile Image
+        // Process Profile Image
         if ($request->filled('cropped_image')) {
             $validated['image'] = $this->saveBase64Image($request->input('cropped_image'), 'instructors/profiles');
         } elseif ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('instructors/profiles', 'public');
-        }
-
-        // 2. Process Banner Image
-        if ($request->filled('cropped_banner_image')) {
-            $validated['banner_image'] = $this->saveBase64Image($request->input('cropped_banner_image'), 'instructors/banners');
-        } elseif ($request->hasFile('banner_image')) {
-            $validated['banner_image'] = $request->file('banner_image')->store('instructors/banners', 'public');
         }
 
         Instructor::create($validated);
@@ -75,30 +66,19 @@ class InstructorController extends Controller
     public function update(Request $request, Instructor $instructor)
     {
         $validated = $request->validate([
-            'name'                 => 'required|string|max:255',
-            'bio'                  => 'nullable|string',
-            'cropped_image'        => 'nullable|string',
-            'cropped_banner_image' => 'nullable|string',
-            'image'                => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'banner_image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'name'          => 'required|string|max:255',
+            'bio'           => 'nullable|string',
+            'cropped_image' => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // 1. Update Profile Image
+        // Update Profile Image
         if ($request->filled('cropped_image')) {
             $this->deleteInstructorImage($instructor->image);
             $validated['image'] = $this->saveBase64Image($request->input('cropped_image'), 'instructors/profiles');
         } elseif ($request->hasFile('image')) {
             $this->deleteInstructorImage($instructor->image);
             $validated['image'] = $request->file('image')->store('instructors/profiles', 'public');
-        }
-
-        // 2. Update Banner Image
-        if ($request->filled('cropped_banner_image')) {
-            $this->deleteInstructorImage($instructor->banner_image);
-            $validated['banner_image'] = $this->saveBase64Image($request->input('cropped_banner_image'), 'instructors/banners');
-        } elseif ($request->hasFile('banner_image')) {
-            $this->deleteInstructorImage($instructor->banner_image);
-            $validated['banner_image'] = $request->file('banner_image')->store('instructors/banners', 'public');
         }
 
         $instructor->update($validated);
@@ -113,7 +93,6 @@ class InstructorController extends Controller
     public function destroy(Instructor $instructor)
     {
         $this->deleteInstructorImage($instructor->image);
-        $this->deleteInstructorImage($instructor->banner_image);
 
         $instructor->delete();
 
