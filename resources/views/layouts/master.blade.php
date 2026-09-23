@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="MIFFA">
 
-```
+
 <!-- ========== Page Title ========== -->
 <title>@yield('title', 'MIFFA')</title>
 
@@ -366,13 +366,13 @@
         }
     }
 </style>
-```
+
 
 </head>
 
 <body>
 
-```
+
 <!-- Start Preloader -->
 <div id="preloader">
     <div id="edufix-preloader" class="edufix-preloader">
@@ -989,7 +989,7 @@
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
 @stack('scripts')
-```
+
 
 </body>
 </html>
