@@ -38,42 +38,68 @@
     <!-- Start Register Area -->
     <div class="login-register-area register bg-gray-gradient-secondary">
         <div class="login-style-one-items">
+
             <div class="shape">
                 <img src="{{ asset('assets/img/shape/banner-5.jpg') }}" alt="Image Not Found">
             </div>
+
             <div class="thumb">
                 <img src="{{ asset('assets/img/illustration/14.png') }}" alt="Image Not Found">
             </div>
+
             <div class="container">
                 <div class="row align-center">
                     <div class="col-xl-5 col-lg-6">
+
                         <div class="login-register-items text-light py-3">
-                            <h2 class="mb-1" style="font-size: 24px;">Create an Account</h2>
+
+                            <h2 class="mb-1" style="font-size: 24px;">
+                                Create an Account
+                            </h2>
+
                             <p class="mb-3" style="font-size: 14px;">
-                                Already have an account? <a href="{{ route('login') }}" class="text-theme fw-bold ms-1">Sign in</a>
+                                Already have an account?
+                                <a href="{{ route('login') }}" class="text-theme fw-bold ms-1">
+                                    Sign in
+                                </a>
                             </p>
 
                             <!-- Alert Messages Container -->
-                            <div id="google-alert" class="alert alert-danger d-none my-2" role="alert"></div>
+                            <div id="google-alert"
+                                class="alert alert-danger d-none my-2"
+                                role="alert">
+                            </div>
 
                             <!-- Success Banner when Google details are fetched -->
-                            <div id="stepNotice" class="alert alert-info py-2 px-3 mb-3 d-none" style="font-size: 12px; background-color: rgba(40, 167, 69, 0.2); border-color: rgba(40, 167, 69, 0.3); color: #fff;">
+                            <div id="stepNotice"
+                                class="alert alert-info py-2 px-3 mb-3 d-none"
+                                style="font-size: 12px; background-color: rgba(40, 167, 69, 0.2); border-color: rgba(40, 167, 69, 0.3); color: #fff;">
                                 ✔ Google details imported! Authenticating...
                             </div>
 
                             <!-- Registration Form -->
-                            <form action="{{ route('register.perform') }}" method="POST" id="registrationForm">
+                            <form action="{{ route('register.perform') }}"
+                                method="POST"
+                                id="registrationForm">
+
                                 @csrf
 
                                 <!-- Hidden input for google_id -->
-                                <input type="hidden" name="google_id" id="google_id" value="{{ old('google_id') }}">
+                                <input type="hidden"
+                                    name="google_id"
+                                    id="google_id"
+                                    value="{{ old('google_id') }}">
 
                                 @if ($errors->any())
-                                    <div class="alert alert-danger py-1 px-2 mb-2" style="font-size: 12px;">
+                                    <div class="alert alert-danger py-1 px-2 mb-2"
+                                        style="font-size: 12px;">
+
                                         <ul class="mb-0 ps-3">
+
                                             @foreach ($errors->all() as $error)
                                                 <li>{{ $error }}</li>
                                             @endforeach
+
                                         </ul>
                                     </div>
                                 @endif
@@ -82,59 +108,138 @@
                                 <div class="row mb-2">
                                     <div class="col-xl-12">
                                         <div class="form-group mb-0">
-                                            <input id="email" name="email" value="{{ old('email') }}" class="form-control py-2" placeholder="Email Address*" type="email" required style="height: 42px; font-size: 13px;">
+
+                                            <input id="email"
+                                                name="email"
+                                                value="{{ old('email') }}"
+                                                class="form-control py-2"
+                                                placeholder="Email Address*"
+                                                type="email"
+                                                required
+                                                style="height: 42px; font-size: 13px;">
+
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Password & Confirm Password -->
                                 <div class="row g-2 mb-3">
+
                                     <div class="col-6">
                                         <div class="form-group mb-0">
-                                            <input id="password" name="password" class="form-control py-2" placeholder="Password*" type="password" required style="height: 42px; font-size: 13px;">
+
+                                            <input id="password"
+                                                name="password"
+                                                class="form-control py-2"
+                                                placeholder="Password*"
+                                                type="password"
+                                                required
+                                                style="height: 42px; font-size: 13px;">
+
                                         </div>
                                     </div>
+
                                     <div class="col-6">
                                         <div class="form-group mb-0">
-                                            <input id="password-confirm" name="password_confirmation" class="form-control py-2" placeholder="Confirm Password*" type="password" required style="height: 42px; font-size: 13px;">
+
+                                            <input id="password-confirm"
+                                                name="password_confirmation"
+                                                class="form-control py-2"
+                                                placeholder="Confirm Password*"
+                                                type="password"
+                                                required
+                                                style="height: 42px; font-size: 13px;">
+
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <!-- Register Submit Button -->
                                 <div class="row mb-3" id="registerBtnRow">
                                     <div class="col-xl-12">
-                                        <button class="btn btn-sm circle btn-theme animation w-100 py-2" type="submit" style="height: 42px; line-height: 1;">Register Account</button>
+
+                                        <button class="btn btn-sm circle btn-theme animation w-100 py-2"
+                                            type="submit"
+                                            style="height: 42px; line-height: 1;">
+                                            Register Account
+                                        </button>
+
                                     </div>
                                 </div>
 
                                 <!-- Divider -->
                                 <div class="d-flex align-items-center my-3">
+
                                     <hr class="flex-grow-1 border-secondary opacity-25">
-                                    <span class="px-3 text-muted fs-7">OR</span>
+
+                                    <span class="px-3 text-muted fs-7">
+                                        OR
+                                    </span>
+
                                     <hr class="flex-grow-1 border-secondary opacity-25">
+
                                 </div>
 
                                 <!-- Custom Google Sign-In / Register Button -->
                                 <div class="row" id="googleBtnRow">
                                     <div class="col-xl-12">
-                                        <button type="button" onclick="triggerGoogleSignIn()" class="btn btn-sm circle btn-theme animation d-flex align-items-center justify-content-center gap-2 w-100" style="background-color: #ffffff; color: #333333 !important; text-transform: none; border: none; height: 42px; font-size: 13px;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48">
-                                                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                                                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                                                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                                                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+
+                                        <button type="button"
+                                            onclick="triggerGoogleSignIn()"
+                                            class="btn btn-sm circle btn-theme animation d-flex align-items-center justify-content-center gap-2 w-100"
+                                            style="background-color: #ffffff; color: #333333 !important; text-transform: none; border: none; height: 42px; font-size: 13px;">
+
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                viewBox="0 0 48 48">
+
+                                                <path fill="#FFC107"
+                                                    d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+
+                                                <path fill="#FF3D00"
+                                                    d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+
+                                                <path fill="#4CAF50"
+                                                    d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+
+                                                <path fill="#1976D2"
+                                                    d="M43.611,20.083H42V20H24v8h11.303c-.792,2.237-2.231,4.166-4.087,5.571c.001-.001.002-.002.003-.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+
                                             </svg>
+
                                             Sign up with Google
+
                                         </button>
+
                                     </div>
                                 </div>
 
                             </form>
+
+                            <!-- Back to Home Button -->
+                            <div class="row mt-3">
+                                <div class="col-xl-12">
+
+                                    <a href="{{ url('/') }}"
+                                        class="btn btn-sm circle btn-dark animation d-flex align-items-center justify-content-center gap-2 w-100"
+                                        style="text-transform: none; border: 1px solid rgba(255,255,255,0.2); height: 42px; font-size: 13px;">
+
+                                        <i class="fa fa-arrow-left"></i>
+                                        Back to Home
+
+                                    </a>
+
+                                </div>
+                            </div>
+
                         </div>
+
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <!-- End Register -->
@@ -164,7 +269,9 @@
                 return;
             }
 
-            tokenClient.requestAccessToken({ prompt: 'select_account' });
+            tokenClient.requestAccessToken({
+                prompt: 'select_account'
+            });
         }
 
         function handleGoogleUserResponse(tokenResponse) {
@@ -174,11 +281,15 @@
             }
 
             fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                headers: { 'Authorization': `Bearer ${tokenResponse.access_token}` }
+                headers: {
+                    'Authorization': `Bearer ${tokenResponse.access_token}`
+                }
             })
             .then(res => res.json())
             .then(googleUser => {
+
                 const noticeEl = document.getElementById('stepNotice');
+
                 if (noticeEl) {
                     noticeEl.classList.remove('d-none');
                 }
@@ -188,37 +299,55 @@
                     google_id: googleUser.sub,
                     name: googleUser.name || googleUser.email.split('@')[0]
                 });
+
             })
-            .catch(error => console.error("Error fetching user profile:", error));
+            .catch(error => {
+                console.error("Error fetching user profile:", error);
+            });
         }
 
         function sendAuthPayloadToServer(dataPayload) {
+
             fetch("{{ route('google.onetap') }}", {
                 method: "POST",
+
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'),
                     "Accept": "application/json"
                 },
+
                 body: JSON.stringify(dataPayload)
             })
             .then(res => res.json())
             .then(data => {
+
                 if (data.success) {
+
                     window.location.href = data.redirect;
+
                 } else if (data.error) {
+
                     const alertBox = document.getElementById('google-alert');
+
                     if (alertBox) {
                         alertBox.innerText = data.error;
                         alertBox.classList.remove('d-none');
                     }
+
                     const noticeEl = document.getElementById('stepNotice');
+
                     if (noticeEl) {
                         noticeEl.classList.add('d-none');
                     }
                 }
+
             })
-            .catch(err => console.error("Server authentication failed:", err));
+            .catch(err => {
+                console.error("Server authentication failed:", err);
+            });
         }
 
         function handleGoogleScriptError() {
@@ -226,7 +355,7 @@
         }
     </script>
 
-    <!-- jQuery Frameworks -->
+    <!-- ========== jQuery Frameworks ========== -->
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.appear.js') }}"></script>
@@ -248,4 +377,5 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
 </body>
+
 </html>

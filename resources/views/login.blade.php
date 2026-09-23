@@ -128,6 +128,15 @@
                                 </div>
                             </div>
 
+                            <!-- Back to Home Button -->
+                            <div class="row mt-3">
+                                <div class="col-lg-12">
+                                    <a href="{{ url('/') }}" class="btn btn-sm circle btn-dark animation d-flex align-items-center justify-content-center gap-2 w-100" style="text-transform: none; border: 1px solid rgba(255,255,255,0.2); height: 42px; font-size: 13px;">
+                                        <i class="fa fa-arrow-left"></i> Back to Home
+                                    </a>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -221,7 +230,7 @@
     <script src="{{ asset('assets/js/jquery.nice-select.min.js') }}"></script>
     <script src="{{ asset('assets/js/wow.min.js') }}"></script>
     <script src="{{ asset('assets/js/YTPlayer.min.js') }}"></script>
-    <script src="{{ asset('assets/js/loopcounter.js') }}"></script>
+    <script src="{{ asset('assets/js/loopcounter.js') }}</th>
     <script src="{{ asset('assets/js/validnavs.js') }}"></script>
     <script src="{{ asset('assets/js/gsap.js') }}"></script>
     <script src="{{ asset('assets/js/ScrollTrigger.min.js') }}"></script>
@@ -230,3 +239,4 @@
     
 </body>
 </html>
+```[cite: 1]
