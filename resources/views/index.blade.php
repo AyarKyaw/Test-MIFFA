@@ -63,26 +63,14 @@
         display: flex;
     }
 
-    /* Card Box Uniformity & Modern Aesthetics */
+    /* Card Box Uniformity */
     .category-style-two-item {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         width: 100%;
         height: 100%;
-        min-height: 320px;
-        background: #ffffff;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-    }
-
-    .category-style-two-item:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(5, 213, 179, 0.12);
-        border-color: rgba(5, 213, 179, 0.3);
+        min-height: 280px; /* Adjust min-height as needed */
     }
 
     .category-style-two-item > a {
@@ -91,64 +79,23 @@
         justify-content: space-between;
         height: 100%;
         width: 100%;
-        text-decoration: none;
     }
 
-    /* Stunning Visual Image Container */
-    .category-style-two-item .thumb {
-        width: 100%;
-        height: 180px;
-        overflow: hidden;
-        position: relative;
-    }
+/* Same image area for every category */
+.category-style-two-item .thumb {
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+}
 
-    /* Smooth Image Scaling & Zoom Effect */
-    .category-style-two-item .thumb img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-        display: block;
-        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
-
-    .category-style-two-item:hover .thumb img {
-        transform: scale(1.08);
-    }
-
-    /* Refined Info Styling */
-    .category-style-two-item .info {
-        padding: 24px 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        flex-grow: 1;
-        background: #ffffff;
-    }
-
-    .category-style-two-item .info h4 {
-        font-size: 18px;
-        font-weight: 700;
-        color: #1a202c;
-        margin-bottom: 8px;
-        line-height: 1.4;
-        transition: color 0.3s ease;
-    }
-
-    .category-style-two-item:hover .info h4 {
-        color: #05d5b3;
-    }
-
-    .category-style-two-item .info span {
-        font-size: 13px;
-        font-weight: 600;
-        color: #718096;
-        background: #f7fafc;
-        padding: 4px 12px;
-        border-radius: 20px;
-        display: inline-block;
-        width: max-content;
-    }
+/* Same visual size for every image */
+.category-style-two-item .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
 </style>
 @endpush
 @section('content')
@@ -219,12 +166,12 @@
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="{{ $index * 100 }}ms">
                                     <a href="{{ url('/courses?category=' . ($category->courseCategory->slug ?? $category->courseCategory->id)) }}">
-                                        <div class="thumb">
-                                            <img src="{{ $category->icon_path }}" alt="{{ $category->name }}">
-                                        </div>
                                         <div class="info">
                                             <h4>{{ $category->name }}</h4>
                                             <span>{{ $category->courses_count ?? 0 }} Courses</span>
+                                        </div>
+                                        <div class="thumb">
+                                            <img src="{{ $category->icon_path }}" alt="{{ $category->name }}">
                                         </div>
                                     </a>
                                 </div>
@@ -237,12 +184,13 @@
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp">
                                     <a href="{{ url('/courses?category=' . ($courseCategory->slug ?? $courseCategory->id)) }}">
-                                        <div class="thumb">
-                                            <img src="{{ asset('assets/img/category/1.jpg') }}" alt="Freight Forwarding">
-                                        </div>
                                         <div class="info">
                                             <h4>Freight <strong>Forwarding</strong></h4>
                                             <span>12 Courses</span>
+                                        </div>
+                                        <i class="fas fa-long-arrow-right"></i>
+                                        <div class="thumb">
+                                            <img src="{{ asset('assets/img/category/1.jpg') }}" alt="Freight Forwarding">
                                         </div>
                                     </a>
                                 </div>
@@ -253,12 +201,13 @@
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="100ms">
                                     <a href="{{ url('/course/categories') }}">
-                                        <div class="thumb">
-                                            <img src="{{ asset('assets/img/category/2.jpg') }}" alt="Customs Clearance">
-                                        </div>
                                         <div class="info">
                                             <h4>Customs Clearance <strong>& Documentation</strong></h4>
                                             <span>8 Courses</span>
+                                        </div>
+                                        <i class="fas fa-long-arrow-right"></i>
+                                        <div class="thumb">
+                                            <img src="{{ asset('assets/img/category/2.jpg') }}" alt="Customs Clearance">
                                         </div>
                                     </a>
                                 </div>
@@ -269,12 +218,13 @@
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="200ms">
                                     <a href="{{ url('/course/categories') }}">
-                                        <div class="thumb">
-                                            <img src="{{ asset('assets/img/category/3.jpg') }}" alt="Supply Chain Management">
-                                        </div>
                                         <div class="info">
                                             <h4>Supply Chain <strong>Management</strong></h4>
                                             <span>15 Courses</span>
+                                        </div>
+                                        <i class="fas fa-long-arrow-right"></i>
+                                        <div class="thumb">
+                                            <img src="{{ asset('assets/img/category/3.jpg') }}" alt="Supply Chain Management">
                                         </div>
                                     </a>
                                 </div>
@@ -285,12 +235,13 @@
                             <div class="swiper-slide">
                                 <div class="category-style-two-item wow fadeInUp" data-wow-delay="300ms">
                                     <a href="{{ url('/course/categories') }}">
-                                        <div class="thumb">
-                                            <img src="{{ asset('assets/img/category/4.jpg') }}" alt="Multimodal Transport">
-                                        </div>
                                         <div class="info">
                                             <h4>Multimodal <strong>Transport</strong></h4>
                                             <span>10 Courses</span>
+                                        </div>
+                                        <i class="fas fa-long-arrow-right"></i>
+                                        <div class="thumb">
+                                            <img src="{{ asset('assets/img/category/4.jpg') }}" alt="Multimodal Transport">
                                         </div>
                                     </a>
                                 </div>
