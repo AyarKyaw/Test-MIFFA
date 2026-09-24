@@ -56,18 +56,21 @@
                 if (isRedirecting) return;
 
                 fetch("{{ route('account.check-status') }}", {
-                    method: 'POST',
+                    method: 'GET',
                     credentials: 'same-origin',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
+                        'Accept': 'application/json'
                     }
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('CHECK STATUS RESPONSE:', data);
+
                     if (data.confirmed && !isRedirecting) {
                         isRedirecting = true;
+
+                        console.log('EMAIL VERIFIED - REDIRECTING TO:', data.redirect || '/');
+
                         window.location.replace(data.redirect || '/');
                     }
                 })
