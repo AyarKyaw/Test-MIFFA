@@ -65,7 +65,7 @@
 <div class="bg-light pb-5">
     <!-- Always using default banner image -->
     <div class="instructor-banner" 
-         style="background-image: url('{{ asset('assets/img/courses/example.png') }}');">
+         style="background-image: url('{{ asset('assets/img/courses/teacher.jfif') }}');">
         <div class="instructor-banner-overlay"></div>
     </div>
 
