@@ -101,22 +101,25 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
 
-        if ($user) {
-            if ($user->studentProfile && $user->studentProfile->passport_photo) {
-                Storage::disk('public')->delete($user->studentProfile->passport_photo);
-            }
-            $user->delete();
-        } else {
-            $profile = StudentProfile::findOrFail($id);
-            if ($profile->passport_photo) {
-                Storage::disk('public')->delete($profile->passport_photo);
-            }
-            $profile->delete();
+        // Delete passport photo
+        if ($user->studentProfile && $user->studentProfile->passport_photo) {
+            Storage::disk('public')->delete(
+                $user->studentProfile->passport_photo
+            );
         }
 
-        return redirect()->route('admin.students.index')
-            ->with('success', 'Student record deleted successfully.');
+        // Delete student profile
+        if ($user->studentProfile) {
+            $user->studentProfile->delete();
+        }
+
+        // Delete user
+        $user->delete();
+
+        return redirect()
+            ->route('admin.students.index')
+            ->with('success', 'Student and student profile deleted successfully.');
     }
 }
