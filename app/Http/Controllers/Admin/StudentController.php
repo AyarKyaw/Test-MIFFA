@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\StudentProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -101,25 +102,43 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
+        DB::transaction(function () use ($id) {
 
-        // Delete passport photo
-        if ($user->studentProfile && $user->studentProfile->passport_photo) {
-            Storage::disk('public')->delete(
-                $user->studentProfile->passport_photo
-            );
-        }
+            // First: assume the ID belongs to a StudentProfile
+            $profile = StudentProfile::with('user')->find($id);
 
-        // Delete student profile
-        if ($user->studentProfile) {
-            $user->studentProfile->delete();
-        }
+            if ($profile) {
 
-        // Delete user
-        $user->delete();
+                // Delete passport photo
+                if ($profile->passport_photo) {
+                    Storage::disk('public')->delete($profile->passport_photo);
+                }
+
+                // Get related user
+                $user = $profile->user;
+
+                // Delete student profile
+                $profile->delete();
+
+                // Delete related user
+                if ($user) {
+                    $user->delete();
+                }
+
+                return;
+            }
+
+            // If there is no StudentProfile,
+            // check whether this ID belongs directly to a User.
+            $user = User::find($id);
+
+            if ($user) {
+                $user->delete();
+            }
+        });
 
         return redirect()
             ->route('admin.students.index')
-            ->with('success', 'Student and student profile deleted successfully.');
+            ->with('success', 'Student account deleted successfully.');
     }
 }
