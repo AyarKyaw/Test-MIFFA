@@ -72,299 +72,429 @@
         object-fit: cover;
     }
 
-    /* =========================================================
-       MOBILE BOTTOM NAVIGATION
-       ========================================================= */
+/* =========================================================
+   MOBILE BOTTOM NAVIGATION
+   FULL WIDTH
+   ========================================================= */
+
+.mobile-bottom-nav {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    height: 68px;
+    padding: 7px 8px;
+
+    background: rgba(255, 255, 255, 0.98);
+
+    border: none;
+    border-top: 1px solid rgba(5, 213, 179, 0.12);
+
+    border-radius: 0;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    box-shadow:
+        0 -8px 25px rgba(0, 0, 0, 0.10),
+        0 -2px 8px rgba(5, 213, 179, 0.06);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    z-index: 9999;
+
+    transform: translateY(0);
+
+    animation:
+        mobileNavAppear 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        mobileNavFloat 5s ease-in-out 1s infinite;
+}
+
+
+/* =========================================================
+   TOP GLOWING LINE
+========================================================= */
+
+.mobile-bottom-nav::before {
+    content: "";
+
+    position: absolute;
+
+    top: -1px;
+    left: 20%;
+    right: 20%;
+
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #05d5b3,
+        transparent
+    );
+
+    border-radius: 50%;
+
+    opacity: 0.7;
+}
+
+
+/* =========================================================
+   NAV ITEMS
+========================================================= */
+
+.mobile-bottom-nav a,
+.mobile-bottom-nav button {
+    position: relative;
+
+    width: 20%;
+    height: 54px;
+
+    background: transparent;
+    border: none;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    color: #7a8188;
+
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+
+    text-decoration: none;
+    outline: none;
+
+    padding: 4px 2px;
+    margin: 0;
+
+    border-radius: 12px;
+
+    transition:
+        color 0.3s ease,
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.3s ease;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.mobile-bottom-nav a i,
+.mobile-bottom-nav button i {
+    position: relative;
+
+    font-size: 19px;
+    margin-bottom: 4px;
+
+    color: #444b52;
+
+    transition:
+        color 0.3s ease,
+        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 0.3s ease;
+}
+
+
+/* =========================================================
+   ACTIVE ITEM
+========================================================= */
+
+.mobile-bottom-nav a.active {
+    color: #05bfa1;
+
+    background: rgba(5, 213, 179, 0.10);
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   ACTIVE ICON
+========================================================= */
+
+.mobile-bottom-nav a.active i {
+    color: #05cdb0;
+
+    transform: translateY(-2px) scale(1.12);
+
+    filter:
+        drop-shadow(
+            0 4px 5px rgba(5, 213, 179, 0.25)
+        );
+}
+
+
+/* =========================================================
+   ACTIVE DOT
+========================================================= */
+
+.mobile-bottom-nav a.active::after {
+    content: "";
+
+    position: absolute;
+
+    bottom: 2px;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #05d5b3;
+
+    box-shadow:
+        0 0 0 3px rgba(5, 213, 179, 0.10),
+        0 0 10px rgba(5, 213, 179, 0.45);
+
+    animation:
+        activeDot 0.45s cubic-bezier(
+            0.34,
+            1.56,
+            0.64,
+            1
+        );
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.mobile-bottom-nav a:hover,
+.mobile-bottom-nav button:hover {
+    color: #05d5b3;
+}
+
+
+.mobile-bottom-nav a:hover i,
+.mobile-bottom-nav button:hover i {
+    color: #05d5b3;
+
+    transform:
+        translateY(-2px)
+        scale(1.08);
+}
+
+
+/* =========================================================
+   TOUCH
+========================================================= */
+
+.mobile-bottom-nav a:active,
+.mobile-bottom-nav button:active {
+    transform: scale(0.90);
+}
+
+
+/* =========================================================
+   MENU BUTTON
+========================================================= */
+
+.mobile-bottom-nav button {
+    cursor: pointer;
+}
+
+
+.mobile-bottom-nav button i {
+    transition:
+        transform 0.4s cubic-bezier(
+            0.34,
+            1.56,
+            0.64,
+            1
+        ),
+        color 0.3s ease;
+}
+
+
+.mobile-bottom-nav button:hover i {
+    transform:
+        rotate(8deg)
+        scale(1.1);
+}
+
+
+/* =========================================================
+   NAVIGATION ENTRANCE
+========================================================= */
+
+@keyframes mobileNavAppear {
+
+    0% {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   ACTIVE DOT ENTRANCE
+========================================================= */
+
+@keyframes activeDot {
+
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(1.35);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   FLOATING ANIMATION
+========================================================= */
+
+@keyframes mobileNavFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-1px);
+    }
+}
+
+
+/* =========================================================
+   CONTENT SPACE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    body {
+        padding-bottom: 85px;
+    }
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 992px) {
 
     .mobile-bottom-nav {
-        position: fixed;
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-        width: auto;
+        display: none !important;
+    }
+}
 
-        height: 68px;
-        padding: 7px 8px;
 
-        background: rgba(255, 255, 255, 0.96);
-        border: 1px solid rgba(5, 213, 179, 0.12);
-        border-radius: 24px;
+/* =========================================================
+   SMALL PHONES
+========================================================= */
 
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
+@media (max-width: 380px) {
 
-        box-shadow:
-            0 12px 35px rgba(0, 0, 0, 0.14),
-            0 3px 10px rgba(5, 213, 179, 0.08);
+    .mobile-bottom-nav {
 
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
+        height: 64px;
 
-        z-index: 9999;
+        padding: 5px 4px;
 
-        transform: translateY(0);
-        animation: mobileNavAppear 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        border-radius: 0;
     }
 
-    /* Top glowing line */
-    .mobile-bottom-nav::before {
-        content: "";
-        position: absolute;
-        top: -1px;
-        left: 25%;
-        right: 25%;
-        height: 2px;
-
-        background: linear-gradient(
-            90deg,
-            transparent,
-            #05d5b3,
-            transparent
-        );
-
-        border-radius: 50%;
-
-        opacity: 0.7;
-    }
 
     .mobile-bottom-nav a,
     .mobile-bottom-nav button {
-        position: relative;
 
-        width: 20%;
-        height: 54px;
+        height: 50px;
 
-        background: transparent;
-        border: none;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        color: #7a8188;
-
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.1px;
-
-        text-decoration: none;
-        outline: none;
-
-        padding: 4px 2px;
-        margin: 0;
-
-        border-radius: 18px;
-
-        transition:
-            color 0.3s ease,
-            transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-            background-color 0.3s ease;
+        font-size: 9px;
     }
+
 
     .mobile-bottom-nav a i,
     .mobile-bottom-nav button i {
-        position: relative;
 
-        font-size: 19px;
-        margin-bottom: 4px;
-
-        color: #444b52;
-
-        transition:
-            color 0.3s ease,
-            transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-            filter 0.3s ease;
+        font-size: 17px;
     }
 
-    /* Active background */
-    .mobile-bottom-nav a.active {
-        color: #05bfa1;
 
-        background: rgba(5, 213, 179, 0.10);
-
-        transform: translateY(-2px);
+    body {
+        padding-bottom: 80px;
     }
+}
 
-    /* Active icon */
-    .mobile-bottom-nav a.active i {
-        color: #05cdb0;
 
-        transform: translateY(-2px) scale(1.12);
+/* =========================================================
+   SAFE AREA - iPHONE
+========================================================= */
 
-        filter: drop-shadow(0 4px 5px rgba(5, 213, 179, 0.25));
-    }
-
-    /* Little active dot */
-    .mobile-bottom-nav a.active::after {
-        content: "";
-
-        position: absolute;
-
-        bottom: 2px;
-
-        width: 5px;
-        height: 5px;
-
-        border-radius: 50%;
-
-        background: #05d5b3;
-
-        box-shadow:
-            0 0 0 3px rgba(5, 213, 179, 0.10),
-            0 0 10px rgba(5, 213, 179, 0.45);
-
-        animation: activeDot 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    /* Hover */
-    .mobile-bottom-nav a:hover,
-    .mobile-bottom-nav button:hover {
-        color: #05d5b3;
-    }
-
-    .mobile-bottom-nav a:hover i,
-    .mobile-bottom-nav button:hover i {
-        color: #05d5b3;
-        transform: translateY(-2px) scale(1.08);
-    }
-
-    /* Touch animation */
-    .mobile-bottom-nav a:active,
-    .mobile-bottom-nav button:active {
-        transform: scale(0.90);
-    }
-
-    /* Menu button */
-    .mobile-bottom-nav button {
-        cursor: pointer;
-    }
-
-    .mobile-bottom-nav button i {
-        transition:
-            transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-            color 0.3s ease;
-    }
-
-    .mobile-bottom-nav button:hover i {
-        transform: rotate(8deg) scale(1.1);
-    }
-
-    /* Navigation entrance */
-    @keyframes mobileNavAppear {
-        0% {
-            opacity: 0;
-            transform: translateY(35px) scale(0.96);
-        }
-
-        70% {
-            opacity: 1;
-            transform: translateY(-4px) scale(1);
-        }
-
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-
-    /* Active dot entrance */
-    @keyframes activeDot {
-        0% {
-            opacity: 0;
-            transform: scale(0);
-        }
-
-        70% {
-            opacity: 1;
-            transform: scale(1.35);
-        }
-
-        100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    /* Floating animation */
-    @keyframes mobileNavFloat {
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-2px);
-        }
-    }
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
 
     .mobile-bottom-nav {
-        animation:
-            mobileNavAppear 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-            mobileNavFloat 5s ease-in-out 1s infinite;
+
+        padding-bottom:
+            calc(7px + env(safe-area-inset-bottom));
+
+        height:
+            calc(68px + env(safe-area-inset-bottom));
     }
 
-    /* Prevent content from hiding behind the floating nav */
+
     @media (max-width: 991px) {
+
         body {
-            padding-bottom: 95px;
+
+            padding-bottom:
+                calc(
+                    85px +
+                    env(safe-area-inset-bottom)
+                );
         }
     }
+}
 
-    /* Desktop - completely hide mobile navigation */
-    @media (min-width: 992px) {
-        .mobile-bottom-nav {
-            display: none !important;
-        }
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .mobile-bottom-nav,
+    .mobile-bottom-nav a,
+    .mobile-bottom-nav button,
+    .mobile-bottom-nav i,
+    .mobile-bottom-nav a.active::after {
+
+        animation: none !important;
+        transition: none !important;
     }
-
-    /* Small phones */
-    @media (max-width: 380px) {
-        .mobile-bottom-nav {
-            left: 8px;
-            right: 8px;
-            bottom: 8px;
-            height: 64px;
-            border-radius: 21px;
-        }
-
-        .mobile-bottom-nav a,
-        .mobile-bottom-nav button {
-            height: 50px;
-            font-size: 9px;
-        }
-
-        .mobile-bottom-nav a i,
-        .mobile-bottom-nav button i {
-            font-size: 17px;
-        }
-    }
-
-    /* Safe area for iPhones */
-    @supports (padding-bottom: env(safe-area-inset-bottom)) {
-        .mobile-bottom-nav {
-            bottom: calc(12px + env(safe-area-inset-bottom));
-        }
-
-        @media (max-width: 991px) {
-            body {
-                padding-bottom: calc(95px + env(safe-area-inset-bottom));
-            }
-        }
-    }
-
-    /* Accessibility */
-    @media (prefers-reduced-motion: reduce) {
-        .mobile-bottom-nav,
-        .mobile-bottom-nav a,
-        .mobile-bottom-nav button,
-        .mobile-bottom-nav i,
-        .mobile-bottom-nav a.active::after {
-            animation: none !important;
-            transition: none !important;
-        }
-    }
+}
 </style>
 
 

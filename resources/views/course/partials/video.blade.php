@@ -8,7 +8,44 @@
     }
 @endphp
 
-<div class="p-3 p-md-4">
+@push('styles')
+<style>
+    @media (max-width: 767.98px) {
+
+    /* Remove the partial's padding for video lessons */
+    .video-lesson-content .video-partial-wrapper {
+        padding: 0 !important;
+    }
+
+    /* Keep video completely edge-to-edge */
+    .video-lesson-content .ratio {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .video-lesson-content iframe,
+    .video-lesson-content video {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+    }
+
+    /* Keep lesson information below video with comfortable spacing */
+    .video-lesson-content .border-bottom,
+    .video-lesson-content .text-secondary {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    .video-lesson-content .border-bottom {
+        margin-top: 16px;
+    }
+}
+</style>
+@endpush
+
+<div class="video-partial-wrapper p-3 p-md-4">
     <!-- Video Embed Container -->
     <div class="ratio ratio-16x9 rounded-3 overflow-hidden bg-dark mb-4 position-relative">
         @if($youtubeId)
