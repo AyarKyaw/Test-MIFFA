@@ -77,11 +77,20 @@
                                     style="background-image: url('{{ $bgUrl }}');"
                                 >
 
-                                    <!-- Bright overlay -->
+                                    <!-- Brightness layer -->
+                                    <span class="category-brightness"></span>
+
+                                    <!-- Soft readability overlay -->
                                     <span class="category-image-overlay"></span>
+
+                                    <!-- Selected indicator -->
+                                    <span class="category-selected">
+                                        <i class="fas fa-check"></i>
+                                    </span>
 
                                     <!-- Category content -->
                                     <span class="category-card-content">
+
                                         <strong>
                                             {{ $category->name }}
                                         </strong>
@@ -89,6 +98,7 @@
                                         <span class="category-arrow">
                                             <i class="fas fa-arrow-right"></i>
                                         </span>
+
                                     </span>
 
                                 </button>
@@ -139,9 +149,7 @@
                                     @endphp
 
 
-                                    <!-- ==========================================
-                                         SINGLE COURSE
-                                    =========================================== -->
+                                    <!-- Single Course Item -->
                                     <div class="course-style-one-item hover-less list-layout mb-4">
 
                                         <div class="thumb">
@@ -151,22 +159,7 @@
                                             >
                                         </div>
 
-
                                         <div class="info">
-
-                                            <!-- Instructor
-                                            <div class="author">
-                                                <img
-                                                    src="{{ asset($course->instructor_image ?? 'assets/img/team/m2.jpg') }}"
-                                                    alt="{{ $course->instructor_name ?? 'Instructor' }}"
-                                                >
-
-                                                <a href="#">
-                                                    {{ $course->instructor_name ?? 'Instructor' }}
-                                                </a>
-                                            </div>
-                                            -->
-
 
                                             <h4>
                                                 <a href="{{ route('courses.show', $course->id) }}">
@@ -174,9 +167,7 @@
                                                 </a>
                                             </h4>
 
-
                                             <div class="course-meta">
-
                                                 <ul>
 
                                                     <li>
@@ -195,7 +186,6 @@
                                                         </div>
                                                     </li>
 
-
                                                     <li>
                                                         <i class="fas fa-user"></i>
 
@@ -207,9 +197,7 @@
                                                     </li>
 
                                                 </ul>
-
                                             </div>
-
 
                                             <div class="bottom-meta">
 
@@ -228,7 +216,6 @@
                                                     </a>
 
                                                 @endif
-
 
                                                 <h2 class="price">
 
@@ -251,16 +238,14 @@
                                         </div>
 
                                     </div>
-                                    <!-- End Single Course -->
+                                    <!-- End Single Course Item -->
 
 
                                 @empty
 
                                     <div class="alert alert-info text-center">
-
                                         No courses found in
                                         <strong>{{ $category->name }}</strong>.
-
                                     </div>
 
                                 @endforelse
@@ -301,137 +286,176 @@
 
 .category-tabs {
     border: none !important;
+
     display: flex;
     flex-direction: column;
+
     gap: 18px;
+
+    padding: 0;
 }
 
 
-/* Individual sidebar item */
+/* ==========================================================
+   SIDEBAR ITEM ANIMATION
+========================================================== */
 
 .category-sidebar-item {
     width: 100%;
+
     border: none !important;
+
     margin: 0 !important;
 
     opacity: 0;
+
     transform: translateX(-45px);
 
     animation: categorySlideIn 0.65s ease forwards;
 }
 
 
-/* Stagger the animation */
-
 .category-sidebar-item:nth-child(1) {
-    animation-delay: 0.1s;
+    animation-delay: .05s;
 }
 
 .category-sidebar-item:nth-child(2) {
-    animation-delay: 0.2s;
+    animation-delay: .12s;
 }
 
 .category-sidebar-item:nth-child(3) {
-    animation-delay: 0.3s;
+    animation-delay: .19s;
 }
 
 .category-sidebar-item:nth-child(4) {
-    animation-delay: 0.4s;
+    animation-delay: .26s;
 }
 
 .category-sidebar-item:nth-child(5) {
-    animation-delay: 0.5s;
+    animation-delay: .33s;
 }
 
 .category-sidebar-item:nth-child(6) {
-    animation-delay: 0.6s;
+    animation-delay: .40s;
 }
 
 .category-sidebar-item:nth-child(7) {
-    animation-delay: 0.7s;
+    animation-delay: .47s;
 }
 
 .category-sidebar-item:nth-child(8) {
-    animation-delay: 0.8s;
+    animation-delay: .54s;
 }
 
 
 /* ==========================================================
-   SIDEBAR CARD
+   CATEGORY CARD
 ========================================================== */
 
 .category-sidebar-card {
     position: relative !important;
 
     width: 100% !important;
-    min-height: 105px;
 
-    display: flex !important;
-    align-items: center !important;
+    min-height: 110px;
 
     padding: 0 !important;
 
+    display: flex !important;
+
+    align-items: center !important;
+
     overflow: hidden;
 
-    border: 0 !important;
-    border-radius: 14px !important;
+    border-radius: 15px !important;
+
+    border: 3px solid transparent !important;
 
     background-size: cover !important;
+
     background-position: center !important;
+
     background-repeat: no-repeat !important;
 
     color: #ffffff !important;
 
+    cursor: pointer;
+
     box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.12);
+        0 7px 20px rgba(0, 0, 0, 0.12);
 
     transition:
-        transform 0.35s ease,
-        box-shadow 0.35s ease,
-        filter 0.35s ease;
+        transform .35s ease,
+        box-shadow .35s ease,
+        border-color .35s ease,
+        filter .35s ease;
 }
 
 
 /* ==========================================================
-   BRIGHT IMAGE OVERLAY
+   MAKE IMAGE BRIGHTER
+========================================================== */
+
+.category-brightness {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 0;
+
+    background: rgba(255, 255, 255, 0.20);
+
+    transition:
+        background .35s ease;
+}
+
+
+/* ==========================================================
+   TEXT READABILITY
 ========================================================== */
 
 .category-image-overlay {
     position: absolute;
+
     inset: 0;
+
+    z-index: 1;
 
     background:
         linear-gradient(
             90deg,
-            rgba(0, 0, 0, 0.18),
-            rgba(0, 0, 0, 0.08)
+            rgba(0, 0, 0, 0.20) 0%,
+            rgba(0, 0, 0, 0.08) 55%,
+            rgba(0, 0, 0, 0.02) 100%
         );
 
-    z-index: 1;
-
     transition:
-        background 0.35s ease;
+        background .35s ease;
 }
 
 
 /* ==========================================================
-   CATEGORY TEXT
+   CONTENT
 ========================================================== */
 
 .category-card-content {
     position: relative;
 
-    z-index: 2;
+    z-index: 3;
 
     width: 100%;
 
+    min-height: 110px;
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
-    padding: 25px 28px;
+    gap: 15px;
 
-    color: #ffffff;
+    padding: 24px 27px;
 }
 
 
@@ -439,6 +463,7 @@
     color: #ffffff !important;
 
     font-size: 19px;
+
     font-weight: 700;
 
     line-height: 1.3;
@@ -446,10 +471,11 @@
     text-align: left;
 
     text-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.45);
+        0 2px 5px rgba(0, 0, 0, .55);
 
     transition:
-        transform 0.35s ease;
+        transform .3s ease,
+        font-size .3s ease;
 }
 
 
@@ -458,107 +484,205 @@
 ========================================================== */
 
 .category-arrow {
-    width: 38px;
-    height: 38px;
+    width: 42px;
 
-    min-width: 38px;
+    height: 42px;
+
+    min-width: 42px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, .95);
 
     color: #05d5b3;
 
     opacity: 0;
-    transform: translateX(-12px);
+
+    transform: translateX(-15px);
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, .15);
 
     transition:
-        opacity 0.3s ease,
-        transform 0.3s ease;
-}
-
-
-.category-arrow i {
-    font-size: 14px;
+        opacity .3s ease,
+        transform .3s ease;
 }
 
 
 /* ==========================================================
-   HOVER EFFECT
+   SELECTED CHECK
 ========================================================== */
 
-.category-sidebar-card:hover {
-    transform: translateX(8px) scale(1.015);
+.category-selected {
+    position: absolute;
+
+    top: 12px;
+
+    right: 12px;
+
+    z-index: 5;
+
+    width: 30px;
+
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #05d5b3;
+
+    color: #ffffff;
+
+    font-size: 13px;
 
     box-shadow:
-        0 14px 32px rgba(0, 0, 0, 0.20);
+        0 3px 10px rgba(0, 0, 0, .25);
 
-    filter: brightness(1.08);
+    opacity: 0;
+
+    transform: scale(.5);
+
+    transition:
+        opacity .3s ease,
+        transform .3s ease;
 }
 
 
-.category-sidebar-card:hover .category-image-overlay {
-    background:
-        linear-gradient(
-            90deg,
-            rgba(0, 0, 0, 0.05),
-            rgba(0, 0, 0, 0.02)
-        );
+/* ==========================================================
+   HOVER
+========================================================== */
+
+.category-sidebar-card:hover {
+
+    transform: translateX(8px) scale(1.015);
+
+    box-shadow:
+        0 13px 30px rgba(0, 0, 0, .22);
+
+    filter: brightness(1.10);
+}
+
+
+.category-sidebar-card:hover .category-brightness {
+
+    background: rgba(255, 255, 255, .30);
 }
 
 
 .category-sidebar-card:hover .category-card-content strong {
+
     transform: translateX(4px);
 }
 
 
 .category-sidebar-card:hover .category-arrow {
+
     opacity: 1;
+
     transform: translateX(0);
 }
 
 
 /* ==========================================================
-   ACTIVE CATEGORY
+   ACTIVE / SELECTED
 ========================================================== */
 
 .category-sidebar-card.active {
-    transform: translateX(8px);
+
+    border-color: #05d5b3 !important;
+
+    transform: translateX(8px) scale(1.025);
+
+    filter: brightness(1.15);
 
     box-shadow:
-        0 12px 30px rgba(5, 213, 179, 0.30);
-
-    border: 3px solid #05d5b3 !important;
-
-    filter: brightness(1.08);
+        0 0 0 3px rgba(5, 213, 179, .20),
+        0 14px 35px rgba(5, 213, 179, .32);
 }
 
 
+/* Stronger brightness for selected */
+
+.category-sidebar-card.active .category-brightness {
+
+    background: rgba(255, 255, 255, .32);
+}
+
+
+/* Selected overlay */
+
 .category-sidebar-card.active .category-image-overlay {
+
     background:
         linear-gradient(
             90deg,
-            rgba(0, 0, 0, 0.02),
-            rgba(0, 0, 0, 0.02)
+            rgba(0, 0, 0, .08),
+            rgba(0, 0, 0, .02)
         );
 }
 
 
+/* Selected text */
+
+.category-sidebar-card.active .category-card-content strong {
+
+    transform: translateX(5px);
+
+    font-size: 20px;
+
+    text-shadow:
+        0 2px 6px rgba(0, 0, 0, .65);
+}
+
+
+/* Selected arrow */
+
 .category-sidebar-card.active .category-arrow {
+
     opacity: 1;
+
     transform: translateX(0);
 
     background: #05d5b3;
+
     color: #ffffff;
 }
 
 
+/* Selected check */
+
+.category-sidebar-card.active .category-selected {
+
+    opacity: 1;
+
+    transform: scale(1);
+}
+
+
 /* ==========================================================
-   SIDEBAR ENTRANCE ANIMATION
+   CLICK FEEDBACK
+========================================================== */
+
+.category-sidebar-card:active {
+
+    transform: translateX(5px) scale(.99);
+
+}
+
+
+/* ==========================================================
+   ANIMATION
 ========================================================== */
 
 @keyframes categorySlideIn {
@@ -568,9 +692,9 @@
         transform: translateX(-45px);
     }
 
-    60% {
+    65% {
         opacity: 1;
-        transform: translateX(8px);
+        transform: translateX(7px);
     }
 
     100% {
@@ -592,15 +716,21 @@
     }
 
     .category-sidebar-card {
-        min-height: 90px;
+        min-height: 95px;
     }
 
     .category-card-content {
-        padding: 20px 22px;
+        min-height: 95px;
+
+        padding: 20px 23px;
     }
 
     .category-card-content strong {
         font-size: 17px;
+    }
+
+    .category-sidebar-card.active .category-card-content strong {
+        font-size: 18px;
     }
 
 }
@@ -609,34 +739,51 @@
 @media (max-width: 575px) {
 
     .category-sidebar-card {
-        min-height: 80px;
+        min-height: 82px;
     }
 
     .category-card-content {
-        padding: 18px 20px;
+        min-height: 82px;
+
+        padding: 17px 20px;
     }
 
     .category-card-content strong {
         font-size: 16px;
     }
 
+    .category-sidebar-card.active .category-card-content strong {
+        font-size: 17px;
+    }
+
+    .category-selected {
+        width: 26px;
+        height: 26px;
+
+        top: 8px;
+        right: 8px;
+    }
+
 }
 
 
 /* ==========================================================
-   ACCESSIBILITY
+   REDUCE MOTION
 ========================================================== */
 
 @media (prefers-reduced-motion: reduce) {
 
     .category-sidebar-item {
         animation: none;
+
         opacity: 1;
+
         transform: none;
     }
 
     .category-sidebar-card,
     .category-arrow,
+    .category-selected,
     .category-card-content strong {
         transition: none;
     }
