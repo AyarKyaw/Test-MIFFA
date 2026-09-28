@@ -698,7 +698,7 @@
                         data-toggle="collapse"
                         data-target="#navbar-menu">
 
-                        <i class="fa fa-times"></i>
+                        <i class="fas fa-times"></i>
 
                     </button>
 
@@ -752,6 +752,13 @@
                                                         </a>
                                                     </li>
 
+                                                    @auth
+                                                    <li>
+                                                        <a href="{{ url('/my-courses') }}">
+                                                            Enrolled Courses
+                                                        </a>
+                                                    </li>
+                                                    @endauth
                                                 </ul>
 
                                             </div>

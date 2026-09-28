@@ -5,6 +5,7 @@
 @section('content')
 
 @php
+
     $user = auth()->user();
 
     // =========================================================
@@ -86,6 +87,37 @@
     $nextLesson = $currentIndex !== false
         ? ($allLessons[$currentIndex + 1] ?? null)
         : null;
+
+
+    // =========================================================
+    // MOBILE SECTION NAVIGATION
+    //
+    // Only sections from the CURRENT UNIT are shown.
+    //
+    // Example:
+    //
+    // < Section 1 >
+    // < Section 2 >
+    // < Section 3 >
+    //
+    // =========================================================
+
+    $mobileSections = $activeUnit
+        ? $activeUnit->sections->values()
+        : collect();
+
+
+    $mobileCurrentSectionIndex = $activeSection
+        ? $mobileSections->search(
+            fn($section) => $section->id === $activeSection->id
+        )
+        : 0;
+
+
+    if ($mobileCurrentSectionIndex === false) {
+        $mobileCurrentSectionIndex = 0;
+    }
+
 @endphp
 
 
@@ -94,7 +126,9 @@
     style="min-height: 85vh;"
 >
 
-    <div class="row g-0 learning-room-card bg-white mx-0 mx-md-4 align-items-stretch">
+    <div
+        class="row g-0 learning-room-card bg-white mx-0 mx-md-4 align-items-stretch"
+    >
 
 
         <!-- =====================================================
@@ -167,7 +201,7 @@
             ================================================== -->
 
             <div
-                class="list-group list-group-flush overflow-auto"
+                class="list-group list-group-flush overflow-auto learning-sidebar-lessons"
                 style="max-height: 600px;"
             >
 
@@ -383,6 +417,7 @@
                 d-flex
                 flex-column
                 justify-content-between
+                learning-main-column
             "
             style="padding-bottom: 0 !important;"
         >
@@ -394,16 +429,16 @@
                      LESSON AREA
                 ================================================== -->
 
-                <div>
+                <div class="learning-lesson-area">
 
 
                     <!-- =================================================
-                         BREADCRUMB
+                         DESKTOP BREADCRUMB
                     ================================================== -->
 
                     <nav
                         aria-label="breadcrumb"
-                        class="mb-2 mb-lg-4"
+                        class="mb-2 mb-lg-4 desktop-lesson-breadcrumb"
                     >
 
                         <ol
@@ -422,7 +457,6 @@
                             "
                             style="font-size: 0.8rem;"
                         >
-
 
                             <!-- Course -->
 
@@ -521,6 +555,414 @@
 
 
                     <!-- =================================================
+                         MOBILE LESSON SELECTOR
+                    ================================================== -->
+
+                    <div class="mobile-lesson-selector mb-2">
+
+                        <button
+                            type="button"
+                            class="mobile-lesson-title-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#mobileLessonModal"
+                        >
+
+                            <div class="mobile-lesson-title-content">
+
+                                <i class="fas fa-book-open"></i>
+
+                                <span>
+                                    {{ $currentLesson->title }}
+                                </span>
+
+                            </div>
+
+
+                            <i class="fas fa-chevron-down mobile-lesson-chevron"></i>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         MOBILE LESSON MODAL
+                    ================================================== -->
+
+                    <div
+                        class="modal fade"
+                        id="mobileLessonModal"
+                        tabindex="-1"
+                        aria-labelledby="mobileLessonModalLabel"
+                        aria-hidden="true"
+                    >
+
+                        <div
+                            class="
+                                modal-dialog
+                                modal-dialog-scrollable
+                                modal-fullscreen-sm-down
+                            "
+                        >
+
+                            <div class="modal-content">
+
+
+                                <!-- =================================================
+                                     MODAL HEADER
+                                ================================================== -->
+
+                                <div class="modal-header">
+
+                                    <div class="min-w-0">
+
+                                        <div
+                                            class="
+                                                text-primary
+                                                fw-bold
+                                                small
+                                                text-uppercase
+                                                mb-1
+                                            "
+                                        >
+                                            Lessons
+                                        </div>
+
+
+                                        <h5
+                                            class="
+                                                modal-title
+                                                fw-bold
+                                                mb-0
+                                                text-truncate
+                                            "
+                                            id="mobileLessonModalLabel"
+                                        >
+                                            {{ $activeUnit->title ?? $course->title }}
+                                        </h5>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                    ></button>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     SECTION NAVIGATOR + LESSONS
+                                ================================================== -->
+
+                                <div class="modal-body p-0">
+
+                                    @if($mobileSections->count())
+
+
+                                        <div
+                                            id="mobileSectionNavigator"
+                                            class="mobile-section-navigator-container"
+                                        >
+
+
+                                            @foreach($mobileSections as $sIndex => $section)
+
+                                                @php
+
+                                                    $sectionHasCurrentLesson =
+                                                        $section->lessons->contains(
+                                                            'id',
+                                                            $currentLesson->id
+                                                        );
+
+                                                @endphp
+
+
+                                                <!-- =========================================
+                                                     ONE SECTION PANEL
+                                                ========================================== -->
+
+                                                <div
+                                                    class="
+                                                        mobile-section-panel
+                                                        {{ $sectionHasCurrentLesson
+                                                            ? 'active-section-panel'
+                                                            : ''
+                                                        }}
+                                                    "
+                                                    data-section-index="{{ $sIndex }}"
+                                                    style="{{ $sIndex === $mobileCurrentSectionIndex
+                                                        ? ''
+                                                        : 'display:none;'
+                                                    }}"
+                                                >
+
+
+                                                    <!-- =====================================
+                                                         SECTION NAVIGATION
+                                                    ====================================== -->
+
+                                                    <div class="mobile-section-navigation">
+
+
+                                                        <!-- Previous Section -->
+
+                                                        <button
+                                                            type="button"
+                                                            class="
+                                                                mobile-section-nav-button
+                                                                mobile-section-prev
+                                                            "
+                                                            data-target="{{ $sIndex - 1 }}"
+                                                            {{ $sIndex === 0 ? 'disabled' : '' }}
+                                                            aria-label="Previous section"
+                                                        >
+
+                                                            <i class="fas fa-chevron-left"></i>
+
+                                                        </button>
+
+
+                                                        <!-- Current Section -->
+
+                                                        <div class="mobile-section-current-title">
+
+                                                            <div class="mobile-section-small-label">
+
+                                                                Section {{ $sIndex + 1 }}
+
+                                                            </div>
+
+
+                                                            <div
+                                                                class="mobile-section-title-text"
+                                                                title="{{ $section->title }}"
+                                                            >
+
+                                                                {{ $section->title }}
+
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <!-- Next Section -->
+
+                                                        <button
+                                                            type="button"
+                                                            class="
+                                                                mobile-section-nav-button
+                                                                mobile-section-next
+                                                            "
+                                                            data-target="{{ $sIndex + 1 }}"
+                                                            {{ $sIndex === $mobileSections->count() - 1 ? 'disabled' : '' }}
+                                                            aria-label="Next section"
+                                                        >
+
+                                                            <i class="fas fa-chevron-right"></i>
+
+                                                        </button>
+
+                                                    </div>
+
+
+                                                    <!-- =====================================
+                                                         SECTION LESSONS
+                                                    ====================================== -->
+
+                                                    <div class="mobile-section-lessons">
+
+
+                                                        @forelse($section->lessons as $lesson)
+
+                                                            @php
+
+                                                                $isCurrentLesson =
+                                                                    $currentLesson &&
+                                                                    $currentLesson->id === $lesson->id;
+
+
+                                                                $userLessonRecord =
+                                                                    $userLessons->get($lesson->id);
+
+
+                                                                $quizScore =
+                                                                    $userLessonRecord
+                                                                        ? $userLessonRecord->pivot->quiz_score
+                                                                        : null;
+
+
+                                                                $isCompleted =
+                                                                    $userLessonRecord
+                                                                        ? $userLessonRecord->pivot->is_completed
+                                                                        : false;
+
+
+                                                                $hasHomework =
+                                                                    $userLessonRecord
+                                                                        ? !empty(
+                                                                            $userLessonRecord->pivot->homework_file_path
+                                                                        )
+                                                                        : false;
+
+                                                            @endphp
+
+
+                                                            <a
+                                                                href="{{ route('courses.learn', [$course->id, $lesson->id]) }}"
+                                                                class="
+                                                                    mobile-modal-lesson
+                                                                    {{ $isCurrentLesson
+                                                                        ? 'current-lesson'
+                                                                        : ''
+                                                                    }}
+                                                                "
+                                                            >
+
+
+                                                                <!-- Lesson Icon -->
+
+                                                                <div class="mobile-lesson-icon">
+
+                                                                    @if($lesson->type === 'video')
+
+                                                                        <i class="fas fa-video"></i>
+
+                                                                    @elseif($lesson->type === 'quiz')
+
+                                                                        <i class="fas fa-question-circle"></i>
+
+                                                                    @elseif($lesson->type === 'article')
+
+                                                                        <i class="fas fa-file-alt"></i>
+
+                                                                    @elseif($lesson->type === 'document')
+
+                                                                        <i class="fas fa-file-pdf"></i>
+
+                                                                    @elseif($lesson->type === 'homework')
+
+                                                                        <i class="fas fa-file-signature"></i>
+
+                                                                    @else
+
+                                                                        <i class="fas fa-book"></i>
+
+                                                                    @endif
+
+                                                                </div>
+
+
+                                                                <!-- Lesson Information -->
+
+                                                                <div class="mobile-lesson-info">
+
+                                                                    <div class="mobile-lesson-name">
+
+                                                                        {{ $lesson->title }}
+
+                                                                    </div>
+
+
+                                                                    <div class="mobile-lesson-meta">
+
+                                                                        {{ ucfirst($lesson->type) }}
+
+
+                                                                        @if(!is_null($quizScore))
+
+                                                                            <span class="ms-2">
+                                                                                {{ $quizScore }}%
+                                                                            </span>
+
+                                                                        @elseif($lesson->type === 'homework' && $hasHomework)
+
+                                                                            <span class="ms-2 text-success">
+                                                                                Submitted
+                                                                            </span>
+
+                                                                        @elseif($isCompleted)
+
+                                                                            <span class="ms-2 text-success">
+                                                                                Completed
+                                                                            </span>
+
+                                                                        @endif
+
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                                <!-- Current / Arrow -->
+
+                                                                @if($isCurrentLesson)
+
+                                                                    <i
+                                                                        class="
+                                                                            fas
+                                                                            fa-check-circle
+                                                                            mobile-current-icon
+                                                                        "
+                                                                    ></i>
+
+                                                                @else
+
+                                                                    <i
+                                                                        class="
+                                                                            fas
+                                                                            fa-chevron-right
+                                                                            mobile-lesson-arrow
+                                                                        "
+                                                                    ></i>
+
+                                                                @endif
+
+                                                            </a>
+
+                                                        @empty
+
+                                                            <div class="mobile-no-lessons">
+
+                                                                No lessons in this section.
+
+                                                            </div>
+
+                                                        @endforelse
+
+                                                    </div>
+
+                                                </div>
+
+                                            @endforeach
+
+                                        </div>
+
+
+                                    @else
+
+                                        <div class="p-4 text-center text-muted">
+
+                                            No sections available.
+
+                                        </div>
+
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
                          PLAYER / LESSON CONTENT
                     ================================================== -->
 
@@ -584,6 +1026,11 @@
 
                 </div>
 
+
+                <!-- =================================================
+                     NEXT LESSON
+                ================================================== -->
+
                 @if($nextLesson)
 
                     <div class="next-lesson-fixed">
@@ -644,13 +1091,24 @@
     width: 100%;
 }
 
+
 .learning-room-card {
     min-height: 80vh;
 }
 
 
+.learning-main-column {
+    min-width: 0;
+}
+
+
+.learning-lesson-area {
+    width: 100%;
+}
+
+
 /* =========================================================
-   BREADCRUMB
+   DESKTOP BREADCRUMB
 ========================================================= */
 
 .learning-room .breadcrumb {
@@ -658,9 +1116,11 @@
     white-space: nowrap;
 }
 
+
 .learning-room .breadcrumb-item {
     min-width: 0;
 }
+
 
 .learning-room .breadcrumb-item a,
 .learning-room .breadcrumb-item.active {
@@ -677,6 +1137,7 @@
 .lesson-content {
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
 }
 
 
@@ -686,27 +1147,21 @@
 
 .lesson-navigation-wrapper {
     position: relative;
-
     margin-top: 24px;
-
     padding-top: 16px;
-
     min-height: 60px;
 }
 
 
 .lesson-previous-navigation {
     display: flex;
-
     justify-content: flex-start;
-
     align-items: center;
 }
 
 
 /* =========================================================
    NEXT LESSON
-   FIXED BOTTOM - DESKTOP
 ========================================================= */
 
 .next-lesson-fixed {
@@ -719,9 +1174,7 @@
     z-index: 1050;
 
     display: flex;
-
     justify-content: flex-end;
-
     align-items: center;
 
     padding: 12px 24px;
@@ -733,22 +1186,15 @@
     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
 
     backdrop-filter: blur(8px);
-
     -webkit-backdrop-filter: blur(8px);
 }
 
-
-/* =========================================================
-   NEXT BUTTON
-========================================================= */
 
 .next-lesson-button {
     min-height: 48px;
 
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
 
     padding: 0 24px;
@@ -758,6 +1204,7 @@
     font-weight: 600;
 
     white-space: nowrap;
+
     background: #0d6efd !important;
 
     text-decoration: none;
@@ -772,21 +1219,40 @@
     padding-bottom: 90px !important;
 }
 
+
+/* =========================================================
+   MOBILE SELECTOR DEFAULT
+========================================================= */
+
+.mobile-lesson-selector,
+#mobileLessonModal {
+    display: none;
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
 @media (min-width: 992px) {
 
     .learning-room-card {
         align-items: stretch;
     }
 
+
     .learning-room-card > .col-lg-3,
     .learning-room-card > .col-lg-9 {
+
         display: flex;
         flex-direction: column;
     }
 
+
     .learning-room-card > .col-lg-9 {
         min-height: 80vh;
     }
+
 
     .learning-room-card .lesson-content {
         flex: 1 1 auto;
@@ -798,7 +1264,6 @@
 
 /* =========================================================
    MOBILE
-   iPhone / Android
 ========================================================= */
 
 @media (max-width: 767.98px) {
@@ -813,20 +1278,13 @@
         width: 100%;
 
         padding-left: 0 !important;
-
         padding-right: 0 !important;
 
         margin-top: 56px !important;
 
         padding-top: 0 !important;
 
-        /*
-         * Space for:
-         *
-         * 1. Next Lesson button
-         * 2. Bottom navigation
-         */
-        padding-bottom: 145px !important;
+        padding-bottom: 50px !important;
     }
 
 
@@ -839,13 +1297,11 @@
         width: 100% !important;
 
         margin-left: 0 !important;
-
         margin-right: 0 !important;
 
         border-radius: 0 !important;
 
         border-left: 0 !important;
-
         border-right: 0 !important;
 
         box-shadow: none !important;
@@ -857,27 +1313,501 @@
     ===================================================== */
 
     .learning-room .col-lg-9 {
+
+        width: 100%;
+
+        max-width: 100%;
+    }
+
+
+    /* =====================================================
+       DESKTOP BREADCRUMB HIDDEN
+    ===================================================== */
+
+    .desktop-lesson-breadcrumb {
+        display: none !important;
+    }
+
+
+    /* =====================================================
+       MOBILE LESSON SELECTOR
+    ===================================================== */
+
+    .mobile-lesson-selector {
+
+        display: block;
+
+        width: 100%;
+    }
+
+
+    .mobile-lesson-title-button {
+
+        width: 100%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 12px;
+
+        padding: 11px 13px;
+
+        border: 1px solid #dee2e6;
+
+        border-radius: 10px;
+
+        background: #fff;
+
+        color: #212529;
+
+        text-align: left;
+
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+
+        cursor: pointer;
+    }
+
+
+    .mobile-lesson-title-button:active {
+
+        background: #f8f9fa;
+    }
+
+
+    .mobile-lesson-title-content {
+
+        min-width: 0;
+
+        flex: 1;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 9px;
+    }
+
+
+    .mobile-lesson-title-content > i {
+
+        flex-shrink: 0;
+
+        color: #0d6efd;
+
+        font-size: 0.9rem;
+    }
+
+
+    .mobile-lesson-title-content span {
+
+        min-width: 0;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+
+        font-size: 0.88rem;
+
+        font-weight: 600;
+    }
+
+
+    .mobile-lesson-chevron {
+
+        flex-shrink: 0;
+
+        color: #6c757d;
+
+        font-size: 0.7rem;
+    }
+
+
+    /* =====================================================
+       MOBILE MODAL
+    ===================================================== */
+
+    #mobileLessonModal .modal-content {
+
+        border: 0;
+
+        border-radius: 16px;
+
+        overflow: hidden;
+    }
+
+
+    #mobileLessonModal .modal-header {
+
+        padding: 16px;
+
+        border-bottom: 1px solid #e9ecef;
+
+        background: #fff;
+    }
+
+
+    #mobileLessonModal .modal-body {
+
+        background: #f8f9fa;
+    }
+
+
+    /* =====================================================
+       SECTION NAVIGATOR
+    ===================================================== */
+
+    .mobile-section-navigator-container {
+
+        width: 100%;
+    }
+
+
+    .mobile-section-panel {
+
         width: 100%;
     }
 
 
     /* =====================================================
-       BREADCRUMB
+       SECTION HEADER WITH < >
     ===================================================== */
 
-    .learning-room nav[aria-label="breadcrumb"] {
+    .mobile-section-navigation {
 
-        margin-bottom: 8px !important;
+        width: 100%;
+
+        min-height: 68px;
+
+        display: flex;
+
+        align-items: stretch;
+
+        background: #fff;
+
+        border-bottom: 1px solid #e1e5e9;
+
+        position: sticky;
+
+        top: 0;
+
+        z-index: 2;
     }
 
 
-    .learning-room .breadcrumb {
+    .mobile-section-nav-button {
 
-        border-radius: 8px !important;
+        width: 54px;
 
-        padding: 8px 10px !important;
+        min-width: 54px;
 
-        font-size: 0.75rem !important;
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border: 0;
+
+        background: #fff;
+
+        color: #0d6efd;
+
+        font-size: 0.8rem;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
+    }
+
+
+    .mobile-section-nav-button:hover {
+
+        background: #f1f5ff;
+
+        color: #0a58ca;
+    }
+
+
+    .mobile-section-nav-button:active {
+
+        background: #e7f0ff;
+    }
+
+
+    .mobile-section-nav-button:disabled {
+
+        color: #ced4da;
+
+        background: #f8f9fa;
+
+        cursor: default;
+    }
+
+
+    .mobile-section-current-title {
+
+        min-width: 0;
+
+        flex: 1;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 9px 8px;
+
+        text-align: center;
+
+        border-left: 1px solid #edf0f2;
+
+        border-right: 1px solid #edf0f2;
+    }
+
+
+    .mobile-section-small-label {
+
+        margin-bottom: 3px;
+
+        font-size: 0.64rem;
+
+        line-height: 1;
+
+        font-weight: 700;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.04em;
+
+        color: #6c757d;
+    }
+
+
+    .mobile-section-title-text {
+
+        width: 100%;
+
+        font-size: 0.9rem;
+
+        line-height: 1.3;
+
+        font-weight: 700;
+
+        color: #212529;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       SECTION LESSONS
+    ===================================================== */
+
+    .mobile-section-lessons {
+
+        padding: 8px 10px 14px;
+
+        background: #f8f9fa;
+    }
+
+
+    .mobile-modal-lesson {
+
+        width: 100%;
+
+        min-height: 56px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 9px 10px;
+
+        margin-bottom: 4px;
+
+        border-radius: 9px;
+
+        background: #fff;
+
+        color: #343a40;
+
+        text-decoration: none;
+
+        border: 1px solid transparent;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease;
+    }
+
+
+    .mobile-modal-lesson:last-child {
+
+        margin-bottom: 0;
+    }
+
+
+    .mobile-modal-lesson:hover {
+
+        background: #f1f5f9;
+
+        color: #0d6efd;
+    }
+
+
+    /* =====================================================
+       CURRENT LESSON
+    ===================================================== */
+
+    .mobile-modal-lesson.current-lesson {
+
+        background: #eaf3ff;
+
+        color: #0d6efd;
+
+        border-color: #cfe2ff;
+
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       LESSON ICON
+    ===================================================== */
+
+    .mobile-lesson-icon {
+
+        width: 32px;
+
+        height: 32px;
+
+        min-width: 32px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 8px;
+
+        background: #e9ecef;
+
+        color: #6c757d;
+
+        font-size: 0.72rem;
+    }
+
+
+    .mobile-modal-lesson.current-lesson
+    .mobile-lesson-icon {
+
+        background: #0d6efd;
+
+        color: #fff;
+    }
+
+
+    /* =====================================================
+       LESSON INFORMATION
+    ===================================================== */
+
+    .mobile-lesson-info {
+
+        min-width: 0;
+
+        flex: 1;
+    }
+
+
+    .mobile-lesson-name {
+
+        font-size: 0.83rem;
+
+        line-height: 1.35;
+
+        font-weight: 600;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        display: -webkit-box;
+
+        -webkit-line-clamp: 2;
+
+        -webkit-box-orient: vertical;
+    }
+
+
+    .mobile-lesson-meta {
+
+        margin-top: 2px;
+
+        font-size: 0.68rem;
+
+        color: #868e96;
+    }
+
+
+    /* =====================================================
+       CURRENT LESSON ICON
+    ===================================================== */
+
+    .mobile-current-icon {
+
+        flex-shrink: 0;
+
+        color: #198754;
+
+        font-size: 0.95rem;
+    }
+
+
+    /* =====================================================
+       LESSON ARROW
+    ===================================================== */
+
+    .mobile-lesson-arrow {
+
+        flex-shrink: 0;
+
+        color: #adb5bd;
+
+        font-size: 0.65rem;
+    }
+
+
+    /* =====================================================
+       NO LESSONS
+    ===================================================== */
+
+    .mobile-no-lessons {
+
+        padding: 20px 10px;
+
+        text-align: center;
+
+        font-size: 0.78rem;
+
+        color: #6c757d;
     }
 
 
@@ -998,7 +1928,6 @@
 
     /* =====================================================
        PREVIOUS BUTTON
-       NORMAL PAGE FLOW
     ===================================================== */
 
     .lesson-previous-navigation {
@@ -1009,7 +1938,6 @@
 
     /* =====================================================
        NEXT LESSON
-       ABOVE MOBILE BOTTOM NAV
     ===================================================== */
 
     .next-lesson-fixed {
@@ -1018,13 +1946,6 @@
 
         right: 0;
 
-        /*
-         * Your mobile bottom navigation is underneath.
-         *
-         * 65px = bottom navigation space.
-         *
-         * This keeps Next Lesson ABOVE it.
-         */
         bottom: 80px;
 
         padding: 10px 12px;
@@ -1053,33 +1974,15 @@
 
 /* =========================================================
    VERY SMALL PHONES
-   iPhone SE / SMALL ANDROID
 ========================================================= */
 
 @media (max-width: 375px) {
-
-
-    .learning-room .breadcrumb {
-
-        font-size: 0.7rem !important;
-    }
-
-
-    .learning-room .breadcrumb-item.active {
-
-        max-width: 130px !important;
-    }
-
 
     .learning-room .btn {
 
         font-size: 0.85rem;
     }
 
-
-    /* =====================================================
-       NEXT LESSON
-    ===================================================== */
 
     .next-lesson-fixed {
 
@@ -1096,11 +1999,59 @@
         font-size: 0.9rem;
     }
 
+
+    .mobile-lesson-title-button {
+
+        padding: 10px 11px;
+    }
+
+
+    .mobile-lesson-title-content span {
+
+        font-size: 0.82rem;
+    }
+
+
+    .mobile-section-nav-button {
+
+        width: 46px;
+
+        min-width: 46px;
+    }
+
+
+    .mobile-section-current-title {
+
+        padding-left: 5px;
+
+        padding-right: 5px;
+    }
+
+
+    .mobile-section-title-text {
+
+        font-size: 0.82rem;
+    }
+
+
+    .mobile-section-lessons {
+
+        padding-left: 8px;
+
+        padding-right: 8px;
+    }
+
+
+    .mobile-modal-lesson {
+
+        padding: 8px;
+    }
+
 }
 
 
 /* =========================================================
-   DESKTOP
+   TABLET / DESKTOP
 ========================================================= */
 
 @media (min-width: 768px) {
@@ -1121,6 +2072,263 @@
 }
 
 </style>
+
+@endpush
+
+
+@push('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | MOBILE SECTION NAVIGATION
+    |--------------------------------------------------------------------------
+    |
+    | The modal contains all sections from the current unit.
+    |
+    | Only one section is visible at a time.
+    |
+    | Example:
+    |
+    |       <   Section 1   >
+    |
+    |       Lesson 1
+    |       Lesson 2
+    |       Lesson 3
+    |
+    | Clicking > changes to:
+    |
+    |       <   Section 2   >
+    |
+    |       Lesson 1
+    |       Lesson 2
+    |
+    |--------------------------------------------------------------------------
+    */
+
+
+    const sectionContainer =
+        document.getElementById('mobileSectionNavigator');
+
+
+    if (!sectionContainer) {
+        return;
+    }
+
+
+    const sectionPanels =
+        Array.from(
+            sectionContainer.querySelectorAll('.mobile-section-panel')
+        );
+
+
+    if (!sectionPanels.length) {
+        return;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Initial Section
+    |--------------------------------------------------------------------------
+    */
+
+    let currentSectionIndex =
+        {{ $mobileCurrentSectionIndex }};
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Show Section
+    |--------------------------------------------------------------------------
+    */
+
+    function showMobileSection(index) {
+
+        /*
+        | Prevent invalid indexes
+        */
+
+        if (
+            index < 0 ||
+            index >= sectionPanels.length
+        ) {
+            return;
+        }
+
+
+        currentSectionIndex = index;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Hide / Show Sections
+        |--------------------------------------------------------------------------
+        */
+
+        sectionPanels.forEach(function (panel, panelIndex) {
+
+            if (panelIndex === currentSectionIndex) {
+
+                panel.style.display = '';
+
+            } else {
+
+                panel.style.display = 'none';
+
+            }
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Previous / Next Buttons
+        |--------------------------------------------------------------------------
+        */
+
+        sectionPanels.forEach(function (panel, panelIndex) {
+
+            const previousButton =
+                panel.querySelector('.mobile-section-prev');
+
+
+            const nextButton =
+                panel.querySelector('.mobile-section-next');
+
+
+            if (previousButton) {
+
+                previousButton.disabled =
+                    panelIndex === 0;
+
+            }
+
+
+            if (nextButton) {
+
+                nextButton.disabled =
+                    panelIndex === sectionPanels.length - 1;
+
+            }
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Scroll Modal Body To Top
+        |--------------------------------------------------------------------------
+        */
+
+        const modalBody =
+            document.querySelector(
+                '#mobileLessonModal .modal-body'
+            );
+
+
+        if (modalBody) {
+
+            modalBody.scrollTop = 0;
+
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Previous / Next Click
+    |--------------------------------------------------------------------------
+    */
+
+    sectionContainer.addEventListener(
+        'click',
+        function (event) {
+
+            const previousButton =
+                event.target.closest(
+                    '.mobile-section-prev'
+                );
+
+
+            const nextButton =
+                event.target.closest(
+                    '.mobile-section-next'
+                );
+
+
+            /*
+            | Previous section
+            */
+
+            if (
+                previousButton &&
+                !previousButton.disabled
+            ) {
+
+                const target =
+                    parseInt(
+                        previousButton.dataset.target,
+                        10
+                    );
+
+
+                if (!isNaN(target)) {
+
+                    showMobileSection(target);
+
+                }
+
+
+                return;
+            }
+
+
+            /*
+            | Next section
+            */
+
+            if (
+                nextButton &&
+                !nextButton.disabled
+            ) {
+
+                const target =
+                    parseInt(
+                        nextButton.dataset.target,
+                        10
+                    );
+
+
+                if (!isNaN(target)) {
+
+                    showMobileSection(target);
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Initial Display
+    |--------------------------------------------------------------------------
+    */
+
+    showMobileSection(
+        currentSectionIndex
+    );
+
+});
+
+</script>
 
 @endpush
 

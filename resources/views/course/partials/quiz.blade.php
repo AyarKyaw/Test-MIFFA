@@ -3,16 +3,78 @@
 <style>
 
 /* =========================================================
-   QUIZ
+   QUIZ BASE
 ========================================================= */
 
 .quiz-container {
     width: 100%;
 }
 
-
 .quiz-option-area {
     width: 100%;
+}
+
+.quiz-container-wrapper { 
+    width: 100%; 
+    min-height: calc(100vh - 150px); 
+    box-sizing: border-box; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+#quizStartCard { width: 100%; max-width: 650px; margin: auto !important; display: flex; flex-direction: column; justify-content: center; }
+#quizStartCard .card-body { width: 100%; }
+
+@media (max-width: 767.98px) { .quiz-container-wrapper { min-height: calc(100vh - 220px); padding: 20px 14px !important; } #quizStartCard { width: 100%; max-width: 100%; margin: auto !important; } }
+/* =========================================================
+   QUIZ FORM
+========================================================= */
+
+.quiz-container-wrapper #quizForm {
+    width: 100%;
+    max-width: 100%;
+
+    flex: 1;
+}
+
+.quiz-step {
+    width: 100%;
+    max-width: 100%;
+
+    min-height: calc(100vh - 230px);
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   QUESTION TEXT
+========================================================= */
+
+.quiz-question-text {
+    color: #212529;
+
+    font-weight: 700;
+
+    font-size: 1.15rem;
+
+    line-height: 1.55;
+
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   OPTION AREA
+========================================================= */
+
+.options-container {
+    width: 100%;
+    max-width: 100%;
 }
 
 
@@ -21,11 +83,9 @@
 ========================================================= */
 
 .option-label {
-
     cursor: pointer !important;
 
-    transition:
-        all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 
     user-select: none;
 
@@ -36,29 +96,24 @@
     line-height: 1.5;
 
     overflow-wrap: break-word;
-
     word-break: break-word;
+
+    box-sizing: border-box;
 }
 
-
 .option-label:hover {
-
     border-color: #0d6efd !important;
 
     background-color: #f8f9fa !important;
 }
 
-
 .option-label.active-option {
-
     border-color: #0d6efd !important;
 
     background-color: #e7f1ff !important;
 }
 
-
 .option-label.correct-option {
-
     border-color: #198754 !important;
 
     background-color: #d1e7dd !important;
@@ -66,9 +121,7 @@
     color: #0f5132;
 }
 
-
 .option-label.incorrect-option {
-
     border-color: #dc3545 !important;
 
     background-color: #f8d7da !important;
@@ -82,17 +135,13 @@
 ========================================================= */
 
 .quiz-radio {
-
     width: 1.25rem !important;
-
     height: 1.25rem !important;
 
     min-width: 1.25rem !important;
-
     min-height: 1.25rem !important;
 
     max-width: 1.25rem !important;
-
     max-height: 1.25rem !important;
 
     border-radius: 50% !important;
@@ -110,67 +159,11 @@
 ========================================================= */
 
 .option-label > span {
-
     flex: 1;
 
     min-width: 0;
 
     overflow-wrap: break-word;
-
-    word-break: break-word;
-}
-
-
-/* =========================================================
-   QUIZ QUESTION
-========================================================= */
-
-.quiz-question-text {
-
-    color: #212529;
-
-    font-weight: 700;
-
-    font-size: 1.15rem;
-
-    line-height: 1.55;
-
-    overflow-wrap: break-word;
-
-    word-break: break-word;
-}
-
-
-/* =========================================================
-   QUIZ STEP
-========================================================= */
-
-.quiz-step {
-
-    width: 100%;
-}
-
-
-/* =========================================================
-   FEEDBACK
-========================================================= */
-
-.feedback-container {
-
-    width: 100%;
-
-    overflow-wrap: break-word;
-
-    word-break: break-word;
-}
-
-
-.feedback-container .alert {
-
-    line-height: 1.6;
-
-    overflow-wrap: break-word;
-
     word-break: break-word;
 }
 
@@ -180,29 +173,53 @@
 ========================================================= */
 
 .hint-box {
-
     line-height: 1.6;
 
     overflow-wrap: break-word;
-
     word-break: break-word;
 }
 
 
 /* =========================================================
-   ACTION BUTTON
+   FEEDBACK
 ========================================================= */
 
-.quiz-action-area {
-
+.feedback-container {
     width: 100%;
+
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.feedback-container .alert {
+    line-height: 1.6;
+
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 
-button.btn {
+/* =========================================================
+   ACTION AREA
+========================================================= */
 
+.quiz-action-area {
+    width: 100%;
+
+    /*
+     * Push action button toward
+     * the bottom of the quiz.
+     */
+    margin-top: auto !important;
+}
+
+.quiz-action-area .action-btn {
     padding-left: 20px !important;
+    padding-right: 20px !important;
+}
 
+button.btn {
+    padding-left: 20px !important;
     padding-right: 20px !important;
 }
 
@@ -212,30 +229,41 @@ button.btn {
 ========================================================= */
 
 #quizStartCard {
-
     width: 100%;
 }
 
-
 #quizStartCard h3 {
-
     line-height: 1.4;
 }
 
 
 /* =========================================================
-   COMPLETION CARD
+   COMPLETION
 ========================================================= */
 
 #quizCompletedCard {
+    width: 100%;
+}
 
+#quizCompletedActions {
     width: 100%;
 }
 
 
-#quizCompletedActions {
+/* =========================================================
+   DESKTOP
+========================================================= */
 
-    width: 100%;
+@media (min-width: 768px) {
+
+    .quiz-container-wrapper {
+        min-height: calc(100vh - 150px);
+    }
+
+    .quiz-container-wrapper .quiz-step {
+        min-height: calc(100vh - 230px);
+    }
+
 }
 
 
@@ -245,14 +273,14 @@ button.btn {
 
 @media (max-width: 767.98px) {
 
-
-    /* =====================================================
-       MAIN QUIZ PADDING
-    ===================================================== */
-
     .quiz-container-wrapper {
+        min-height: calc(100vh - 220px);
 
         padding: 20px 14px !important;
+    }
+
+    .quiz-container-wrapper .quiz-step {
+        min-height: calc(100vh - 280px);
     }
 
 
@@ -261,21 +289,16 @@ button.btn {
     ===================================================== */
 
     #quizStartCard {
-
         padding-top: 25px !important;
 
         padding-bottom: 25px !important;
     }
 
-
     #quizStartCard .fa-4x {
-
         font-size: 3rem;
     }
 
-
     #quizStartCard h3 {
-
         font-size: 1.25rem;
 
         line-height: 1.4;
@@ -283,23 +306,18 @@ button.btn {
         margin-top: 15px !important;
     }
 
-
     #quizStartCard p {
-
         font-size: 0.9rem !important;
 
         line-height: 1.6;
     }
 
-
     #startQuizBtn {
-
         width: 100%;
 
         min-height: 50px;
 
         padding-left: 20px !important;
-
         padding-right: 20px !important;
     }
 
@@ -309,7 +327,6 @@ button.btn {
     ===================================================== */
 
     .quiz-step > .d-flex {
-
         align-items: flex-start !important;
 
         gap: 10px;
@@ -317,9 +334,7 @@ button.btn {
         flex-wrap: wrap;
     }
 
-
     .quiz-step > .d-flex .badge {
-
         font-size: 0.75rem;
 
         padding: 7px 10px !important;
@@ -327,9 +342,7 @@ button.btn {
         white-space: nowrap;
     }
 
-
     .toggle-hint-btn {
-
         margin-left: auto;
 
         white-space: nowrap;
@@ -343,7 +356,6 @@ button.btn {
     ===================================================== */
 
     .quiz-question-text {
-
         font-size: 1.05rem !important;
 
         line-height: 1.55;
@@ -357,15 +369,12 @@ button.btn {
     ===================================================== */
 
     .options-container {
-
         gap: 10px !important;
 
         margin-bottom: 20px !important;
     }
 
-
     .option-label {
-
         min-height: 56px;
 
         padding: 13px 12px !important;
@@ -379,9 +388,7 @@ button.btn {
         align-items: flex-start !important;
     }
 
-
     .option-label .quiz-radio {
-
         margin-top: 2px !important;
     }
 
@@ -391,7 +398,6 @@ button.btn {
     ===================================================== */
 
     .hint-box {
-
         font-size: 0.85rem !important;
 
         padding: 10px 12px !important;
@@ -405,13 +411,10 @@ button.btn {
     ===================================================== */
 
     .feedback-container {
-
         margin-bottom: 20px !important;
     }
 
-
     .feedback-container .alert {
-
         padding: 12px !important;
 
         font-size: 0.9rem;
@@ -419,9 +422,7 @@ button.btn {
         border-radius: 10px;
     }
 
-
     .feedback-container .alert .small {
-
         font-size: 0.82rem !important;
 
         line-height: 1.6;
@@ -433,15 +434,12 @@ button.btn {
     ===================================================== */
 
     .quiz-action-area {
-
-        margin-top: 18px !important;
+        margin-top: auto !important;
 
         padding-top: 15px !important;
     }
 
-
     .quiz-action-area .action-btn {
-
         width: 100%;
 
         min-height: 48px;
@@ -455,37 +453,28 @@ button.btn {
     ===================================================== */
 
     #quizCompletedCard {
-
         padding-top: 25px !important;
 
         padding-bottom: 25px !important;
     }
 
-
     #quizCompletedCard .fa-4x {
-
         font-size: 3rem;
     }
 
-
     #resultTitle {
-
         font-size: 1.25rem;
 
         line-height: 1.4;
     }
 
-
     #resultScore {
-
         font-size: 0.95rem !important;
 
         line-height: 1.6;
     }
 
-
     #quizCompletedActions > div {
-
         flex-direction: column;
 
         width: 100%;
@@ -493,9 +482,7 @@ button.btn {
         gap: 10px !important;
     }
 
-
     #quizCompletedActions .btn {
-
         width: 100%;
 
         min-height: 48px;
@@ -510,21 +497,21 @@ button.btn {
 
 @media (max-width: 375px) {
 
-
     .quiz-container-wrapper {
+        min-height: calc(100vh - 220px);
 
         padding: 16px 11px !important;
     }
 
+    .quiz-container-wrapper .quiz-step {
+        min-height: calc(100vh - 280px);
+    }
 
     .quiz-question-text {
-
         font-size: 1rem !important;
     }
 
-
     .option-label {
-
         padding: 12px 10px !important;
 
         font-size: 0.9rem;
@@ -532,9 +519,7 @@ button.btn {
         gap: 10px !important;
     }
 
-
     .quiz-radio {
-
         width: 1.15rem !important;
 
         height: 1.15rem !important;
@@ -544,9 +529,7 @@ button.btn {
         min-height: 1.15rem !important;
     }
 
-
     .toggle-hint-btn {
-
         font-size: 0.75rem !important;
     }
 
@@ -560,7 +543,6 @@ button.btn {
 @media (prefers-reduced-motion: reduce) {
 
     .option-label {
-
         transition: none !important;
     }
 
@@ -574,14 +556,6 @@ button.btn {
 <div class="quiz-container-wrapper p-4 p-md-5">
 
     @php
-
-        /*
-         * Rely directly on $questions prepared by
-         * CourseController::classroom()
-         *
-         * Fall back to $lesson->questions
-         * if $questions is empty.
-         */
 
         $quizQuestions = (isset($questions) && $questions->isNotEmpty())
             ? $questions
@@ -607,13 +581,11 @@ button.btn {
 
         </div>
 
-
         <h3 class="fw-bold mt-3">
 
             Ready to test your knowledge?
 
         </h3>
-
 
         <p class="fs-6 text-muted mb-4">
 
@@ -626,7 +598,6 @@ button.btn {
             {{ Str::plural('question', $totalQuestions) }}.
 
         </p>
-
 
         <button
             type="button"
@@ -658,18 +629,15 @@ button.btn {
             id="resultIcon"
         ></div>
 
-
         <h3
             class="fw-bold mt-3"
             id="resultTitle"
         ></h3>
 
-
         <p
             class="fs-5 text-muted mb-4"
             id="resultScore"
         ></p>
-
 
         <div id="quizCompletedActions">
 
@@ -704,7 +672,6 @@ button.btn {
 
 
         @forelse($quizQuestions as $qIndex => $question)
-
 
             <!-- =================================================
                  QUESTION
@@ -775,9 +742,7 @@ button.btn {
                 </div>
 
 
-                <!-- =================================================
-                     HINT
-                ================================================== -->
+                <!-- HINT -->
 
                 @if(!empty($question->hint))
 
@@ -808,9 +773,7 @@ button.btn {
                 @endif
 
 
-                <!-- =================================================
-                     QUESTION TEXT
-                ================================================== -->
+                <!-- QUESTION TEXT -->
 
                 <h6 class="quiz-question-text mb-4">
 
@@ -819,9 +782,7 @@ button.btn {
                 </h6>
 
 
-                <!-- =================================================
-                     OPTIONS
-                ================================================== -->
+                <!-- OPTIONS -->
 
                 @if($question->type === 'multiple_choice')
 
@@ -948,9 +909,7 @@ button.btn {
                 @endif
 
 
-                <!-- =================================================
-                     FEEDBACK
-                ================================================== -->
+                <!-- FEEDBACK -->
 
                 <div
                     class="feedback-container mb-4"
@@ -958,9 +917,7 @@ button.btn {
                 ></div>
 
 
-                <!-- =================================================
-                     ACTION BUTTON
-                ================================================== -->
+                <!-- ACTION BUTTON -->
 
                 <div
                     class="
@@ -993,7 +950,6 @@ button.btn {
                 </div>
 
             </div>
-
 
         @empty
 
@@ -1054,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (firstStep) {
 
-                    firstStep.style.display = 'block';
+                    firstStep.style.display = 'flex';
 
                 }
 
@@ -1377,12 +1333,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         feedbackBox.innerHTML = `
                             <div class="alert alert-success mb-0 py-3">
+
                                 <div class="d-flex align-items-center gap-2 fw-semibold">
+
                                     <i class="fas fa-check-circle fs-5"></i>
+
                                     Correct!
+
                                 </div>
 
                                 ${messageBody}
+
                             </div>
                         `;
 
@@ -1395,12 +1356,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         feedbackBox.innerHTML = `
                             <div class="alert alert-danger mb-0 py-3">
+
                                 <div class="d-flex align-items-center gap-2 fw-semibold">
+
                                     <i class="fas fa-times-circle fs-5"></i>
+
                                     Incorrect.
+
                                 </div>
 
                                 ${messageBody}
+
                             </div>
                         `;
 
@@ -1498,13 +1464,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                     nextStep.style.display =
-                        'block';
+                        'flex';
 
-
-                    /*
-                     * Scroll to the beginning of
-                     * the next question on mobile.
-                     */
 
                     if (
                         window.innerWidth <= 767
@@ -1521,11 +1482,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                         window.scrollTo({
+
                             top: Math.max(
                                 0,
                                 offset
                             ),
+
                             behavior: 'smooth'
+
                         });
 
                     }
@@ -1627,16 +1591,23 @@ document.addEventListener('DOMContentLoaded', function () {
                                 onclick="window.location.reload()"
                                 class="btn btn-success rounded-3 px-4"
                             >
+
                                 <i class="fas fa-arrow-right me-1"></i>
+
                                 Continue Course
+
                             </button>
+
 
                             <button
                                 onclick="window.location.reload()"
                                 class="btn btn-outline-secondary rounded-3 px-3"
                             >
+
                                 <i class="fas fa-redo me-1"></i>
+
                                 Retake
+
                             </button>
 
                         </div>
@@ -1675,8 +1646,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             onclick="window.location.reload()"
                             class="btn btn-outline-primary rounded-3 px-4"
                         >
+
                             <i class="fas fa-redo me-1"></i>
+
                             Retake Quiz
+
                         </button>
                     `;
 
@@ -1692,8 +1666,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (window.innerWidth <= 767) {
 
                     window.scrollTo({
+
                         top: 0,
+
                         behavior: 'smooth'
+
                     });
 
                 }
