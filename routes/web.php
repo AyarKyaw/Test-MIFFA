@@ -225,3 +225,46 @@ Route::middleware('admin')->prefix('dashboard')->group(function () {
     Route::get('/lessons/{lesson}/submissions', [LessonController::class, 'submissions'])->name('admin.lessons.submissions');
     Route::put('/lesson-user/{pivotId}/update', [LessonController::class, 'updateSubmission'])->name('admin.lesson-user.update');
 });
+
+if (app()->environment('local')) {
+
+    Route::get('/test-error/500', function () {
+        throw new \Exception('Testing 500 error');
+    });
+
+    Route::get('/test-error/403', function () {
+        abort(403);
+    });
+
+    Route::get('/test-error/404', function () {
+        abort(404);
+    });
+
+    Route::get('/test-error/419', function () {
+        abort(419);
+    });
+
+    Route::get('/test-error/429', function () {
+        abort(429);
+    });
+
+    Route::get('/test-error/503', function () {
+        abort(503);
+    });
+
+    Route::get('/test-error/type', function () {
+
+        throw new \TypeError(
+            'Testing PHP TypeError'
+        );
+    });
+    Route::get('/test-error/default', function () {
+        abort(405);
+    });
+    Route::get('/test-error/runtime', function () {
+
+        throw new \RuntimeException(
+            'Testing RuntimeException'
+        );
+    });
+}
