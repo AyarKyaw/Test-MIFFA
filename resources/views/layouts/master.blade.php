@@ -569,7 +569,7 @@
             <div class="col-lg-5 text-end">
                 <div class="item-flex">
 
-                    <div class="dropdown">
+                    <!-- <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton1"
@@ -590,7 +590,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
 
                     <div>
 
