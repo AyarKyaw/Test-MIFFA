@@ -170,6 +170,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/payment/qr/{course}', [PaymentController::class, 'showQr'])->name('payment.qr');
     Route::post('/payment/confirm/{course}', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
     Route::get('/student-dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
+    Route::get('/student-dashboard/courses', [DashboardController::class, 'courses'])->name('student.dashboard.courses');
+    Route::get('/student-dashboard/homework', [DashboardController::class, 'homework'])->name('student.dashboard.homework');
     
     // Learning & Classroom Routes
     Route::get('/my-courses', [FrontendCourseController::class, 'myCourses'])->name('courses.my');

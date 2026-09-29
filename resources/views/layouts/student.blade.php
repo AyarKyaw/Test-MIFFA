@@ -92,22 +92,27 @@
 
                 <!-- Navigation Links -->
                 <nav class="nav flex-column gap-1">
-                    <a href="{{ route('student.dashboard') }}" class="nav-link-custom {{ request()->routeIs('student.dashboard*') ? 'active' : '' }}">
+                    {{-- Dashboard --}}
+                    <a href="{{ route('student.dashboard') }}"
+                    class="nav-link-custom {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
                         <i class="fas fa-th-large"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="#" class="nav-link-custom {{ request()->routeIs('courses*') ? 'active' : '' }}">
+
+                    {{-- My Courses --}}
+                    <a href="{{ route('student.dashboard.courses') }}"
+                    class="nav-link-custom {{ request()->routeIs('student.dashboard.courses') || request()->routeIs('courses.learn') || request()->routeIs('courses.show') ? 'active' : '' }}">
                         <i class="fas fa-book"></i>
                         <span>My Courses</span>
                     </a>
-                    <a href="#" class="nav-link-custom {{ request()->routeIs('schedule*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Schedule</span>
-                    </a>
-                    <a href="#" class="nav-link-custom {{ request()->routeIs('resources*') ? 'active' : '' }}">
+
+                    {{-- My Homeworks --}}
+                    <a href="{{ route('student.dashboard.homework') }}"
+                    class="nav-link-custom {{ request()->routeIs('student.dashboard.homework') ? 'active' : '' }}">
                         <i class="fas fa-folder-open"></i>
-                        <span>Resources</span>
+                        <span>My Homeworks</span>
                     </a>
+
                 </nav>
             </div>
 

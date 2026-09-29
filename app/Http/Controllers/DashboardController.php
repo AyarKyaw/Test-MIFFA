@@ -86,4 +86,73 @@ class DashboardController extends Controller
             'recentHomework'
         ));
     }
+
+    public function courses()
+    {
+        $user = auth()->user();
+
+        $courses = $user->courses()
+            ->with([
+                'category',
+                'units.sections.lessons',
+            ])
+            ->paginate(9);
+
+        foreach ($courses as $course) {
+
+            $allLessons = $course->units
+                ->flatMap(fn ($unit) => $unit->sections)
+                ->flatMap(fn ($section) => $section->lessons);
+
+            $course->total_lessons = $allLessons->count();
+
+            if ($course->total_lessons > 0) {
+
+                $lessonIds = $allLessons->pluck('id');
+
+                $userLessons = $user->lessons()
+                    ->whereIn('lesson_id', $lessonIds)
+                    ->get();
+
+                $completedLessons = $userLessons->filter(function ($lesson) {
+                    return $lesson->pivot->is_completed
+                        || ($lesson->pivot->quiz_score ?? 0) >= 80;
+                })->count();
+
+                $course->progress_percentage = round(
+                    ($completedLessons / $course->total_lessons) * 100
+                );
+
+            } else {
+                $course->progress_percentage =
+                    $course->pivot->progress_percentage ?? 0;
+            }
+
+            $course->is_completed = $course->progress_percentage >= 100;
+
+            $course->last_lesson_id =
+                $course->pivot->last_accessed_lesson_id
+                ?? $allLessons->first()?->id;
+        }
+
+        return view('dashboard.students.courses.index', compact('courses'));
+    }
+
+    public function homework()
+    {
+        $user = auth()->user();
+
+        $homeworkSubmissions = $user->lessons()
+            ->wherePivotNotNull('homework_file_path')
+            ->with([
+                'section.unit',
+            ])
+            ->orderByPivot('updated_at', 'desc')
+            ->paginate(10);
+
+        return view(
+            'dashboard.students.homework.index',
+            compact('homeworkSubmissions')
+        );
+    }
 }
