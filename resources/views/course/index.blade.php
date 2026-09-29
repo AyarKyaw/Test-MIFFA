@@ -3,8 +3,6 @@
 @section('title', ($courseCategory->name ?? 'Courses') . ' - MIFFA')
 
 @section('content')
-
-```
 <!-- Start Breadcrumb -->
 <div class="breadcrumb-area text-center bg-gray-gradient-secondary">
     <div class="container">
