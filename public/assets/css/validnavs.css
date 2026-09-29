@@ -619,7 +619,7 @@ nav.validnavs.navbar-full .navbar-collapse ul.nav {
 .validnavs a:focus,
 .validnavs a:hover,
 .validnavs a.active {
-	background: transparent !important;
+	background: transparent;
 }
 
 .attr-nav li {

@@ -1046,8 +1046,9 @@
 
 <div class="mobile-bottom-nav">
 
+    {{-- Home --}}
     <a href="{{ url('/') }}"
-        class="{{ request()->is('/') ? 'active' : '' }}">
+       class="{{ request()->is('/') ? 'active' : '' }}">
 
         <i class="fas fa-home"></i>
 
@@ -1055,8 +1056,10 @@
 
     </a>
 
+
+    {{-- Courses --}}
     <a href="{{ url('/course/categories') }}"
-        class="{{ request()->is('course/categories*') ? 'active' : '' }}">
+       class="{{ request()->is('course/categories*') ? 'active' : '' }}">
 
         <i class="fas fa-graduation-cap"></i>
 
@@ -1064,10 +1067,12 @@
 
     </a>
 
+
     @auth
 
+        {{-- Enrolled Courses --}}
         <a href="{{ url('/my-courses') }}"
-            class="{{ request()->is('my-courses*') ? 'active' : '' }}">
+           class="{{ request()->is('my-courses*') ? 'active' : '' }}">
 
             <i class="fas fa-book-reader"></i>
 
@@ -1075,10 +1080,35 @@
 
         </a>
 
+
+        {{-- Student Profile / Dashboard --}}
+        <a href="{{ route('student.dashboard') }}"
+           class="{{ request()->routeIs('student.dashboard') || request()->routeIs('student.dashboard.*') ? 'active' : '' }}">
+
+            <i class="fas fa-user-circle"></i>
+
+            <span>Profile</span>
+
+        </a>
+
+    @else
+
+        {{-- Login for guests --}}
+        <a href="{{ url('/login') }}"
+           class="{{ request()->is('login') ? 'active' : '' }}">
+
+            <i class="fas fa-user-circle"></i>
+
+            <span>Login</span>
+
+        </a>
+
     @endauth
 
+
+    {{-- Teachers --}}
     <a href="{{ url('/teachers') }}"
-        class="{{ request()->is('teachers*') ? 'active' : '' }}">
+       class="{{ request()->is('teachers*') ? 'active' : '' }}">
 
         <i class="fas fa-chalkboard-teacher"></i>
 
@@ -1086,11 +1116,12 @@
 
     </a>
 
-    <!-- Triggers your existing popup/slide-out menu -->
+
+    {{-- Menu --}}
     <button type="button"
-        class="navbar-toggle"
-        data-toggle="collapse"
-        data-target="#navbar-menu">
+            class="navbar-toggle"
+            data-toggle="collapse"
+            data-target="#navbar-menu">
 
         <i class="fas fa-bars"></i>
 
