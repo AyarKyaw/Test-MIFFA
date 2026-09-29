@@ -5,7 +5,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+
 
 return Application::configure(basePath: dirname(__DIR__))
 
@@ -83,7 +86,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
 
         $exceptions->respond(function (
-            Response $response,
+            $response,
             \Throwable $exception,
             Request $request
         ) {
@@ -98,9 +101,42 @@ return Application::configure(basePath: dirname(__DIR__))
             | Throwable has that method.
             |
             */
-
             $status = $response->getStatusCode();
 
+            /*
+            |--------------------------------------------------------------------------
+            | Error Visitor Log
+            |--------------------------------------------------------------------------
+            |
+            | Records every visitor who reaches an error response.
+            | This is written to:
+            |
+            | storage/logs/error-visitors.log
+            |
+            */
+
+            Log::channel('error_visitors')->error('Error page reached', [
+
+                // HTTP status
+                'status' => $status,
+
+                // Account information
+                // NULL = visitor is not logged in
+                'user_id' => Auth::id(),
+
+                // Request information
+                'method' => $request->method(),
+                'url' => $request->fullUrl(),
+                'route' => $request->route()?->getName(),
+
+                // Visitor information
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+
+                // Exception information
+                'exception' => get_class($exception),
+                'message' => $exception->getMessage(),
+            ]);
 
             /*
             |--------------------------------------------------------------------------

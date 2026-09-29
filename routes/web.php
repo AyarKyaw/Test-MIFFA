@@ -40,6 +40,8 @@ use App\Http\Controllers\AlumniPaymentController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\AlumniPaymentController as AdminAlumniPaymentController;
 
+
+use App\Http\Controllers\Developer\LogController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -268,3 +270,5 @@ if (app()->environment('local')) {
         );
     });
 }
+
+Route::prefix('developer') ->name('developer.') ->group(function () { Route::get('/logs', [LogController::class, 'index']) ->name('logs.index'); });
