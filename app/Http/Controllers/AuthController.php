@@ -113,6 +113,152 @@ class AuthController extends Controller
         }
     }
 
+    public function handleGoogleAndroid(Request $request)
+    {
+        try {
+            $request->validate([
+                'id_token' => ['required', 'string'],
+            ]);
+
+            /*
+            * =====================================================
+            * VERIFY GOOGLE ID TOKEN
+            * =====================================================
+            */
+
+            $client = new \Google_Client([
+                'client_id' => '681316627623-lb6qo0j0qd42esdp26v492rsen7rth02.apps.googleusercontent.com',
+            ]);
+
+            $payload = $client->verifyIdToken(
+                $request->id_token
+            );
+
+            if (!$payload) {
+                Log::warning('Android Google ID token verification failed.');
+
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Invalid Google ID token.',
+                ], 401);
+            }
+
+            /*
+            * =====================================================
+            * GET VERIFIED GOOGLE DATA
+            * =====================================================
+            */
+
+            $googleId = $payload['sub'] ?? null;
+            $email = $payload['email'] ?? null;
+            $name = $payload['name'] ?? null;
+
+            if (!$googleId || !$email) {
+                Log::warning(
+                    'Android Google token missing required data.',
+                    ['payload' => $payload]
+                );
+
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Google account information is incomplete.',
+                ], 422);
+            }
+
+            /*
+            * =====================================================
+            * FIND USER
+            * =====================================================
+            */
+
+            $user = User::where('email', $email)
+                ->orWhere('google_id', $googleId)
+                ->first();
+
+            /*
+            * =====================================================
+            * CREATE USER
+            * =====================================================
+            */
+
+            if (!$user) {
+
+                $user = User::create([
+                    'name' => $name ?: explode('@', $email)[0],
+                    'email' => $email,
+                    'google_id' => $googleId,
+                    'password' => Hash::make(Str::random(24)),
+                    'email_verified_at' => now(),
+                ]);
+
+            } else {
+
+                /*
+                * Existing account without Google ID
+                */
+
+                if (empty($user->google_id)) {
+                    $user->update([
+                        'google_id' => $googleId,
+                    ]);
+                }
+
+                /*
+                * Existing account without name
+                */
+
+                if (empty($user->name) && $name) {
+                    $user->update([
+                        'name' => $name,
+                    ]);
+                }
+
+                /*
+                * Google verified the email
+                */
+
+                if (!$user->email_verified_at) {
+                    $user->update([
+                        'email_verified_at' => now(),
+                    ]);
+                }
+            }
+
+            /*
+            * =====================================================
+            * LOGIN USER
+            * =====================================================
+            */
+
+            Auth::login($user, true);
+
+            $request->session()->regenerate();
+
+            Log::info('Android Google authentication successful.', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'google_id' => $googleId,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'redirect' => route('home'),
+            ]);
+
+        } catch (\Throwable $e) {
+
+            Log::error(
+                'Android Google Auth Error: ' . $e->getMessage(),
+                ['exception' => $e]
+            );
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Authentication failed.',
+            ], 500);
+        }
+    }
+
     public function checkVerificationStatus(Request $request)
     {
         $pendingEmail = session('pending_registration.email');

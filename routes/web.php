@@ -99,6 +99,8 @@ Route::get('/teachers', [FrontendInstructorController::class, 'index'])->name('i
 Route::get('/teachers/{id}', [FrontendInstructorController::class, 'show'])->name('instructors.show');
 
 Route::post('/google-one-tap', [AuthController::class, 'handleGoogleOneTap'])->name('google.onetap');
+Route::post('/google-android', [AuthController::class, 'handleGoogleAndroid'])
+    ->name('google.android');
 
 // Guest / Authentication Routes (Students / Frontend Users)
 Route::middleware('guest')->group(function () {
