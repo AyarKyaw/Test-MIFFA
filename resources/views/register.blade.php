@@ -14,7 +14,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- ========== Favicon Icon ========== -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/new/logo-light.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/img/icon/miffas.png') }}" type="image/x-icon">
 
     <!-- ========== Google Identity Services ========== -->
     <script src="https://accounts.google.com/gsi/client" async defer onerror="handleGoogleScriptError()"></script>
@@ -264,13 +264,146 @@
         }
 
         function triggerGoogleSignIn() {
+            /*
+            * =====================================================
+            * MIFFA ANDROID APP
+            * =====================================================
+            *
+            * If this page is running inside the MIFFA Android app,
+            * use native Google Sign-In through Credential Manager.
+            */
+
+            if (
+                window.MIFFAGoogleBridge &&
+                typeof window.MIFFAGoogleBridge.signInWithGoogle === 'function'
+            ) {
+
+                console.log("MIFFA Android detected.");
+
+                const noticeEl =
+                    document.getElementById('stepNotice');
+
+                if (noticeEl) {
+                    noticeEl.classList.remove('d-none');
+                    noticeEl.innerText =
+                        'Opening Google Sign-In...';
+                }
+
+                window.MIFFAGoogleBridge.signInWithGoogle();
+
+                return;
+            }
+
+
+            /*
+            * =====================================================
+            * NORMAL WEBSITE
+            * =====================================================
+            *
+            * Keep the existing Google web login unchanged.
+            */
+
             if (!tokenClient) {
-                alert("Google services unreachable. Please ensure your VPN is enabled.");
+
+                alert(
+                    "Google services unreachable. Please ensure your VPN is enabled."
+                );
+
                 return;
             }
 
             tokenClient.requestAccessToken({
                 prompt: 'select_account'
+            });
+        }
+
+        function handleAndroidGoogleToken(idToken) {
+            console.log("Android Google ID token received.");
+
+            const noticeEl =
+                document.getElementById('stepNotice');
+
+            if (noticeEl) {
+                noticeEl.classList.remove('d-none');
+
+                noticeEl.innerText =
+                    '✔ Google account selected! Authenticating...';
+            }
+
+            fetch("{{ route('google.android') }}", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+
+                    "X-CSRF-TOKEN":
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content'),
+
+                    "Accept": "application/json"
+                },
+
+                body: JSON.stringify({
+                    id_token: idToken
+                })
+
+            })
+            .then(async response => {
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error ||
+                        'Google authentication failed.'
+                    );
+                }
+
+                return data;
+            })
+            .then(data => {
+
+                if (data.success) {
+
+                    console.log(
+                        "Android Google authentication successful."
+                    );
+
+                    window.location.href =
+                        data.redirect;
+
+                } else {
+
+                    throw new Error(
+                        data.error ||
+                        'Authentication failed.'
+                    );
+                }
+            })
+            .catch(error => {
+
+                console.error(
+                    "Android Google authentication error:",
+                    error
+                );
+
+                const alertBox =
+                    document.getElementById('google-alert');
+
+                if (alertBox) {
+
+                    alertBox.innerText =
+                        error.message ||
+                        'Google authentication failed.';
+
+                    alertBox.classList.remove('d-none');
+                }
+
+                if (noticeEl) {
+                    noticeEl.classList.add('d-none');
+                }
             });
         }
 
