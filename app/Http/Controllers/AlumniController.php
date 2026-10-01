@@ -29,18 +29,23 @@ class AlumniController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'email'         => 'required|email:rfc,dns|max:255|unique:alumnis,email',
-            'course_id'     => 'required|exists:courses,id',
-            'password'      => 'required|string|min:8',
-            'cropped_image' => 'required|string',
-        ]);
+        $validated = $request->validate(
+            [
+                'name'          => 'required|string|max:255',
+                'email'         => 'required|email:rfc,dns|max:255|unique:alumnis,email',
+                'course_id'     => 'required|exists:courses,id',
+                'password'      => 'required|string|min:8',
+                'cropped_image' => 'required|string',
+            ],
+            [
+                'email.unique' => 'This email is already registered. Please log in instead.',
+            ]
+        );
 
-        // 1. Save Cropped Image first to get public path
-        $imagePath = $this->saveCroppedImage($validated['cropped_image']);
+        $imagePath = $this->saveCroppedImage(
+            $validated['cropped_image']
+        );
 
-        // 2. Prepare payload (pre-hash password)
         $alumniData = [
             'name'      => $validated['name'],
             'email'     => $validated['email'],
@@ -49,14 +54,15 @@ class AlumniController extends Controller
             'image'     => $imagePath,
         ];
 
-        // 3. Store payload in session for resend capability
-        session(['pending_alumni_registration' => $alumniData]);
+        session([
+            'pending_alumni_registration' => $alumniData,
+        ]);
 
-        // 4. Send initial confirmation email
         $this->sendConfirmationEmail($alumniData);
 
-        // 5. Render waiting/notice page
-        return view('alumni.auth.verify-email', ['email' => $validated['email']]);
+        return view('alumni.auth.verify-email', [
+            'email' => $validated['email'],
+        ]);
     }
 
     /**
@@ -294,5 +300,58 @@ class AlumniController extends Controller
             'isValid' => ($alumni->status ?? 'active') === 'active',
             'status' => $alumni->status ?? 'active'
         ]);
+    }
+
+    public function status(Request $request)
+    {
+        $email = $request->query('email');
+
+        \Log::info('ALUMNI VERIFICATION STATUS CHECK', [
+            'email_from_request' => $email,
+            'session_email' => session('pending_registration.email'),
+        ]);
+
+        if (!$email) {
+            \Log::warning('ALUMNI VERIFICATION: NO EMAIL PROVIDED');
+
+            return response()->json([
+                'verified' => false,
+                'message' => 'Email not provided',
+            ]);
+        }
+
+        $alumni = \App\Models\Alumni::where('email', $email)->first();
+
+        \Log::info('ALUMNI RECORD FOUND', [
+            'alumni' => $alumni ? $alumni->toArray() : null,
+            'email' => $email,
+            'email_verified_at' => $alumni?->email_verified_at,
+        ]);
+
+        if (!$alumni) {
+            \Log::warning('ALUMNI VERIFICATION: ALUMNI NOT FOUND', [
+                'email' => $email,
+            ]);
+
+            return response()->json([
+                'verified' => false,
+                'message' => 'Alumni record not found',
+            ]);
+        }
+
+        $verified = !is_null($alumni->email_verified_at);
+
+        \Log::info('ALUMNI VERIFICATION RESULT', [
+            'alumni_id' => $alumni->id,
+            'email' => $alumni->email,
+            'email_verified_at' => $alumni->email_verified_at,
+            'verified' => $verified,
+        ]);
+
+        return response()->json([
+            'verified' => $verified,
+            'redirect' => route('alumni.dashboard'),
+        ]);
+
     }
 }

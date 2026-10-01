@@ -55,6 +55,11 @@ Route::get('/about', function () {
     return view('about-us');
 });
 
+Route::get(
+    '/alumni/verification/status',
+    [AlumniController::class, 'status']
+)->name('alumni.verification.status');
+
 Route::prefix('alumni')->name('alumni.')->group(function () {
 
     // Public QR Verification Route
@@ -65,20 +70,17 @@ Route::prefix('alumni')->name('alumni.')->group(function () {
     Route::get('/verify-pending/{payload}', [AlumniController::class, 'verifyPendingEmail'])
         ->name('verify.pending');
 
-    // Guest Routes (Only for users who are NOT logged in)
-    Route::middleware('guest:alumni')->group(function () {
-        Route::get('/join', [AlumniController::class, 'showJoinForm'])->name('join');
-        Route::post('/join', [AlumniController::class, 'store'])->name('store');
+    Route::get('/join', [AlumniController::class, 'showJoinForm'])->name('join');
+    Route::post('/join', [AlumniController::class, 'store'])->name('store');
 
-        Route::get('/login', [AlumniController::class, 'showLoginForm'])->name('login');
-        Route::post('/login', [AlumniController::class, 'login'])->name('login.submit');
+    Route::get('/login', [AlumniController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AlumniController::class, 'login'])->name('login.submit');
 
-        Route::get('/check-verification-status', [AlumniController::class, 'checkVerificationStatus'])
-            ->name('check.status');
+    Route::get('/check-verification-status', [AlumniController::class, 'checkVerificationStatus'])
+        ->name('check.status');
 
-        Route::post('/resend-verification', [AlumniController::class, 'resendVerificationEmail'])
-            ->name('verification.send');
-    });
+    Route::post('/resend-verification', [AlumniController::class, 'resendVerificationEmail'])
+        ->name('verification.send');
 
     // Authenticated Alumni Routes (Payment & Dashboard)
     Route::middleware('auth:alumni')->group(function () {

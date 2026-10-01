@@ -103,6 +103,10 @@ return Application::configure(basePath: dirname(__DIR__))
             */
             $status = $response->getStatusCode();
 
+            if ($status >= 300 && $status < 400) {
+                return $response;
+            }
+
             /*
             |--------------------------------------------------------------------------
             | Error Visitor Log
