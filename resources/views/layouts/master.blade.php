@@ -775,14 +775,16 @@
 
                         <!-- Join Alumni Navigation Link -->
                         <li>
-
-                            <a class="alumni-btn"
+                            @if (Auth::guard('alumni')->check())
+                                <a class="alumni-btn" href="{{ route('alumni.dashboard') }}">
+                                    Dashboard
+                                </a>
+                            @else
+                                <a class="alumni-btn"
                                 href="{{ Route::has('alumni.join') ? route('alumni.join') : url('/alumni/join') }}">
-
-                                Join Alumni
-
-                            </a>
-
+                                    Join Alumni
+                                </a>
+                            @endif
                         </li>
 
                         <!-- Mobile-only view items inside the slide-out menu -->
@@ -931,9 +933,16 @@
                             </li>
 
                             <li>
-                                <a href="{{ Route::has('alumni.join') ? route('alumni.join') : url('/alumni/join') }}">
-                                    Join Alumni
+                                @if (Auth::guard('alumni')->check())
+                                <a href="{{ route('alumni.dashboard') }}">
+                                    Dashboard
                                 </a>
+                                @else
+                                    <a
+                                    href="{{ Route::has('alumni.join') ? route('alumni.join') : url('/alumni/join') }}">
+                                        Join Alumni
+                                    </a>
+                                @endif
                             </li>
 
                         </ul>
