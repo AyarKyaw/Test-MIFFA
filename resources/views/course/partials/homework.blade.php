@@ -124,3 +124,21 @@
         </form>
     </div>
 </div>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (
+        typeof window.MIFFAAndroid !== 'undefined' &&
+        window.MIFFAAndroid.isAndroidApp()
+    ) {
+        document
+            .querySelectorAll('a[target="_blank"]')
+            .forEach(function (link) {
+                link.setAttribute('target', '_self');
+            });
+    }
+
+});
+</script>
+@endpush
