@@ -981,6 +981,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const quizForm =
         document.getElementById('quizForm');
 
+    const nextLessonBar =
+        document.getElementById('nextLessonBar');
+
 
     if (!quizForm) {
         return;
@@ -1001,6 +1004,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 quizForm.style.display = 'block';
 
+                if (nextLessonBar) {
+                    nextLessonBar.style.display = 'none';
+                }
 
                 const firstStep =
                     quizForm.querySelector(
@@ -1270,111 +1276,158 @@ document.addEventListener('DOMContentLoaded', function () {
                         await response.json();
 
 
+                    // /* Lock inputs */
+
+                    // currentStep
+                    //     .querySelectorAll(
+                    //         '.quiz-radio'
+                    //     )
+                    //     .forEach(function (radio) {
+
+                    //         radio.disabled = true;
+
+                    //     });
+
+
+                    // /* Feedback */
+
+                    // const feedbackBox =
+                    //     currentStep.querySelector(
+                    //         '.feedback-container'
+                    //     );
+
+
+                    // const selectedLabel =
+                    //     selectedRadio.closest(
+                    //         '.option-label'
+                    //     );
+
+
+                    // selectedLabel.classList.remove(
+                    //     'active-option'
+                    // );
+
+
+                    // let messageBody = '';
+
+
+                    // if (data.feedback) {
+
+                    //     messageBody +=
+                    //         `<div class="mt-1 small">${data.feedback}</div>`;
+
+                    // }
+
+
+                    // if (data.explanation) {
+
+                    //     messageBody +=
+                    //         `<div class="mt-2 small text-secondary border-top pt-2">
+                    //             <strong>Explanation:</strong>
+                    //             ${data.explanation}
+                    //         </div>`;
+
+                    // }
+
+
+                    // if (data.is_correct) {
+
+                    //     selectedLabel.classList.add(
+                    //         'correct-option'
+                    //     );
+
+
+                    //     feedbackBox.innerHTML = `
+                    //         <div class="alert alert-success mb-0 py-3">
+
+                    //             <div class="d-flex align-items-center gap-2 fw-semibold">
+
+                    //                 <i class="fas fa-check-circle fs-5"></i>
+
+                    //                 Correct!
+
+                    //             </div>
+
+                    //             ${messageBody}
+
+                    //         </div>
+                    //     `;
+
+                    // } else {
+
+                    //     selectedLabel.classList.add(
+                    //         'incorrect-option'
+                    //     );
+
+
+                    //     feedbackBox.innerHTML = `
+                    //         <div class="alert alert-danger mb-0 py-3">
+
+                    //             <div class="d-flex align-items-center gap-2 fw-semibold">
+
+                    //                 <i class="fas fa-times-circle fs-5"></i>
+
+                    //                 Incorrect.
+
+                    //             </div>
+
+                    //             ${messageBody}
+
+                    //         </div>
+                    //     `;
+
+                    // }
+
+
+                    // feedbackBox.style.display =
+                    //     'block';
+
                     /* Lock inputs */
-
                     currentStep
-                        .querySelectorAll(
-                            '.quiz-radio'
-                        )
+                        .querySelectorAll('.quiz-radio')
                         .forEach(function (radio) {
-
                             radio.disabled = true;
-
                         });
 
 
-                    /* Feedback */
+                    /* No correct/incorrect feedback shown */
 
-                    const feedbackBox =
-                        currentStep.querySelector(
-                            '.feedback-container'
+
+                    actionBtn.removeAttribute('disabled');
+
+
+                    if (data.is_completed) {
+
+                        actionBtn.setAttribute(
+                            'data-state',
+                            'finish'
                         );
 
+                        actionBtn.className =
+                            'btn btn-success px-4 rounded-3 action-btn';
 
-                    const selectedLabel =
-                        selectedRadio.closest(
-                            '.option-label'
-                        );
+                        actionBtn.innerHTML =
+                            'Finish & See Results';
 
-
-                    selectedLabel.classList.remove(
-                        'active-option'
-                    );
-
-
-                    let messageBody = '';
-
-
-                    if (data.feedback) {
-
-                        messageBody +=
-                            `<div class="mt-1 small">${data.feedback}</div>`;
-
-                    }
-
-
-                    if (data.explanation) {
-
-                        messageBody +=
-                            `<div class="mt-2 small text-secondary border-top pt-2">
-                                <strong>Explanation:</strong>
-                                ${data.explanation}
-                            </div>`;
-
-                    }
-
-
-                    if (data.is_correct) {
-
-                        selectedLabel.classList.add(
-                            'correct-option'
-                        );
-
-
-                        feedbackBox.innerHTML = `
-                            <div class="alert alert-success mb-0 py-3">
-
-                                <div class="d-flex align-items-center gap-2 fw-semibold">
-
-                                    <i class="fas fa-check-circle fs-5"></i>
-
-                                    Correct!
-
-                                </div>
-
-                                ${messageBody}
-
-                            </div>
-                        `;
+                        actionBtn.dataset.summary =
+                            JSON.stringify(
+                                data.summary || {}
+                            );
 
                     } else {
 
-                        selectedLabel.classList.add(
-                            'incorrect-option'
+                        actionBtn.setAttribute(
+                            'data-state',
+                            'next'
                         );
 
+                        actionBtn.className =
+                            'btn btn-primary px-4 rounded-3 action-btn';
 
-                        feedbackBox.innerHTML = `
-                            <div class="alert alert-danger mb-0 py-3">
-
-                                <div class="d-flex align-items-center gap-2 fw-semibold">
-
-                                    <i class="fas fa-times-circle fs-5"></i>
-
-                                    Incorrect.
-
-                                </div>
-
-                                ${messageBody}
-
-                            </div>
-                        `;
+                        actionBtn.innerHTML =
+                            'Next Question <i class="fas fa-arrow-right ms-1"></i>';
 
                     }
-
-
-                    feedbackBox.style.display =
-                        'block';
 
 
                     /* =================================================
@@ -1528,6 +1581,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 quizForm.style.display =
                     'none';
+
+                if (nextLessonBar) {
+                    nextLessonBar.style.display = '';
+                }
 
 
                 const card =

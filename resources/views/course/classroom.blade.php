@@ -1033,7 +1033,7 @@
 
                 @if($nextLesson)
 
-                    <div class="next-lesson-fixed">
+                    <div class="next-lesson-fixed" id="nextLessonBar">
 
                         <a
                             href="{{ route('courses.learn', [$course->id, $nextLesson->id]) }}"
