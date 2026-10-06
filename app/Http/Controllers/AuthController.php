@@ -425,4 +425,44 @@ class AuthController extends Controller
 
         return redirect('/')->with('success', 'Account confirmed successfully! Welcome to MIFFA.');
     }
+
+    public function TeachershowLogin()
+    {
+        return view('instructors.login');
+    }
+
+    public function Teacherlogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        $remember = $request->boolean('remember');
+
+        if (Auth::guard('teacher')->attempt($credentials, $remember)) {
+
+            $request->session()->regenerate();
+
+            return redirect()->intended(
+                route('teacher.dashboard')
+            );
+        }
+
+        return back()
+            ->withErrors([
+                'email' => 'The email or password is incorrect.',
+            ])
+            ->withInput($request->only('email'));
+    }
+
+    public function Teacherlogout(Request $request)
+    {
+        Auth::guard('teacher')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('teacher.login');
+    }
 }

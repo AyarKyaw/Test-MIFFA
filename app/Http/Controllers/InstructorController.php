@@ -6,6 +6,7 @@ use App\Models\Instructor;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class InstructorController extends Controller
 {
@@ -49,5 +50,19 @@ class InstructorController extends Controller
         })->distinct()->count('users.id');
 
         return view('instructors.show', compact('instructor'));
+    }
+
+    public function dashboard()
+    {
+        $teacher = Auth::guard('teacher')->user();
+
+        return view('instructors.dashboard', [
+            'teacher' => $teacher,
+            'courseCount' => 0,
+            'studentCount' => 0,
+            'lessonCount' => 0,
+            'quizCount' => 0,
+            'courses' => [],
+        ]);
     }
 }

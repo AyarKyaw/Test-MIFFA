@@ -91,6 +91,21 @@ Route::prefix('alumni')->name('alumni.')->group(function () {
     });
 });
 
+Route::prefix('teacher')->name('teacher.')->group(function () {
+
+    Route::get('/login', [AuthController::class, 'TeachershowLogin'])
+        ->name('login');
+
+    Route::post('/login', [AuthController::class, 'Teacherlogin'])
+        ->name('login.perform');
+
+    Route::post('/logout', [AuthController::class, 'Teacherlogout'])
+        ->name('logout');
+
+    Route::get('/dashboard', [FrontendInstructorController::class, 'dashboard'])
+            ->name('dashboard');
+});
+
 // Frontend Courses & Categories (Public browsing)
 Route::get('/courses', [FrontendCourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{id}', [FrontendCourseController::class, 'show'])->name('courses.show');
