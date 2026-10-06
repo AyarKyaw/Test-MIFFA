@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Instructor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class InstructorController extends Controller
@@ -34,10 +35,14 @@ class InstructorController extends Controller
     {
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:instructors,email',
+            'password'      => 'required|string|min:8',
             'bio'           => 'nullable|string',
             'cropped_image' => 'nullable|string',
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
+        $validated['password'] = Hash::make($validated['password']);
 
         // Process Profile Image
         if ($request->filled('cropped_image')) {
@@ -67,10 +72,18 @@ class InstructorController extends Controller
     {
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:instructors,email',
+            'password'      => 'required|string|min:8',
             'bio'           => 'nullable|string',
             'cropped_image' => 'nullable|string',
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
+        }
 
         // Update Profile Image
         if ($request->filled('cropped_image')) {

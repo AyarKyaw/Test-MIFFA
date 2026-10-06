@@ -83,6 +83,46 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="email" class="form-label fw-bold">
+                                    Email <span class="text-danger">*</span>
+                                </label>
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    class="form-control @error('email') is-invalid @enderror"
+                                    value="{{ old('email') }}"
+                                    placeholder="Enter teacher email"
+                                    required
+                                >
+
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-bold">
+                                    Password <span class="text-danger">*</span>
+                                </label>
+
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    class="form-control @error('password') is-invalid @enderror"
+                                    placeholder="Enter teacher password"
+                                    required
+                                >
+
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="bio" class="form-label fw-bold">Bio / Biography</label>
                                 <textarea name="bio" id="bio" rows="4" class="form-control @error('bio') is-invalid @enderror" placeholder="Enter teacher background, qualification, or summary...">{{ old('bio') }}</textarea>
                                 @error('bio')

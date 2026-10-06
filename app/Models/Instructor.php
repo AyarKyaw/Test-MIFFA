@@ -12,6 +12,8 @@ class Instructor extends Model
 
     protected $fillable = [
         'name',
+        'email',
+        'password',
         'image',
         'bio',
         'banner_image'
