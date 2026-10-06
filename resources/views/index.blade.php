@@ -97,6 +97,112 @@
     display: block;
 }
 </style>
+<style>
+    /* =========================================================
+       MIFFA ADVERTISEMENT POPUP
+    ========================================================= */
+
+    #miffaAdPopup {
+        position: fixed;
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+
+        z-index: 999999;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(0, 0, 0, 0.65);
+
+        padding: 15px;
+    }
+
+    #miffaAdPopup .ad-content {
+        position: relative;
+
+        max-width: 90vw;
+        max-height: 95vh;
+    }
+
+    #miffaAdPopup .ad-image {
+        display: block;
+
+        width: auto;
+        height: auto;
+
+        max-width: 90vw;
+        max-height: 95vh;
+
+        object-fit: contain;
+
+        border-radius: 12px;
+
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Close button */
+
+    #miffaAdPopup .ad-close {
+        position: absolute;
+
+        top: 10px;
+        right: 10px;
+
+        width: 40px;
+        height: 40px;
+
+        border: none;
+        border-radius: 50%;
+
+        background: rgba(0, 0, 0, 0.75);
+
+        color: #ffffff;
+
+        font-size: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        z-index: 2;
+    }
+
+    #miffaAdPopup .ad-close:hover {
+        background: rgba(0, 0, 0, 0.95);
+    }
+
+    @media (max-width: 767px) {
+
+        #miffaAdPopup {
+            padding: 8px;
+        }
+
+        #miffaAdPopup .ad-content {
+            max-width: 94vw;
+            max-height: 94vh;
+        }
+
+        #miffaAdPopup .ad-image {
+            max-width: 94vw;
+            max-height: 94vh;
+        }
+
+        #miffaAdPopup .ad-close {
+            width: 34px;
+            height: 34px;
+
+            top: 7px;
+            right: 7px;
+
+            font-size: 15px;
+        }
+    }
+</style>
 @endpush
 @section('content')
     
@@ -845,4 +951,119 @@
         </div>
     </div> -->
     <!-- End Newsletter -->
+    
+{{-- =========================================================
+     ADVERTISEMENT POPUP
+========================================================= --}}
+
+<div id="miffaAdPopup"
+     style="
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 2147483647 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        background: rgba(8, 12, 25, 0.82) !important;
+        backdrop-filter: blur(6px);
+
+        padding: 20px !important;
+        box-sizing: border-box !important;
+
+        opacity: 1 !important;
+        visibility: visible !important;
+    ">
+
+    <div style="
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        max-width: 90vw;
+        max-height: 94vh;
+
+        padding: 6px;
+
+        background: #ffffff;
+        border-radius: 16px;
+
+        box-shadow:
+            0 25px 80px rgba(0, 0, 0, 0.45),
+            0 0 0 1px rgba(255, 255, 255, 0.15);
+    ">
+
+        {{-- CLOSE BUTTON --}}
+        <button type="button"
+                onclick="document.getElementById('miffaAdPopup').remove();"
+                aria-label="Close advertisement"
+                style="
+                    position: absolute;
+                    top: -14px;
+                    right: -14px;
+
+                    z-index: 2147483647;
+
+                    width: 42px;
+                    height: 42px;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    border: 3px solid #ffffff;
+                    border-radius: 50%;
+
+                    background: #111827;
+                    color: #ffffff;
+
+                    font-family: Arial, sans-serif;
+                    font-size: 25px;
+                    font-weight: 400;
+                    line-height: 1;
+
+                    cursor: pointer;
+
+                    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.35);
+
+                    transition:
+                        transform 0.2s ease,
+                        background 0.2s ease;
+                "
+                onmouseover="
+                    this.style.transform='scale(1.08)';
+                    this.style.background='#000000';
+                "
+                onmouseout="
+                    this.style.transform='scale(1)';
+                    this.style.background='#111827';
+                ">
+            ×
+        </button>
+
+        {{-- ADVERTISEMENT IMAGE --}}
+        <img src="{{ asset('assets/img/shape/popup.jpg') }}"
+             alt="Advertisement"
+             style="
+                display: block !important;
+
+                width: auto !important;
+                height: auto !important;
+
+                max-width: calc(90vw - 12px) !important;
+                max-height: calc(94vh - 12px) !important;
+
+                object-fit: contain !important;
+
+                border-radius: 12px;
+
+                opacity: 1 !important;
+                visibility: visible !important;
+             ">
+    </div>
+</div>
 @endsection
