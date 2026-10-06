@@ -104,6 +104,12 @@ Route::prefix('teacher')->name('teacher.')->group(function () {
 
     Route::get('/dashboard', [FrontendInstructorController::class, 'dashboard'])
             ->name('dashboard');
+
+    Route::get('/homework', [FrontendInstructorController::class, 'homework'])
+        ->name('homework');
+
+    Route::get('/homework/{submission}', [FrontendInstructorController::class, 'review'])
+        ->name('homework.review');
 });
 
 // Frontend Courses & Categories (Public browsing)
